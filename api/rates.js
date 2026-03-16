@@ -7,26 +7,36 @@ module.exports = async function handler(req, res) {
     const https = require('https');
 
     const fetchJSON = (url) => new Promise((resolve, reject) => {
-      https.get(url, (resp) => {
+      const req = https.get(url, { headers: { 'User-Agent': 'Mozilla/5.0' } }, (resp) => {
         let raw = '';
         resp.on('data', chunk => raw += chunk);
         resp.on('end', () => { try { resolve(JSON.parse(raw)); } catch(e) { reject(e); } });
-      }).on('error', reject);
+      });
+      req.on('error', reject);
+      req.setTimeout(5000, () => { req.destroy(); reject(new Error('timeout')); });
     });
 
-    // USD/TRY ve EUR/TRY - kayıt gerektirmeyen ücretsiz API
+    // USD/TRY ve EUR/TRY
     const fx = await fetchJSON('https://open.er-api.com/v6/latest/USD');
     const tryRate = fx.rates && fx.rates.TRY ? fx.rates.TRY : 42.8;
     const eurTry  = fx.rates && fx.rates.EUR ? (fx.rates.TRY / fx.rates.EUR) : 50.2;
 
-    // ONS altın (USD)
-    let onsUSD = 3000;
+    // ONS altin USD - fawazahmed0 currency API (ucretsiz, kayit yok)
+    let onsUSD = 3020;
     try {
-      const gold = await fetchJSON('https://open.er-api.com/v6/latest/XAU');
-      if (gold.rates && gold.rates.USD) onsUSD = 1 / gold.rates.USD;
-    } catch(e) {}
+      const gold = await fetchJSON('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/xau.json');
+      if (gold.xau && gold.xau.usd) {
+        onsUSD = gold.xau.usd; // 1 XAU = kac USD
+      }
+    } catch(e) {
+      // fallback: open.er-api XAU dene
+      try {
+        const gold2 = await fetchJSON('https://open.er-api.com/v6/latest/XAU');
+        if (gold2.rates && gold2.rates.USD) onsUSD = 1 / gold2.rates.USD;
+      } catch(e2) {}
+    }
 
-    // Gram altın TL
+    // Gram altin TL = (ONS USD / 31.1035) * USD/TRY
     const gramAltinTL = (onsUSD / 31.1035) * tryRate;
 
     res.status(200).json({
@@ -34,13 +44,13 @@ module.exports = async function handler(req, res) {
       eur:   parseFloat(eurTry.toFixed(2)),
       altin: parseFloat(gramAltinTL.toFixed(2)),
       ons:   parseFloat(onsUSD.toFixed(2)),
-      kaynak: 'open.er-api.com',
+      kaynak: 'open.er-api + fawazahmed0',
       zaman: new Date().toISOString()
     });
 
   } catch (e) {
     res.status(200).json({
-      usd: 42.8, eur: 50.2, altin: 7100, ons: 3000,
+      usd: 42.8, eur: 50.2, altin: 7100, ons: 3020,
       kaynak: 'fallback', zaman: new Date().toISOString()
     });
   }
