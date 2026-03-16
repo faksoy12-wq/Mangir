@@ -990,7 +990,31 @@ renderAct();
 renderHistory();
 cu();
 fetchRates();
-setInterval(fetchRates, 60000);
+
+// Her 30 saniyede bir güncelle
+setInterval(fetchRates, 30000);
+
+// Sekme tekrar aktif olunca güncelle
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'visible') {
+    fetchRates();
+  }
+});
+
+// Sayfa focus alınca güncelle (telefonda uygulamaya dönünce)
+window.addEventListener('focus', fetchRates);
+
+// Geri sayım sayacı
+var countdown = 30;
+setInterval(function() {
+  countdown--;
+  if (countdown <= 0) countdown = 30;
+  var el = document.getElementById('upd-time');
+  if (el && el.textContent.includes('·')) {
+    var parts = el.textContent.split('·');
+    el.textContent = parts[0] + '· ' + countdown + 's';
+  }
+}, 1000);
 
 if (S.bordrolar.length > 0) {
   var last = S.bordrolar[0];
