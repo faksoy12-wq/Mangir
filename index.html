@@ -20,17 +20,20 @@
   --serif:'Playfair Display',Georgia,serif;--sans:'Plus Jakarta Sans',sans-serif;--r:12px;
 }
 body{background:var(--cream);font-family:var(--sans);color:var(--ink);font-size:14px;}
+.tk-canli{font-size:10px;font-weight:700;color:var(--ink3);letter-spacing:.05em;white-space:nowrap;}
 .header{background:var(--white);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
 .h-name{font-family:var(--serif);font-size:19px;}
 .h-sub{font-size:11px;color:var(--ink3);margin-top:2px;}
 .pill{font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;}
 .pill-gold{background:var(--gold-bg);border:1px solid var(--gold-bd);color:var(--gold);}
 .pill-green{background:var(--green-bg);border:1px solid var(--green-bd);color:var(--green);}
-.ticker{background:var(--white);border-bottom:1px solid var(--border);padding:9px 16px;display:flex;gap:12px;flex-wrap:nowrap;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.ticker{background:var(--white);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;gap:10px;flex-wrap:nowrap;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 .ticker::-webkit-scrollbar{display:none;}
+.tk-lbl{font-size:9px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;}
+.tk-val{font-size:13px;font-weight:700;white-space:nowrap;}
 .tk-item{display:flex;align-items:center;gap:7px;}
-.tk-lbl{font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;}
-.tk-val{font-size:14px;font-weight:700;}
+.tk-lbl{font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;}
+.tk-val{font-size:14px;font-weight:700;white-space:nowrap;}
 .tk-chg{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;}
 .chg-u{background:var(--green-bg);color:var(--green);}
 .chg-d{background:var(--red-bg);color:var(--red);}
@@ -107,6 +110,7 @@ input[type=range]{width:80px;accent-color:var(--gold);}
 .h-del{font-size:10px;color:var(--red);cursor:pointer;margin-left:auto;padding:2px 7px;border:1px solid var(--red-bd);border-radius:4px;background:var(--red-bg);flex-shrink:0;}
 .success-box{background:var(--green-bg);border:1px solid var(--green-bd);border-radius:10px;padding:14px;margin-top:12px;display:none;}
 @media(max-width:768px){
+  .tk-hide-mobile{display:none !important;}
   .g4{grid-template-columns:repeat(2,1fr);}
   .g21{grid-template-columns:1fr;}
   .g21-eq{grid-template-columns:1fr;}
@@ -120,6 +124,7 @@ input[type=range]{width:80px;accent-color:var(--gold);}
   .ac{display:none;}
   .aa{min-width:70px;font-size:12px;}
   .ap{min-width:28px;font-size:11px;}
+  .tk-hide-mobile{display:none !important;}
 }
 </style>
 
@@ -141,22 +146,22 @@ input[type=range]{width:80px;accent-color:var(--gold);}
   <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
     <span class="pill pill-gold">27 yaş · 56'ya 29 yıl</span>
     <span class="pill pill-green" id="tasarruf-pill">%61 tasarruf</span>
-    <span style="font-size:10px;color:var(--ink3);" id="upd-time">Kurlar yükleniyor...</span>
+
   </div>
 </div>
 
 <div class="ticker">
-  <span style="font-size:10px;font-weight:700;color:var(--ink3);letter-spacing:.05em;">CANLI</span>
+  <span style="font-size:10px;font-weight:700;color:var(--ink3);letter-spacing:.05em;flex-shrink:0;">CANLI</span>
   <div class="tk-div"></div>
-  <div class="tk-item"><span class="tk-lbl">Gram Altın</span><span class="tk-val" id="t-altin">—</span><span class="tk-chg chg-n" id="t-ac">—</span></div>
+  <div class="tk-item" style="flex-shrink:0;"><span class="tk-lbl">Gram Altın</span><span class="tk-val" id="t-altin">—</span><span class="tk-chg chg-n" id="t-ac">—</span></div>
   <div class="tk-div"></div>
-  <div class="tk-item"><span class="tk-lbl">USD/TL</span><span class="tk-val" id="t-usd">—</span><span class="tk-chg chg-n" id="t-uc">—</span></div>
+  <div class="tk-item" style="flex-shrink:0;"><span class="tk-lbl">USD/TL</span><span class="tk-val" id="t-usd">—</span><span class="tk-chg chg-n" id="t-uc">—</span></div>
+  <div class="tk-div tk-hide-mobile"></div>
+  <div class="tk-item tk-hide-mobile"><span class="tk-lbl">EUR/TL</span><span class="tk-val" id="t-eur">—</span><span class="tk-chg chg-n" id="t-ec">—</span></div>
+  <div class="tk-div tk-hide-mobile"></div>
+  <div class="tk-item tk-hide-mobile"><span class="tk-lbl">ONS/$</span><span class="tk-val" id="t-ons">—</span><span class="tk-chg chg-n" id="t-oc">—</span></div>
   <div class="tk-div"></div>
-  <div class="tk-item"><span class="tk-lbl">EUR/TL</span><span class="tk-val" id="t-eur">—</span><span class="tk-chg chg-n" id="t-ec">—</span></div>
-  <div class="tk-div"></div>
-  <div class="tk-item"><span class="tk-lbl">ONS/$</span><span class="tk-val" id="t-ons">—</span><span class="tk-chg chg-n" id="t-oc">—</span></div>
-  <div class="tk-div"></div>
-  <div class="tk-item"><span class="tk-lbl">54K =</span><span class="tk-val" id="t-gram" style="color:#C9A84C;">— gram</span></div>
+  <div class="tk-item" style="flex-shrink:0;"><span class="tk-lbl">54K =</span><span class="tk-val" id="t-gram" style="color:#C9A84C;">— gram</span></div>
 </div>
 
 <div class="nav">
@@ -767,10 +772,10 @@ input[type=range]{width:80px;accent-color:var(--gold);}
 
 <!-- YOL HARİTASI -->
 <div class="tab" id="tab-freedom">
-  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px;">
-    <div class="card" style="text-align:center;margin-bottom:0;"><div class="ct">Şu anki yaşın</div><div style="font-family:var(--serif);font-size:44px;color:var(--gold);margin:6px 0 3px;">27</div><div style="font-size:11px;color:var(--ink3);">Önünde 29 yıl var</div></div>
-    <div class="card" style="text-align:center;margin-bottom:0;"><div class="ct">Hedef yaş</div><div style="font-family:var(--serif);font-size:44px;color:var(--ink);margin:6px 0 3px;">56</div><div style="font-size:11px;color:var(--ink3);">Finansal özgürlük</div></div>
-    <div class="card" style="text-align:center;background:var(--green-bg);border-color:var(--green-bd);margin-bottom:0;"><div class="ct" style="color:var(--green);">Aylık Yatırım</div><div style="font-family:var(--serif);font-size:36px;color:var(--green);margin:6px 0 3px;" id="f-yatirim">120K ₺</div><div style="font-size:11px;color:var(--green);">Her ay düzenli</div></div>
+  <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px;">
+    <div class="card" style="text-align:center;margin-bottom:0;padding:12px 6px;"><div class="ct">Şu anki yaşın</div><div style="font-family:var(--serif);font-size:36px;color:var(--gold);margin:4px 0 2px;line-height:1;">27</div><div style="font-size:10px;color:var(--ink3);">29 yıl var</div></div>
+    <div class="card" style="text-align:center;margin-bottom:0;padding:12px 6px;"><div class="ct">Hedef yaş</div><div style="font-family:var(--serif);font-size:36px;color:var(--ink);margin:4px 0 2px;line-height:1;">56</div><div style="font-size:10px;color:var(--ink3);">Özgürlük</div></div>
+    <div class="card" style="text-align:center;background:var(--green-bg);border-color:var(--green-bd);margin-bottom:0;padding:12px 6px;"><div class="ct" style="color:var(--green);">Aylık</div><div style="font-size:17px;font-weight:700;color:var(--green);margin:4px 0 2px;line-height:1.3;" id="f-yatirim">120K ₺</div><div style="font-size:10px;color:var(--green);">Her ay</div></div>
   </div>
   <div class="card"><div class="ct">29 Yıllık Yol Haritası — %18 Gerçekçi Senaryo</div><div id="tl-list"></div></div>
 </div>
@@ -864,6 +869,8 @@ function chg(c, p) {
 }
 
 function vergiBelirle(b) {
+  // Bordro girilmemişse veya 0 ise varsayılan %35
+  if (!b || b === 0) return 0.35;
   if (b > 72500) return 0.40;
   if (b > 25000) return 0.35;
   if (b > 9167)  return 0.27;
@@ -926,7 +933,8 @@ function updateAll() {
   document.getElementById('act-ppf').textContent   = fmtN(y*0.30) + ' ₺';
   document.getElementById('act-bist').textContent  = fmtN(y*0.15) + ' ₺';
   document.getElementById('act-usd').textContent   = fmtN(y*0.10) + ' ₺';
-  document.getElementById('f-yatirim').textContent = fmtN(y) + ' ₺';
+  var yK = y >= 1000000 ? (y/1000000).toFixed(1)+'M ₺' : (y/1000).toFixed(0)+'K ₺';
+  document.getElementById('f-yatirim').textContent = yK;
 }
 
 function calcPreview() {
@@ -1151,7 +1159,7 @@ document.getElementById('tl-list').innerHTML = tlData.map(function(t) {
 var actions = [
   {n:1, bg:'var(--gold-bg)',    tc:'#B8860B',        t:'Ziraat → Altın Hesabı Aç',    d:'2 dakika. Miktarı gir, satın al. Her maaş günü tekrarla.'},
   {n:2, bg:'var(--green-bg)',   tc:'var(--green)',   t:'Ziraat → Fon → ZPP',          d:'Para Piyasası Fonu. Günlük faiz işlemeye başlar.'},
-  {n:3, bg:'var(--blue-bg)',    tc:'var(--blue)',    t:'Ziraat Mobil → Yatırım → Fon → BİST 30 Endeks', d:'Al, unut. Takip etmene gerek yok.'},
+  {n:3, bg:'var(--blue-bg)',    tc:'var(--blue)',    t:'Ziraat → Fon → BİST 30 Endeks', d:'Al, unut. Takip etmene gerek yok.'},
   {n:4, bg:'var(--purple-bg)',  tc:'var(--purple)',  t:'Ziraat → Fon → Döviz (USD)',  d:'Kur koruması + faiz.'},
   {n:5, bg:'var(--gold-bg)',    tc:'#B8860B',        t:"Allianz prim makbuzunu muhasebe / İK'ya ilet", d:'Her ay tekrar et. Yılda ~27K ₺ vergi iadesi.'}
 ];
