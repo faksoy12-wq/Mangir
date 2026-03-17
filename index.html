@@ -27,9 +27,9 @@ body{background:var(--cream);font-family:var(--sans);color:var(--ink);font-size:
 .pill{font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;}
 .pill-gold{background:var(--gold-bg);border:1px solid var(--gold-bd);color:var(--gold);}
 .pill-green{background:var(--green-bg);border:1px solid var(--green-bd);color:var(--green);}
-.ticker{background:var(--white);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;gap:10px;flex-wrap:nowrap;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.ticker{background:var(--white);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;gap:10px;flex-wrap:nowrap;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;width:100%;box-sizing:border-box;}
 .ticker::-webkit-scrollbar{display:none;}
-.tk-lbl{font-size:9px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;}
+.tk-lbl{font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;}
 .tk-val{font-size:13px;font-weight:700;white-space:nowrap;}
 .tk-item{display:flex;align-items:center;gap:7px;}
 .tk-lbl{font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;}
@@ -146,7 +146,7 @@ input[type=range]{width:80px;accent-color:var(--gold);}
   <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
     <span class="pill pill-gold">27 yaş · 56'ya 29 yıl</span>
     <span class="pill pill-green" id="tasarruf-pill">%61 tasarruf</span>
-
+    <span style="font-size:10px;color:var(--ink3);" id="upd-time">Kurlar yükleniyor...</span>
   </div>
 </div>
 
