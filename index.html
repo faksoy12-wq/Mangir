@@ -26,7 +26,8 @@ body{background:var(--cream);font-family:var(--sans);color:var(--ink);font-size:
 .pill{font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;}
 .pill-gold{background:var(--gold-bg);border:1px solid var(--gold-bd);color:var(--gold);}
 .pill-green{background:var(--green-bg);border:1px solid var(--green-bd);color:var(--green);}
-.ticker{background:var(--white);border-bottom:1px solid var(--border);padding:9px 24px;display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
+.ticker{background:var(--white);border-bottom:1px solid var(--border);padding:9px 16px;display:flex;gap:12px;flex-wrap:nowrap;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.ticker::-webkit-scrollbar{display:none;}
 .tk-item{display:flex;align-items:center;gap:7px;}
 .tk-lbl{font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;}
 .tk-val{font-size:14px;font-weight:700;}
@@ -35,7 +36,8 @@ body{background:var(--cream);font-family:var(--sans);color:var(--ink);font-size:
 .chg-d{background:var(--red-bg);color:var(--red);}
 .chg-n{background:#F2F2F7;color:var(--ink3);}
 .tk-div{width:1px;height:26px;background:var(--border);}
-.nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:2px;overflow-x:auto;}
+.nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 16px;display:flex;gap:2px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.nav::-webkit-scrollbar{display:none;}
 .nb{font-size:12px;font-weight:500;color:var(--ink3);background:none;border:none;border-bottom:2px solid transparent;padding:11px 13px;cursor:pointer;white-space:nowrap;transition:all .15s;}
 .nb:hover{color:var(--ink);}
 .nb.active{color:var(--gold);border-bottom-color:var(--gold);}
@@ -54,9 +56,9 @@ body{background:var(--cream);font-family:var(--sans);color:var(--ink);font-size:
 .arow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
 .arow:last-child{border-bottom:none;}
 .adot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-.an{flex:1;min-width:0;}
-.an-m{font-size:13px;font-weight:600;}
-.an-s{font-size:10px;color:var(--ink3);margin-top:1px;}
+.an{flex:1;min-width:0;overflow:hidden;}
+.an-m{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.an-s{font-size:10px;color:var(--ink3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .abw{width:50px;height:4px;background:#F2F2F7;border-radius:2px;flex-shrink:0;}
 .ab{height:4px;border-radius:2px;}
 .ap{font-size:11px;font-weight:600;color:var(--ink3);min-width:28px;text-align:right;}
@@ -111,10 +113,13 @@ input[type=range]{width:80px;accent-color:var(--gold);}
   .g2{grid-template-columns:1fr;}
   .sc-grid{grid-template-columns:repeat(2,1fr);}
   .content{padding:12px;}
-  .ticker{gap:10px;padding:9px 12px;}
-  .tk-div{display:none;}
-  .nav{padding:0 12px;}
-  .header{padding:12px;}
+  .header{padding:12px 16px;flex-direction:column;align-items:flex-start;gap:8px;}
+  .header > div:last-child{width:100%;display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .arow{flex-wrap:nowrap;}
+  .abw{display:none;}
+  .ac{display:none;}
+  .aa{min-width:70px;font-size:12px;}
+  .ap{min-width:28px;font-size:11px;}
 }
 </style>
 
@@ -176,10 +181,10 @@ input[type=range]{width:80px;accent-color:var(--gold);}
   <div class="g21">
     <div class="card" style="margin-bottom:0;">
       <div class="ct">Aylık <span id="yatirim-baslik">120.000 ₺</span> Dağılımı — Ziraat Bankası</div>
-      <div class="arow"><div class="adot" style="background:#C9A84C;"></div><div class="an"><div class="an-m">Gram Altın</div><div class="an-s">Ziraat Mobil → Yatırım → Altın Hesabı</div></div><div class="abw"><div class="ab" style="width:45%;background:#C9A84C;"></div></div><div class="ap">%45</div><div class="aa" style="color:#C9A84C;" id="p-altin">54.000 ₺</div><div class="ac" id="p-gram">— gram</div></div>
-      <div class="arow"><div class="adot" style="background:#1A7A4A;"></div><div class="an"><div class="an-m">Para Piyasası Fonu (ZPP)</div><div class="an-s">Ziraat Mobil → Yatırım → Fon → ZPP</div></div><div class="abw"><div class="ab" style="width:30%;background:#1A7A4A;"></div></div><div class="ap">%30</div><div class="aa" style="color:#1A7A4A;" id="p-ppf">36.000 ₺</div><div class="ac" style="font-size:10px;color:var(--ink3);">Günlük ~%0.10 faiz</div></div>
-      <div class="arow"><div class="adot" style="background:#1A5FAA;"></div><div class="an"><div class="an-m">BİST 30 Endeks Fonu</div><div class="an-s">Ziraat Mobil → Yatırım → Fon → Endeks</div></div><div class="abw"><div class="ab" style="width:15%;background:#1A5FAA;"></div></div><div class="ap">%15</div><div class="aa" style="color:#1A5FAA;" id="p-bist">18.000 ₺</div><div class="ac" style="font-size:10px;color:var(--ink3);">Takip etme, bekle</div></div>
-      <div class="arow"><div class="adot" style="background:#7B3FBE;"></div><div class="an"><div class="an-m">Döviz Fonu (USD)</div><div class="an-s">Ziraat Mobil → Yatırım → Fon → Döviz</div></div><div class="abw"><div class="ab" style="width:10%;background:#7B3FBE;"></div></div><div class="ap">%10</div><div class="aa" style="color:#7B3FBE;" id="p-usd">12.000 ₺</div><div class="ac" id="p-usd-c">— USD</div></div>
+      <div class="arow"><div class="adot" style="background:#C9A84C;"></div><div class="an"><div class="an-m">Gram Altın</div><div class="an-s">Ziraat → Altın Hesabı</div></div><div class="abw"><div class="ab" style="width:45%;background:#C9A84C;"></div></div><div class="ap">%45</div><div class="aa" style="color:#C9A84C;" id="p-altin">54.000 ₺</div><div class="ac" id="p-gram">— gram</div></div>
+      <div class="arow"><div class="adot" style="background:#1A7A4A;"></div><div class="an"><div class="an-m">Para Piyasası Fonu (ZPP)</div><div class="an-s">Ziraat → Fon → ZPP</div></div><div class="abw"><div class="ab" style="width:30%;background:#1A7A4A;"></div></div><div class="ap">%30</div><div class="aa" style="color:#1A7A4A;" id="p-ppf">36.000 ₺</div><div class="ac" style="font-size:10px;color:var(--ink3);">Günlük ~%0.10 faiz</div></div>
+      <div class="arow"><div class="adot" style="background:#1A5FAA;"></div><div class="an"><div class="an-m">BİST 30 Endeks Fonu</div><div class="an-s">Ziraat → Fon → Endeks</div></div><div class="abw"><div class="ab" style="width:15%;background:#1A5FAA;"></div></div><div class="ap">%15</div><div class="aa" style="color:#1A5FAA;" id="p-bist">18.000 ₺</div><div class="ac" style="font-size:10px;color:var(--ink3);">Takip etme, bekle</div></div>
+      <div class="arow"><div class="adot" style="background:#7B3FBE;"></div><div class="an"><div class="an-m">Döviz Fonu (USD)</div><div class="an-s">Ziraat → Fon → Döviz</div></div><div class="abw"><div class="ab" style="width:10%;background:#7B3FBE;"></div></div><div class="ap">%10</div><div class="aa" style="color:#7B3FBE;" id="p-usd">12.000 ₺</div><div class="ac" id="p-usd-c">— USD</div></div>
       <div class="arow" style="opacity:.4;"><div class="adot" style="background:#aaa;"></div><div class="an"><div class="an-m">Zorunlu BES</div><div class="an-s">Bordrodan otomatik — dokunma</div></div><div class="abw"></div><div class="ap">—</div><div class="aa" style="color:#aaa;">Otomatik</div><div class="ac"></div></div>
       <div class="arow" style="opacity:.4;"><div class="adot" style="background:#aaa;"></div><div class="an"><div class="an-m">Allianz USD Poliçe</div><div class="an-s">300 $/ay · Devam et</div></div><div class="abw"></div><div class="ap">—</div><div class="aa" id="p-allianz" style="color:#aaa;">— ₺/ay</div><div class="ac"></div></div>
       <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
@@ -776,10 +781,10 @@ input[type=range]{width:80px;accent-color:var(--gold);}
     <div class="card" style="margin-bottom:0;"><div class="ct">Bu Hafta Yapılacaklar</div><div id="act-list"></div></div>
     <div class="card" style="margin-bottom:0;">
       <div class="ct">Her Ay Tekrar Et — Ziraat Mobil</div>
-      <div class="arow"><div class="adot" style="background:#C9A84C;"></div><div class="an"><div class="an-m">Altın al</div><div class="an-s">Yatırım → Altın Hesabı</div></div><div class="aa" id="act-altin" style="color:#C9A84C;">54.000 ₺</div></div>
-      <div class="arow"><div class="adot" style="background:#1A7A4A;"></div><div class="an"><div class="an-m">Para Piyasası Fonu (ZPP)</div><div class="an-s">Yatırım → Fon → ZPP</div></div><div class="aa" id="act-ppf" style="color:#1A7A4A;">36.000 ₺</div></div>
-      <div class="arow"><div class="adot" style="background:#1A5FAA;"></div><div class="an"><div class="an-m">BİST 30 Endeks Fonu</div><div class="an-s">Yatırım → Fon → Endeks</div></div><div class="aa" id="act-bist" style="color:#1A5FAA;">18.000 ₺</div></div>
-      <div class="arow"><div class="adot" style="background:#7B3FBE;"></div><div class="an"><div class="an-m">Döviz Fonu (USD)</div><div class="an-s">Yatırım → Fon → Döviz</div></div><div class="aa" id="act-usd" style="color:#7B3FBE;">12.000 ₺</div></div>
+      <div class="arow"><div class="adot" style="background:#C9A84C;"></div><div class="an"><div class="an-m">Altın al</div><div class="an-s">Ziraat → Altın</div></div><div class="aa" id="act-altin" style="color:#C9A84C;">54.000 ₺</div></div>
+      <div class="arow"><div class="adot" style="background:#1A7A4A;"></div><div class="an"><div class="an-m">Para Piyasası Fonu (ZPP)</div><div class="an-s">Ziraat → ZPP</div></div><div class="aa" id="act-ppf" style="color:#1A7A4A;">36.000 ₺</div></div>
+      <div class="arow"><div class="adot" style="background:#1A5FAA;"></div><div class="an"><div class="an-m">BİST 30 Endeks Fonu</div><div class="an-s">Ziraat → Endeks</div></div><div class="aa" id="act-bist" style="color:#1A5FAA;">18.000 ₺</div></div>
+      <div class="arow"><div class="adot" style="background:#7B3FBE;"></div><div class="an"><div class="an-m">Döviz Fonu (USD)</div><div class="an-s">Ziraat → Döviz</div></div><div class="aa" id="act-usd" style="color:#7B3FBE;">12.000 ₺</div></div>
       <div class="arow"><div class="adot" style="background:#C9A84C;"></div><div class="an"><div class="an-m">Allianz makbuzunu İK'ya ilet</div><div class="an-s">Her ay · vergi iadesi</div></div><div class="aa" id="act-iade" style="color:var(--green);font-size:11px;">+2.247 ₺</div></div>
       <div class="warn">Her ay fiyata bakmadan aynı miktarı al. Ortalama maliyet stratejisi.</div>
       <div style="margin-top:10px;"><a class="ziraat-btn" href="https://bireysel.ziraatbank.com.tr" target="_blank">🏦 Ziraat Mobil</a></div>
@@ -1144,10 +1149,10 @@ document.getElementById('tl-list').innerHTML = tlData.map(function(t) {
 }).join('');
 
 var actions = [
-  {n:1, bg:'var(--gold-bg)',    tc:'#B8860B',        t:'Ziraat Mobil → Yatırım → Altın Hesabı Aç',    d:'2 dakika. Miktarı gir, satın al. Her maaş günü tekrarla.'},
-  {n:2, bg:'var(--green-bg)',   tc:'var(--green)',   t:'Ziraat Mobil → Yatırım → Fon → ZPP',          d:'Para Piyasası Fonu. Günlük faiz işlemeye başlar.'},
+  {n:1, bg:'var(--gold-bg)',    tc:'#B8860B',        t:'Ziraat → Altın Hesabı Aç',    d:'2 dakika. Miktarı gir, satın al. Her maaş günü tekrarla.'},
+  {n:2, bg:'var(--green-bg)',   tc:'var(--green)',   t:'Ziraat → Fon → ZPP',          d:'Para Piyasası Fonu. Günlük faiz işlemeye başlar.'},
   {n:3, bg:'var(--blue-bg)',    tc:'var(--blue)',    t:'Ziraat Mobil → Yatırım → Fon → BİST 30 Endeks', d:'Al, unut. Takip etmene gerek yok.'},
-  {n:4, bg:'var(--purple-bg)',  tc:'var(--purple)',  t:'Ziraat Mobil → Yatırım → Fon → Döviz (USD)',  d:'Kur koruması + faiz.'},
+  {n:4, bg:'var(--purple-bg)',  tc:'var(--purple)',  t:'Ziraat → Fon → Döviz (USD)',  d:'Kur koruması + faiz.'},
   {n:5, bg:'var(--gold-bg)',    tc:'#B8860B',        t:"Allianz prim makbuzunu muhasebe / İK'ya ilet", d:'Her ay tekrar et. Yılda ~27K ₺ vergi iadesi.'}
 ];
 var done = JSON.parse((function(){ try{ return localStorage.getItem('fa-d')||'{}' }catch(e){ return '{}' } })());
