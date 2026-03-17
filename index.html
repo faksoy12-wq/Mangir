@@ -166,6 +166,7 @@ input[type=range]{width:80px;accent-color:var(--gold);}
 
 <div class="nav">
   <button class="nb active" onclick="goTab('portfolio',this)">Portföy</button>
+  <button class="nb" onclick="goTab('bakiye',this)">💼 Bakiyem</button>
   <button class="nb" onclick="goTab('bordro',this)">📋 Bordro Güncelle</button>
   <button class="nb" onclick="goTab('calculator',this)">Hesap Makinesi</button>
   <button class="nb" onclick="goTab('freedom',this)">Yol Haritası</button>
@@ -310,6 +311,67 @@ input[type=range]{width:80px;accent-color:var(--gold);}
 </div>
 
 <!-- BORDRO -->
+<div class="tab" id="tab-bakiye">
+  <div class="g2">
+    <!-- Sol: Bakiye Girişi -->
+    <div class="card" style="margin-bottom:0;">
+      <div class="ct">Gerçek Bakiyeni Gir</div>
+      <p style="font-size:12px;color:var(--ink3);margin-bottom:14px;line-height:1.7;">Her ay yatırımını yaptıktan sonra gerçek bakiyeni gir — kar/zarar otomatik hesaplanır.</p>
+
+      <div id="bakiye-liste"></div>
+
+      <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px;">
+        <div class="ct">Yeni Pozisyon Ekle</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+          <div>
+            <label style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;display:block;margin-bottom:4px;">Araç</label>
+            <select id="bk-arac" class="month-select" style="font-size:13px;padding:8px 10px;">
+              <option value="altin">Gram Altın</option>
+              <option value="ppf">Para Piyasası Fonu</option>
+              <option value="bist">BİST 30 Endeks Fonu</option>
+              <option value="usd">Döviz Fonu (USD)</option>
+              <option value="diger">Diğer</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;display:block;margin-bottom:4px;">Miktar</label>
+            <input type="number" id="bk-miktar" class="form-input" placeholder="örn: 8.5 (gram veya birim)" style="padding:8px 10px;font-size:13px;">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+          <div>
+            <label style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;display:block;margin-bottom:4px;">Alış Fiyatı (₺)</label>
+            <input type="number" id="bk-alis" class="form-input" placeholder="örn: 6800" style="padding:8px 10px;font-size:13px;">
+          </div>
+          <div>
+            <label style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;display:block;margin-bottom:4px;">Toplam Maliyet (₺)</label>
+            <input type="number" id="bk-maliyet" class="form-input" placeholder="Otomatik hesaplanır" style="padding:8px 10px;font-size:13px;" readonly>
+          </div>
+        </div>
+        <button onclick="bakiyeEkle()" style="width:100%;padding:10px;background:var(--green);color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);">+ Pozisyon Ekle</button>
+      </div>
+    </div>
+
+    <!-- Sağ: Özet -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card" style="margin-bottom:0;background:var(--green-bg);border-color:var(--green-bd);">
+        <div class="ct" style="color:var(--green);">Toplam Portföy Değeri</div>
+        <div id="bk-toplam-deger" style="font-family:var(--serif);font-size:28px;color:var(--green);">—</div>
+        <div id="bk-toplam-maliyet" style="font-size:11px;color:var(--green);margin-top:3px;">—</div>
+      </div>
+      <div class="card" style="margin-bottom:0;">
+        <div class="ct">Kar / Zarar</div>
+        <div id="bk-karzarar" style="font-size:22px;font-weight:700;">—</div>
+        <div id="bk-karzarar-pct" style="font-size:12px;color:var(--ink3);margin-top:3px;">—</div>
+      </div>
+      <div class="card" style="margin-bottom:0;">
+        <div class="ct">Araç Bazlı Özet</div>
+        <div id="bk-ozet"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="tab" id="tab-bordro">
   <div class="g2">
     <div class="card" style="margin-bottom:0;">
@@ -862,7 +924,7 @@ input[type=range]{width:80px;accent-color:var(--gold);}
 <script>
 
 const S = {
-  maas: 196000, yatirim: 120000, brut: 191247,
+  maas: 196000, yatirim: 120000, brut: 0, vergiBrut: 0,
   rates: {altin:null,usd:null,eur:null,ons:null},
   prev:  {altin:null,usd:null,eur:null,ons:null},
   bordrolar: JSON.parse((function(){ try{ return localStorage.getItem('fa-b')||'[]' }catch(e){ return '[]' } })())
@@ -878,6 +940,7 @@ function goTab(name, btn) {
   document.getElementById('tab-'+name).classList.add('active');
   btn.classList.add('active');
   if (name === 'calculator') setTimeout(cu, 50);
+  if (name === 'bakiye') setTimeout(renderBakiye, 50);
 }
 
 async function fetchRates() {
@@ -913,13 +976,30 @@ function updateChg(id, c, p) {
 }
 
 function vergiBelirle(b) {
-  // Bordro girilmemişse veya 0 ise varsayılan %35
-  if (!b || b === 0) return 0.35;
-  if (b > 72500) return 0.40;
-  if (b > 25000) return 0.35;
-  if (b > 9167)  return 0.27;
-  if (b > 3917)  return 0.20;
+  // b = aylık brüt ücret
+  // Bordro girilmemişse varsayılan %27 (orta dilim)
+  if (!b || b === 0) return 0.27;
+  // 2026 Türkiye gelir vergisi - kümülatif matrahtan gerçek dilim
+  // Aylık brüt baz: yaklaşık hesaplama
+  if (b > 150000) return 0.40;  // 1.8M TL/yıl üzeri
+  if (b > 60000)  return 0.35;  // 720K TL/yıl üzeri  
+  if (b > 22000)  return 0.27;  // 264K TL/yıl üzeri
+  if (b > 8000)   return 0.20;  // 96K TL/yıl üzeri
   return 0.15;
+}
+
+function vergiBelirleGercek(brutAylik, gelirVergisi) {
+  // Eğer bordrodan gerçek gelir vergisi geldiyse, efektif oranı hesapla
+  if (gelirVergisi && gelirVergisi > 0 && brutAylik > 0) {
+    var efektif = gelirVergisi / brutAylik;
+    // Efektif orana en yakın dilimi bul
+    if (efektif >= 0.36) return 0.40;
+    if (efektif >= 0.30) return 0.35;
+    if (efektif >= 0.22) return 0.27;
+    if (efektif >= 0.16) return 0.20;
+    return 0.15;
+  }
+  return vergiBelirle(brutAylik);
 }
 
 function updateAll() {
@@ -956,7 +1036,7 @@ function updateAll() {
 
   const primTL  = 300 * usd;
   const indirim = primTL * 0.5;
-  const oran    = vergiBelirle(S.brut);
+  const oran    = vergiBelirleGercek(S.brut, S.vergiBrut);
   const aylik   = indirim * oran;
   const yillik  = aylik * 12;
 
@@ -984,7 +1064,7 @@ function calcPreview() {
   const brut = parseInt(document.getElementById('f-brut').value) || 0;
   if (!net && !brut) { document.getElementById('preview-box').style.display = 'none'; return; }
   document.getElementById('preview-box').style.display = 'block';
-  const oran = vergiBelirle(brut);
+  const oran = vergiBelirleGercek(brut, parseInt(document.getElementById('f-vergi').value)||0);
   const primTL = 300 * (S.rates.usd || 42.8);
   const aylikIade = (primTL * 0.5) * oran;
   document.getElementById('prev-net').textContent   = fmtN(net) + ' ₺';
@@ -1000,7 +1080,7 @@ function saveBordro() {
   const vergi= parseInt(document.getElementById('f-vergi').value);
   if (!net || !brut) { alert('Lütfen en az Net Maaş ve Brüt Ücret alanlarını doldurun.'); return; }
 
-  S.maas = net; S.brut = brut; S.yatirim = 120000;
+  S.maas = net; S.brut = brut; S.vergiBrut = vergi || 0; S.yatirim = S.yatirim || 120000;
   document.getElementById('s-maas').textContent     = fmtN(net) + ' ₺';
   document.getElementById('s-maas-sub').textContent = ay + ' bordrousu';
   document.getElementById('s-yatirim').textContent  = fmtN(S.yatirim) + ' ₺';
@@ -1408,9 +1488,151 @@ function cancelYatirim() {
   document.getElementById('s-yatirim').textContent = Math.round(S.yatirim).toLocaleString('tr-TR') + ' ₺';
 }
 
+// ─── BAKİYE TAKİBİ ────────────────────────────────────────────────────────
+
+S.bakiye = JSON.parse((function(){ try{ return localStorage.getItem('fa-bakiye')||'[]' }catch(e){ return '[]' } })());
+
+// Araç adı ve renk eşleştir
+var ARAC_INFO = {
+  'altin': {ad:'Gram Altın',          renk:'#C9A84C', birim:'gram',  fiyatFn: function(){ return S.rates.altin||7100; }},
+  'ppf':   {ad:'Para Piyasası Fonu',  renk:'#1A7A4A', birim:'₺',    fiyatFn: function(){ return 1; }},
+  'bist':  {ad:'BİST 30 Endeks Fonu', renk:'#1A5FAA', birim:'pay',  fiyatFn: function(){ return 1; }},
+  'usd':   {ad:'Döviz Fonu (USD)',     renk:'#7B3FBE', birim:'$',    fiyatFn: function(){ return S.rates.usd||44; }},
+  'diger': {ad:'Diğer',               renk:'#888',    birim:'adet', fiyatFn: function(){ return 1; }},
+};
+
+// Miktar ve alış fiyatından maliyet hesapla
+document.addEventListener('input', function(e) {
+  if (e.target.id === 'bk-miktar' || e.target.id === 'bk-alis') {
+    var m = parseFloat(document.getElementById('bk-miktar').value) || 0;
+    var a = parseFloat(document.getElementById('bk-alis').value) || 0;
+    document.getElementById('bk-maliyet').value = m && a ? Math.round(m*a).toLocaleString('tr-TR') : '';
+  }
+});
+
+function bakiyeEkle() {
+  var arac   = document.getElementById('bk-arac').value;
+  var miktar = parseFloat(document.getElementById('bk-miktar').value);
+  var alis   = parseFloat(document.getElementById('bk-alis').value);
+  if (!miktar || !alis) { alert('Miktar ve alış fiyatı giriniz.'); return; }
+  var info = ARAC_INFO[arac] || ARAC_INFO['diger'];
+  S.bakiye.push({
+    id: Date.now(),
+    arac: arac,
+    ad: info.ad,
+    renk: info.renk,
+    birim: info.birim,
+    miktar: miktar,
+    alis: alis,
+    maliyet: Math.round(miktar * alis),
+    tarih: new Date().toLocaleDateString('tr-TR')
+  });
+  try { localStorage.setItem('fa-bakiye', JSON.stringify(S.bakiye)); } catch(e) {}
+  // Formu temizle
+  document.getElementById('bk-miktar').value = '';
+  document.getElementById('bk-alis').value = '';
+  document.getElementById('bk-maliyet').value = '';
+  renderBakiye();
+}
+
+function bakiyeSil(id) {
+  if (!confirm('Bu pozisyonu silmek istiyor musunuz?')) return;
+  S.bakiye = S.bakiye.filter(function(b){ return b.id !== id; });
+  try { localStorage.setItem('fa-bakiye', JSON.stringify(S.bakiye)); } catch(e) {}
+  renderBakiye();
+}
+
+function renderBakiye() {
+  var liste = document.getElementById('bakiye-liste');
+  var ozet  = document.getElementById('bk-ozet');
+  if (!liste || !ozet) return;
+
+  if (!S.bakiye.length) {
+    liste.innerHTML = '<div style="font-size:12px;color:var(--ink3);text-align:center;padding:16px 0;">Henüz pozisyon eklenmedi.</div>';
+    document.getElementById('bk-toplam-deger').textContent = '—';
+    document.getElementById('bk-toplam-maliyet').textContent = '—';
+    document.getElementById('bk-karzarar').textContent = '—';
+    document.getElementById('bk-karzarar-pct').textContent = '—';
+    ozet.innerHTML = '';
+    return;
+  }
+
+  var toplamMaliyet = 0, toplamDeger = 0;
+  var aracOzetler = {};
+
+  var rows = S.bakiye.map(function(b) {
+    var info = ARAC_INFO[b.arac] || ARAC_INFO['diger'];
+    var guncelFiyat = info.fiyatFn();
+    var guncelDeger = b.arac === 'ppf' || b.arac === 'diger' 
+      ? b.maliyet  // PPF ve diğer: maliyet = güncel değer (yaklaşık)
+      : Math.round(b.miktar * guncelFiyat);
+    var kz = guncelDeger - b.maliyet;
+    var kzPct = b.maliyet > 0 ? ((kz/b.maliyet)*100).toFixed(1) : 0;
+    toplamMaliyet += b.maliyet;
+    toplamDeger   += guncelDeger;
+
+    // Araç özetine ekle
+    if (!aracOzetler[b.arac]) aracOzetler[b.arac] = {ad:b.ad, renk:b.renk, maliyet:0, deger:0, miktar:0, birim:b.birim};
+    aracOzetler[b.arac].maliyet += b.maliyet;
+    aracOzetler[b.arac].deger   += guncelDeger;
+    aracOzetler[b.arac].miktar  += b.miktar;
+
+    var kzColor = kz > 0 ? 'var(--green)' : kz < 0 ? 'var(--red)' : 'var(--ink3)';
+    var kzSign  = kz > 0 ? '+' : '';
+
+    return '<div style="background:var(--cream);border-radius:8px;padding:10px 12px;margin-bottom:8px;border:1px solid var(--border);">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
+      '<div style="display:flex;align-items:center;gap:8px;">' +
+      '<div style="width:8px;height:8px;border-radius:50%;background:' + b.renk + ';"></div>' +
+      '<span style="font-size:13px;font-weight:600;">' + b.ad + '</span>' +
+      '<span style="font-size:10px;color:var(--ink3);">' + b.tarih + '</span>' +
+      '</div>' +
+      '<button onclick="bakiyeSil(' + b.id + ')" style="font-size:14px;background:none;border:none;cursor:pointer;color:var(--ink3);">×</button>' +
+      '</div>' +
+      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;font-size:11px;">' +
+      '<div><div style="color:var(--ink3);">Miktar</div><div style="font-weight:600;">' + b.miktar + ' ' + b.birim + '</div></div>' +
+      '<div><div style="color:var(--ink3);">Maliyet</div><div style="font-weight:600;">' + Math.round(b.maliyet).toLocaleString('tr-TR') + ' ₺</div></div>' +
+      '<div><div style="color:var(--ink3);">Güncel</div><div style="font-weight:600;">' + guncelDeger.toLocaleString('tr-TR') + ' ₺</div></div>' +
+      '</div>' +
+      '<div style="margin-top:6px;font-size:12px;font-weight:700;color:' + kzColor + ';">' + kzSign + Math.round(kz).toLocaleString('tr-TR') + ' ₺ (' + kzSign + kzPct + '%)</div>' +
+      '</div>';
+  }).join('');
+
+  liste.innerHTML = rows;
+
+  // Toplam özet
+  var toplamKZ  = toplamDeger - toplamMaliyet;
+  var toplamPct = toplamMaliyet > 0 ? ((toplamKZ/toplamMaliyet)*100).toFixed(1) : 0;
+  var kzColor   = toplamKZ > 0 ? 'var(--green)' : toplamKZ < 0 ? 'var(--red)' : 'var(--ink3)';
+
+  document.getElementById('bk-toplam-deger').textContent    = Math.round(toplamDeger).toLocaleString('tr-TR') + ' ₺';
+  document.getElementById('bk-toplam-maliyet').textContent  = 'Toplam maliyet: ' + Math.round(toplamMaliyet).toLocaleString('tr-TR') + ' ₺';
+  document.getElementById('bk-karzarar').textContent        = (toplamKZ>0?'+':'') + Math.round(toplamKZ).toLocaleString('tr-TR') + ' ₺';
+  document.getElementById('bk-karzarar').style.color        = kzColor;
+  document.getElementById('bk-karzarar-pct').textContent    = (toplamKZ>0?'+':'') + toplamPct + '% · Alış fiyatına göre';
+
+  // Araç özeti
+  ozet.innerHTML = Object.values(aracOzetler).map(function(a) {
+    var kz = a.deger - a.maliyet;
+    var kzPct = a.maliyet > 0 ? ((kz/a.maliyet)*100).toFixed(1) : 0;
+    var kzColor = kz > 0 ? 'var(--green)' : kz < 0 ? 'var(--red)' : 'var(--ink3)';
+    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);">' +
+      '<div style="display:flex;align-items:center;gap:7px;">' +
+      '<div style="width:8px;height:8px;border-radius:50%;background:' + a.renk + ';"></div>' +
+      '<span style="font-size:12px;font-weight:500;">' + a.ad + '</span>' +
+      '</div>' +
+      '<div style="text-align:right;">' +
+      '<div style="font-size:13px;font-weight:700;">' + Math.round(a.deger).toLocaleString('tr-TR') + ' ₺</div>' +
+      '<div style="font-size:10px;font-weight:600;color:' + kzColor + ';">' + (kz>0?'+':'') + kzPct + '%</div>' +
+      '</div>' +
+      '</div>';
+  }).join('');
+}
+
 renderAct();
 renderHistory();
 renderDagılım();
+renderBakiye();
 cu();
 fetchRates();
 
@@ -1441,7 +1663,7 @@ setInterval(function() {
 
 if (S.bordrolar.length > 0) {
   var last = S.bordrolar[0];
-  S.maas = last.net; S.brut = last.brut || 191247;
+  S.maas = last.net; S.brut = last.brut || 0; S.vergiBrut = last.vergi || 0;
   document.getElementById('s-maas').textContent     = fmtN(last.net) + ' ₺';
   document.getElementById('s-maas-sub').textContent = last.ay + ' bordrousu';
 }
