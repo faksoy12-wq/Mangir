@@ -190,6 +190,7 @@ input[type=range]{width:80px;accent-color:var(--gold);}
 <div class="nav">
   <button class="nb active" onclick="goTab('portfolio',this)">Portföy</button>
   <button class="nb" onclick="goTab('bakiye',this)">💼 Bakiyem</button>
+  <button class="nb" onclick="goTab('hedef',this)">🎯 Hedef</button>
   <button class="nb" onclick="goTab('bordro',this)">📋 Bordro Güncelle</button>
   <button class="nb" onclick="goTab('calculator',this)">Hesap Makinesi</button>
   <button class="nb" onclick="goTab('freedom',this)">Yol Haritası</button>
@@ -393,6 +394,149 @@ input[type=range]{width:80px;accent-color:var(--gold);}
       </div>
     </div>
   </div>
+</div>
+
+<div class="tab" id="tab-hedef">
+
+  <!-- Üst: İlerleme Özeti -->
+  <div class="g4" style="margin-bottom:14px;">
+    <div class="stat" style="border:2px solid var(--gold-bd);background:var(--gold-bg);">
+      <div class="sl" style="color:var(--gold);">Hedef Portföy</div>
+      <div class="sv" id="hd-hedef" style="font-size:16px;color:var(--gold);">1.44 Milyar ₺</div>
+      <div class="ss">56 yaşında · %18 getiri</div>
+    </div>
+    <div class="stat">
+      <div class="sl">Gerçek Birikim</div>
+      <div class="sv" id="hd-gercek" style="font-size:16px;color:var(--green);">—</div>
+      <div class="ss">Bakiyem'den otomatik</div>
+    </div>
+    <div class="stat">
+      <div class="sl">Hedefe Ulaşma</div>
+      <div class="sv" id="hd-pct" style="font-size:16px;">—</div>
+      <div class="ss" id="hd-pct-sub">—</div>
+    </div>
+    <div class="stat">
+      <div class="sl">Aylık Hedef</div>
+      <div class="sv" id="hd-aylik-hedef" style="font-size:16px;">—</div>
+      <div class="ss" id="hd-aylik-sub">Bu ay için beklenen</div>
+    </div>
+  </div>
+
+  <!-- İlerleme Çubuğu -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <div class="ct" style="margin-bottom:0;">56 Yaşına İlerleme</div>
+      <div id="hd-rozet" style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:var(--cream);color:var(--ink3);border:1px solid var(--border);">—</div>
+    </div>
+    <!-- Zaman çubuğu -->
+    <div style="margin-bottom:16px;">
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink3);margin-bottom:4px;">
+        <span>27 yaş (başlangıç)</span>
+        <span id="hd-simdi-label">Şimdi</span>
+        <span>56 yaş (hedef)</span>
+      </div>
+      <div style="height:8px;background:#F2F2F7;border-radius:4px;overflow:hidden;">
+        <div id="hd-zaman-bar" style="height:100%;background:var(--gold);border-radius:4px;transition:width .5s;width:0%;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink3);margin-top:4px;">
+        <span>0 yıl</span>
+        <span id="hd-gecen">— yıl geçti</span>
+        <span>29 yıl</span>
+      </div>
+    </div>
+    <!-- Birikim çubuğu -->
+    <div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink3);margin-bottom:4px;">
+        <span>Birikim İlerlemesi</span>
+        <span id="hd-birikim-pct-lbl">%0</span>
+      </div>
+      <div style="height:12px;background:#F2F2F7;border-radius:6px;overflow:hidden;">
+        <div id="hd-birikim-bar" style="height:100%;background:linear-gradient(90deg,var(--green),#4CAF50);border-radius:6px;transition:width .5s;width:0%;"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:10px;margin-top:4px;">
+        <span style="color:var(--ink3);">0 ₺</span>
+        <span id="hd-gercek-lbl" style="color:var(--green);font-weight:600;">—</span>
+        <span style="color:var(--gold);font-weight:600;" id="hd-hedef-lbl">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Beklenen vs Gerçek -->
+  <div class="g2">
+    <div class="card" style="margin-bottom:0;">
+      <div class="ct">Beklenen vs Gerçek</div>
+      <div style="margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+          <span style="font-size:12px;color:var(--ink3);">Bu aşamada olmalıydın</span>
+          <span id="hd-beklenen" style="font-size:13px;font-weight:700;color:var(--gold);">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+          <span style="font-size:12px;color:var(--ink3);">Gerçek birikimin</span>
+          <span id="hd-gercek2" style="font-size:13px;font-weight:700;color:var(--green);">—</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:8px 0;">
+          <span style="font-size:12px;font-weight:600;">Fark</span>
+          <span id="hd-fark" style="font-size:14px;font-weight:700;">—</span>
+        </div>
+      </div>
+      <div id="hd-yorum" style="font-size:11px;padding:8px 10px;border-radius:8px;line-height:1.6;"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:0;">
+      <div class="ct">Kilometre Taşları</div>
+      <div id="hd-taslar"></div>
+    </div>
+  </div>
+
+  <!-- Hedef Ayarla -->
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <div class="ct" style="margin-bottom:0;">Hedef Ayarları</div>
+      <button onclick="toggleHedefAyar()" id="hedef-ayar-btn" style="font-size:11px;padding:4px 10px;border:1px solid var(--gold-bd);background:var(--gold-bg);color:var(--gold);border-radius:6px;cursor:pointer;font-family:var(--sans);font-weight:600;">⚙️ Düzenle</button>
+    </div>
+    <div id="hedef-ayar-form" style="display:none;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+        <div>
+          <label style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;display:block;margin-bottom:4px;">Hedef Yaş</label>
+          <input type="number" id="hd-hedef-yas" value="56" min="40" max="70" inputmode="numeric"
+            style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:16px;font-weight:600;font-family:var(--sans);">
+        </div>
+        <div>
+          <label style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;display:block;margin-bottom:4px;">Beklenen Getiri %</label>
+          <input type="number" id="hd-hedef-getiri" value="18" min="5" max="40" inputmode="numeric"
+            style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:16px;font-weight:600;font-family:var(--sans);">
+        </div>
+        <div>
+          <label style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;display:block;margin-bottom:4px;">Şu Anki Yaşın</label>
+          <input type="number" id="hd-simdi-yas" value="27" min="18" max="65" inputmode="numeric"
+            style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:16px;font-weight:600;font-family:var(--sans);">
+        </div>
+        <div>
+          <label style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;display:block;margin-bottom:4px;">Aylık Yatırım ₺</label>
+          <input type="number" id="hd-aylik-yatirim-inp" inputmode="numeric"
+            style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:16px;font-weight:600;font-family:var(--sans);">
+        </div>
+      </div>
+      <button onclick="hedefKaydet()" style="width:100%;padding:10px;background:var(--gold);color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);">Kaydet ve Güncelle</button>
+    </div>
+    <div id="hedef-ayar-ozet">
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:12px;">
+        <div style="text-align:center;background:var(--cream);border-radius:8px;padding:8px;">
+          <div style="color:var(--ink3);margin-bottom:2px;">Hedef yaş</div>
+          <div id="hd-ozet-yas" style="font-weight:700;font-size:15px;">56</div>
+        </div>
+        <div style="text-align:center;background:var(--cream);border-radius:8px;padding:8px;">
+          <div style="color:var(--ink3);margin-bottom:2px;">Getiri</div>
+          <div id="hd-ozet-getiri" style="font-weight:700;font-size:15px;">%18</div>
+        </div>
+        <div style="text-align:center;background:var(--cream);border-radius:8px;padding:8px;">
+          <div style="color:var(--ink3);margin-bottom:2px;">Kalan süre</div>
+          <div id="hd-ozet-kalan" style="font-weight:700;font-size:15px;">29 yıl</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <div class="tab" id="tab-bordro">
@@ -964,6 +1108,7 @@ function goTab(name, btn) {
   btn.classList.add('active');
   if (name === 'calculator') setTimeout(cu, 50);
   if (name === 'bakiye') setTimeout(renderBakiye, 50);
+  if (name === 'hedef') setTimeout(renderHedef, 50);
 }
 
 async function fetchRates() {
@@ -1080,6 +1225,9 @@ function updateAll() {
   });
   var yK = y >= 1000000 ? (y/1000000).toFixed(1)+'M ₺' : (y/1000).toFixed(0)+'K ₺';
   document.getElementById('f-yatirim').textContent = yK;
+  // Hedef sekmesi aktifse güncelle
+  var hedefTab = document.getElementById('tab-hedef');
+  if (hedefTab && hedefTab.classList.contains('active')) renderHedef();
 }
 
 function calcPreview() {
@@ -1453,6 +1601,7 @@ function dagılımKaydet() {
   try { localStorage.setItem('fa-araclar', JSON.stringify(S.araclar)); } catch(e) {}
   renderDagılım();
   updateAll();
+  renderHedef();
   dagılımIptal();
 }
 
@@ -1500,6 +1649,7 @@ function saveYatirim() {
   document.getElementById('f-yatirim').textContent       = Math.round(val/1000) + 'K ₺';
   renderDagılım();
   updateAll();
+  renderHedef();
   cancelYatirim();
   document.getElementById('c-m').value = val;
   cu();
@@ -1551,11 +1701,11 @@ function bakiyeEkle() {
     tarih: new Date().toLocaleDateString('tr-TR')
   });
   try { localStorage.setItem('fa-bakiye', JSON.stringify(S.bakiye)); } catch(e) {}
-  // Formu temizle
   document.getElementById('bk-miktar').value = '';
   document.getElementById('bk-alis').value = '';
   document.getElementById('bk-maliyet').value = '';
   renderBakiye();
+  renderHedef();
 }
 
 function bakiyeSil(id) {
@@ -1563,6 +1713,7 @@ function bakiyeSil(id) {
   S.bakiye = S.bakiye.filter(function(b){ return b.id !== id; });
   try { localStorage.setItem('fa-bakiye', JSON.stringify(S.bakiye)); } catch(e) {}
   renderBakiye();
+  renderHedef();
 }
 
 function renderBakiye() {
@@ -1652,10 +1803,179 @@ function renderBakiye() {
   }).join('');
 }
 
+// ─── HEDEF TAKİBİ ─────────────────────────────────────────────────────────
+
+// Hedef ayarları - localStorage'dan yükle
+var hedefAyar = JSON.parse((function(){
+  try { return localStorage.getItem('fa-hedef') || 'null'; } catch(e) { return 'null'; }
+})()) || { yas: 56, getiri: 18, simdikiYas: 27 };
+
+function hedefPortfoyHesapla(aylikYatirim, getiriPct, yil) {
+  var mr = getiriPct / 100 / 12;
+  var p = aylikYatirim;
+  for (var mo = 1; mo <= yil * 12; mo++) {
+    p = p * (1 + mr) + aylikYatirim;
+  }
+  return Math.round(p);
+}
+
+function beklenenBirikimHesapla(aylikYatirim, getiriPct, gecenYil) {
+  // Şu ana kadar ne kadar birikmiş olmalıydı?
+  var mr = getiriPct / 100 / 12;
+  var p = aylikYatirim;
+  for (var mo = 1; mo <= gecenYil * 12; mo++) {
+    p = p * (1 + mr) + aylikYatirim;
+  }
+  return Math.round(p);
+}
+
+function renderHedef() {
+  var simdikiYas = hedefAyar.simdikiYas || 27;
+  var hedefYas   = hedefAyar.yas || 56;
+  var getiri     = hedefAyar.getiri || 18;
+  var toplamYil  = hedefYas - simdikiYas;
+  var aylikYat   = S.yatirim || 120000;
+
+  // Hedef portföy hesapla
+  var hedefPortfoy = hedefPortfoyHesapla(aylikYat, getiri, toplamYil);
+
+  // Gerçek birikim - bakiye sekmesinden
+  var gercekBirikim = S.bakiye.reduce(function(toplam, b) {
+    var info = ARAC_INFO[b.arac] || ARAC_INFO['diger'];
+    var guncelFiyat = info.fiyatFn();
+    var deger = b.arac === 'ppf' || b.arac === 'diger'
+      ? b.maliyet
+      : Math.round(b.miktar * guncelFiyat);
+    return toplam + deger;
+  }, 0);
+
+  // Zaman ilerleme yüzdesi - başlangıçtan ne kadar geçti?
+  // Kaç ay/yıl yatırım yapıldığını bordrolardan hesapla
+  var gecenAy = S.bordrolar.length > 0 ? Math.min(S.bordrolar.length, toplamYil * 12) : 0;
+  var gecenYil = gecenAy / 12;
+  var zamanPct = Math.min((gecenYil / toplamYil) * 100, 100).toFixed(1);
+
+  // Bu aşamada olması beklenen birikim
+  var beklenenBirikim = gecenYil > 0 ? beklenenBirikimHesapla(aylikYat, getiri, gecenYil) : 0;
+
+  // Birikim ilerleme yüzdesi
+  var birikimPct = hedefPortfoy > 0 ? Math.min((gercekBirikim / hedefPortfoy) * 100, 100).toFixed(2) : 0;
+
+  // Aylık hedef - bu ay ne kadar birikmiş olmalı
+  var aylikHedef = gecenAy > 0 ? Math.round(beklenenBirikim / gecenAy) : aylikYat;
+
+  // Fark
+  var fark = gercekBirikim - beklenenBirikim;
+  var farkColor = fark >= 0 ? 'var(--green)' : 'var(--red)';
+  var farkSign  = fark >= 0 ? '+' : '';
+
+  // ── Göster ──
+  document.getElementById('hd-hedef').textContent = fmt(hedefPortfoy);
+  document.getElementById('hd-gercek').textContent = gercekBirikim > 0 ? fmt(gercekBirikim) : 'Bakiye gir';
+  document.getElementById('hd-pct').textContent = gercekBirikim > 0 ? '%' + birikimPct : '—';
+  document.getElementById('hd-pct').style.color = gercekBirikim > 0 ? 'var(--green)' : 'var(--ink3)';
+  document.getElementById('hd-pct-sub').textContent = gercekBirikim > 0 ? 'Hedefe ulaşma oranı' : 'Bakiyem'e giriş yap';
+  document.getElementById('hd-aylik-hedef').textContent = fmt(aylikHedef);
+
+  // Zaman çubuğu
+  document.getElementById('hd-zaman-bar').style.width = zamanPct + '%';
+  document.getElementById('hd-gecen').textContent = gecenYil.toFixed(1) + ' yıl geçti';
+  document.getElementById('hd-simdi-label').textContent = '← Şimdi (' + zamanPct + '%)';
+
+  // Birikim çubuğu
+  document.getElementById('hd-birikim-bar').style.width = birikimPct + '%';
+  document.getElementById('hd-birikim-pct-lbl').textContent = '%' + birikimPct;
+  document.getElementById('hd-gercek-lbl').textContent = gercekBirikim > 0 ? fmt(gercekBirikim) : '—';
+  document.getElementById('hd-hedef-lbl').textContent = fmt(hedefPortfoy);
+
+  // Beklenen vs gerçek
+  document.getElementById('hd-beklenen').textContent = beklenenBirikim > 0 ? fmt(beklenenBirikim) : '—';
+  document.getElementById('hd-gercek2').textContent  = gercekBirikim > 0 ? fmt(gercekBirikim) : '—';
+  document.getElementById('hd-fark').textContent     = beklenenBirikim > 0 ? farkSign + fmt(Math.abs(fark)) : '—';
+  document.getElementById('hd-fark').style.color     = farkColor;
+
+  // Yorum
+  var yorumEl = document.getElementById('hd-yorum');
+  if (gercekBirikim === 0) {
+    yorumEl.style.background = 'var(--blue-bg)'; yorumEl.style.color = 'var(--blue)';
+    yorumEl.textContent = '💡 Bakiyem sekmesine gerçek birikimini gir — hedefine göre nerede olduğunu görelim.';
+  } else if (fark >= 0) {
+    yorumEl.style.background = 'var(--green-bg)'; yorumEl.style.color = 'var(--green)';
+    yorumEl.textContent = '🎉 Harika! Beklenenin ' + farkSign + fmt(Math.abs(fark)) + ' önündesin. Böyle gidersen ' + hedefYas + " yaşında hedefine ulaşırsın.";
+  } else {
+    yorumEl.style.background = 'var(--gold-bg)'; yorumEl.style.color = 'var(--gold)';
+    yorumEl.textContent = '📊 Beklenenin ' + fmt(Math.abs(fark)) + ' gerisindeydin. Aylık yatırımını artırarak telafi edebilirsin.';
+  }
+
+  // Rozet
+  var rozetEl = document.getElementById('hd-rozet');
+  if (gercekBirikim === 0) {
+    rozetEl.textContent = '⏳ Başlangıç'; rozetEl.style.background = '#F2F2F7'; rozetEl.style.color = 'var(--ink3)';
+  } else if (fark >= 0) {
+    rozetEl.textContent = '🚀 Hedefte'; rozetEl.style.background = 'var(--green-bg)'; rozetEl.style.color = 'var(--green)';
+  } else {
+    rozetEl.textContent = '⚡ Yakala'; rozetEl.style.background = 'var(--gold-bg)'; rozetEl.style.color = 'var(--gold)';
+  }
+
+  // Kilometre taşları
+  var taslar = '';
+  [5, 10, 15, 20, toplamYil].forEach(function(y) {
+    if (y > toplamYil) return;
+    var age = simdikiYas + y;
+    var beklenen = hedefPortfoyHesapla(aylikYat, getiri, y);
+    var gecildi  = gecenYil >= y;
+    var aktif    = y === toplamYil;
+    taslar += '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);">' +
+      '<div style="display:flex;align-items:center;gap:8px;">' +
+      '<div style="width:8px;height:8px;border-radius:50%;background:' + (gecildi ? 'var(--green)' : aktif ? 'var(--gold)' : '#DDD') + ';"></div>' +
+      '<span style="font-size:12px;' + (aktif ? 'font-weight:700;' : '') + 'color:' + (aktif ? 'var(--gold)' : gecildi ? 'var(--green)' : 'var(--ink3)') + ';">' + age + ' yaş (' + y + '. yıl)</span>' +
+      '</div>' +
+      '<span style="font-size:13px;font-weight:700;color:' + (aktif ? 'var(--gold)' : gecildi ? 'var(--green)' : 'var(--ink)') + ';">' + fmt(beklenen) + '</span>' +
+      '</div>';
+  });
+  document.getElementById('hd-taslar').innerHTML = taslar;
+
+  // Özet güncelle
+  document.getElementById('hd-ozet-yas').textContent     = hedefYas;
+  document.getElementById('hd-ozet-getiri').textContent  = '%' + getiri;
+  document.getElementById('hd-ozet-kalan').textContent   = (toplamYil - gecenYil).toFixed(1) + ' yıl';
+}
+
+function toggleHedefAyar() {
+  var form = document.getElementById('hedef-ayar-form');
+  var ozet = document.getElementById('hedef-ayar-ozet');
+  var btn  = document.getElementById('hedef-ayar-btn');
+  if (form.style.display === 'none') {
+    document.getElementById('hd-hedef-yas').value       = hedefAyar.yas || 56;
+    document.getElementById('hd-hedef-getiri').value    = hedefAyar.getiri || 18;
+    document.getElementById('hd-simdi-yas').value       = hedefAyar.simdikiYas || 27;
+    document.getElementById('hd-aylik-yatirim-inp').value = S.yatirim || 120000;
+    form.style.display = 'block';
+    ozet.style.display = 'none';
+    btn.textContent = '✕ Kapat';
+  } else {
+    form.style.display = 'none';
+    ozet.style.display = 'block';
+    btn.textContent = '⚙️ Düzenle';
+  }
+}
+
+function hedefKaydet() {
+  hedefAyar.yas        = parseInt(document.getElementById('hd-hedef-yas').value) || 56;
+  hedefAyar.getiri     = parseInt(document.getElementById('hd-hedef-getiri').value) || 18;
+  hedefAyar.simdikiYas = parseInt(document.getElementById('hd-simdi-yas').value) || 27;
+  var aylikYat         = parseInt(document.getElementById('hd-aylik-yatirim-inp').value);
+  if (aylikYat > 0) { S.yatirim = aylikYat; try { localStorage.setItem('fa-yatirim', aylikYat); } catch(e) {} }
+  try { localStorage.setItem('fa-hedef', JSON.stringify(hedefAyar)); } catch(e) {}
+  toggleHedefAyar();
+  renderHedef();
+}
+
 renderAct();
 renderHistory();
 renderDagılım();
 renderBakiye();
+renderHedef();
 cu();
 fetchRates();
 
