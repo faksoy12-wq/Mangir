@@ -517,14 +517,22 @@ input[type=range]{width:80px;accent-color:var(--gold);}
         </div>
         <div>
           <label style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;display:block;margin-bottom:4px;">Aylık Yatırım ₺</label>
-          <input type="number" id="hd-aylik-yatirim-inp" inputmode="numeric"
+          <input type="number" id="hd-aylik-yatirim-inp" inputmode="numeric" oninput="artisOnizle()"
             style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:16px;font-weight:600;font-family:var(--sans);">
         </div>
+        <div>
+          <label style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;display:block;margin-bottom:4px;">6 Ayda Artış %</label>
+          <input type="number" id="hd-artis-inp" value="0" min="0" max="30" inputmode="numeric" oninput="artisOnizle()"
+            style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:16px;font-weight:600;font-family:var(--sans);">
+        </div>
+      </div>
+      <div style="background:var(--gold-bg);border:1px solid var(--gold-bd);border-radius:8px;padding:9px 12px;font-size:11px;color:var(--gold);margin-bottom:10px;" id="artis-preview">
+        Artış oranı gir — projeksiyon güncellenir.
       </div>
       <button onclick="hedefKaydet()" style="width:100%;padding:10px;background:var(--gold);color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);">Kaydet ve Güncelle</button>
     </div>
     <div id="hedef-ayar-ozet">
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;font-size:12px;">
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;font-size:12px;">
         <div style="text-align:center;background:var(--cream);border-radius:8px;padding:8px;">
           <div style="color:var(--ink3);margin-bottom:2px;">Hedef yaş</div>
           <div id="hd-ozet-yas" style="font-weight:700;font-size:15px;">56</div>
@@ -536,6 +544,10 @@ input[type=range]{width:80px;accent-color:var(--gold);}
         <div style="text-align:center;background:var(--cream);border-radius:8px;padding:8px;">
           <div style="color:var(--ink3);margin-bottom:2px;">Kalan süre</div>
           <div id="hd-ozet-kalan" style="font-weight:700;font-size:15px;">29 yıl</div>
+        </div>
+        <div style="text-align:center;background:var(--gold-bg);border:1px solid var(--gold-bd);border-radius:8px;padding:8px;">
+          <div style="color:var(--gold);margin-bottom:2px;">6 ayda artış</div>
+          <div id="hd-ozet-artis" style="font-weight:700;font-size:15px;color:var(--gold);">%0</div>
         </div>
       </div>
     </div>
@@ -1908,36 +1920,56 @@ function renderBakiye() {
 // Hedef ayarları - localStorage'dan yükle
 var hedefAyar = JSON.parse((function(){
   try { return localStorage.getItem('fa-hedef') || 'null'; } catch(e) { return 'null'; }
-})()) || { yas: 56, getiri: 18, simdikiYas: 27 };
+})()) || { yas: 56, getiri: 18, simdikiYas: 27, artis: 0 };
+if (!hedefAyar.artis) hedefAyar.artis = 0;
 
-function hedefPortfoyHesapla(aylikYatirim, getiriPct, yil) {
+function hedefPortfoyHesapla(aylikYatirim, getiriPct, yil, artisPct) {
   var mr = getiriPct / 100 / 12;
   var p = aylikYatirim;
+  var m = aylikYatirim;
   for (var mo = 1; mo <= yil * 12; mo++) {
-    p = p * (1 + mr) + aylikYatirim;
+    // Her 6 ayda bir artış uygula
+    if (artisPct > 0 && mo > 1 && mo % 6 === 1) {
+      m = Math.round(m * (1 + artisPct / 100));
+    }
+    p = p * (1 + mr) + m;
   }
   return Math.round(p);
 }
 
-function beklenenBirikimHesapla(aylikYatirim, getiriPct, gecenYil) {
-  // Şu ana kadar ne kadar birikmiş olmalıydı?
+function beklenenBirikimHesapla(aylikYatirim, getiriPct, gecenYil, artisPct) {
   var mr = getiriPct / 100 / 12;
   var p = aylikYatirim;
+  var m = aylikYatirim;
   for (var mo = 1; mo <= gecenYil * 12; mo++) {
-    p = p * (1 + mr) + aylikYatirim;
+    if (artisPct > 0 && mo > 1 && mo % 6 === 1) {
+      m = Math.round(m * (1 + artisPct / 100));
+    }
+    p = p * (1 + mr) + m;
   }
   return Math.round(p);
+}
+
+// Son yıl aylık yatırımı hesapla
+function sonYilAylikHesapla(aylikYatirim, yil, artisPct) {
+  if (!artisPct || artisPct === 0) return aylikYatirim;
+  var m = aylikYatirim;
+  for (var mo = 1; mo <= yil * 12; mo++) {
+    if (mo > 1 && mo % 6 === 1) m = Math.round(m * (1 + artisPct / 100));
+  }
+  return m;
 }
 
 function renderHedef() {
   var simdikiYas = hedefAyar.simdikiYas || 27;
   var hedefYas   = hedefAyar.yas || 56;
   var getiri     = hedefAyar.getiri || 18;
+  var artis      = hedefAyar.artis || 0;
   var toplamYil  = hedefYas - simdikiYas;
   var aylikYat   = S.yatirim || 120000;
 
   // Hedef portföy hesapla
-  var hedefPortfoy = hedefPortfoyHesapla(aylikYat, getiri, toplamYil);
+  var hedefPortfoy = hedefPortfoyHesapla(aylikYat, getiri, toplamYil, artis);
 
   // Gerçek birikim - bakiye sekmesinden
   var gercekBirikim = S.bakiye.reduce(function(toplam, b) {
@@ -1956,12 +1988,13 @@ function renderHedef() {
   var zamanPct = Math.min((gecenYil / toplamYil) * 100, 100).toFixed(1);
 
   // Bu aşamada olması beklenen birikim
-  var beklenenBirikim = gecenYil > 0 ? beklenenBirikimHesapla(aylikYat, getiri, gecenYil) : 0;
+  var beklenenBirikim = gecenYil > 0 ? beklenenBirikimHesapla(aylikYat, getiri, gecenYil, artis) : 0;
 
   // Birikim ilerleme yüzdesi
   var birikimPct = hedefPortfoy > 0 ? Math.min((gercekBirikim / hedefPortfoy) * 100, 100).toFixed(2) : 0;
 
   // Aylık hedef - bu ay ne kadar birikmiş olmalı
+  var sonYilAylik = sonYilAylikHesapla(aylikYat, toplamYil, artis);
   var aylikHedef = gecenAy > 0 ? Math.round(beklenenBirikim / gecenAy) : aylikYat;
 
   // Fark
@@ -2007,6 +2040,29 @@ function renderHedef() {
     yorumEl.textContent = '📊 Beklenenin ' + fmt(Math.abs(fark)) + ' gerisindeydin. Aylık yatırımını artırarak telafi edebilirsin.';
   }
 
+  // Sabit vs artışlı karşılaştırma göster
+  if (artis > 0) {
+    var sabitHedef = hedefPortfoyHesapla(aylikYat, getiri, toplamYil, 0);
+    var farkArtis  = hedefPortfoy - sabitHedef;
+    var bekEl = document.getElementById('hd-beklenen');
+    if (bekEl) {
+      var extraRow = document.getElementById('hd-artis-row');
+      if (!extraRow) {
+        var parent = bekEl.closest('.card');
+        if (parent) {
+          var div = document.createElement('div');
+          div.id = 'hd-artis-row';
+          div.style.cssText = 'display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);';
+          div.innerHTML = '<span style="font-size:12px;color:var(--ink3);">Artışlı senaryoda fark</span>' +
+            '<span style="font-size:13px;font-weight:700;color:var(--green);">+' + fmt(farkArtis) + '</span>';
+          parent.querySelector('div').insertBefore(div, parent.querySelector('div').children[2]);
+        }
+      } else {
+        extraRow.querySelector('span:last-child').textContent = '+' + fmt(farkArtis);
+      }
+    }
+  }
+
   // Rozet
   var rozetEl = document.getElementById('hd-rozet');
   if (gercekBirikim === 0) {
@@ -2022,7 +2078,7 @@ function renderHedef() {
   [5, 10, 15, 20, toplamYil].forEach(function(y) {
     if (y > toplamYil) return;
     var age = simdikiYas + y;
-    var beklenen = hedefPortfoyHesapla(aylikYat, getiri, y);
+    var beklenen = hedefPortfoyHesapla(aylikYat, getiri, y, artis);
     var gecildi  = gecenYil >= y;
     var aktif    = y === toplamYil;
     taslar += '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);">' +
@@ -2039,6 +2095,7 @@ function renderHedef() {
   document.getElementById('hd-ozet-yas').textContent     = hedefYas;
   document.getElementById('hd-ozet-getiri').textContent  = '%' + getiri;
   document.getElementById('hd-ozet-kalan').textContent   = (toplamYil - gecenYil).toFixed(1) + ' yıl';
+  document.getElementById('hd-ozet-artis').textContent  = '%' + artis;
 }
 
 function toggleHedefAyar() {
@@ -2050,6 +2107,8 @@ function toggleHedefAyar() {
     document.getElementById('hd-hedef-getiri').value    = hedefAyar.getiri || 18;
     document.getElementById('hd-simdi-yas').value       = hedefAyar.simdikiYas || 27;
     document.getElementById('hd-aylik-yatirim-inp').value = S.yatirim || 120000;
+    document.getElementById('hd-artis-inp').value       = hedefAyar.artis || 0;
+    artisOnizle();
     form.style.display = 'block';
     ozet.style.display = 'none';
     btn.textContent = '✕ Kapat';
@@ -2060,10 +2119,34 @@ function toggleHedefAyar() {
   }
 }
 
+function artisOnizle() {
+  var aylik  = parseInt(document.getElementById('hd-aylik-yatirim-inp').value) || S.yatirim || 120000;
+  var getiri = parseInt(document.getElementById('hd-hedef-getiri').value) || 18;
+  var yas    = parseInt(document.getElementById('hd-hedef-yas').value) || 56;
+  var simdi  = parseInt(document.getElementById('hd-simdi-yas').value) || 27;
+  var artis  = parseInt(document.getElementById('hd-artis-inp').value) || 0;
+  var yil    = yas - simdi;
+  var sabit  = hedefPortfoyHesapla(aylik, getiri, yil, 0);
+  var artisli = hedefPortfoyHesapla(aylik, getiri, yil, artis);
+  var sonAylik = sonYilAylikHesapla(aylik, yil, artis);
+  var el = document.getElementById('artis-preview');
+  if (!el) return;
+  if (artis === 0) {
+    el.textContent = 'Artış olmadan ' + yil + ' yılda: ' + fmt(sabit);
+    el.style.background = 'var(--cream)'; el.style.color = 'var(--ink3)'; el.style.borderColor = 'var(--border)';
+  } else {
+    el.innerHTML = '<strong>%' + artis + ' artışla:</strong> ' + fmt(artisli) +
+      ' <span style="color:var(--green);">(+' + fmt(artisli - sabit) + ')</span>' +
+      '<br><small>' + yil + '. yılda aylık yatırım: ' + fmtN(sonAylik) + ' ₺</small>';
+    el.style.background = 'var(--green-bg)'; el.style.color = 'var(--ink)'; el.style.borderColor = 'var(--green-bd)';
+  }
+}
+
 function hedefKaydet() {
   hedefAyar.yas        = parseInt(document.getElementById('hd-hedef-yas').value) || 56;
   hedefAyar.getiri     = parseInt(document.getElementById('hd-hedef-getiri').value) || 18;
   hedefAyar.simdikiYas = parseInt(document.getElementById('hd-simdi-yas').value) || 27;
+  hedefAyar.artis      = parseInt(document.getElementById('hd-artis-inp').value) || 0;
   var aylikYat         = parseInt(document.getElementById('hd-aylik-yatirim-inp').value);
   if (aylikYat > 0) { S.yatirim = aylikYat; try { localStorage.setItem('fa-yatirim', aylikYat); } catch(e) {} }
   try { localStorage.setItem('fa-hedef', JSON.stringify(hedefAyar)); } catch(e) {}
