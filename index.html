@@ -191,6 +191,7 @@ input[type=range]{width:80px;accent-color:var(--gold);}
   <button class="nb active" onclick="goTab('portfolio',this)">Portföy</button>
   <button class="nb" onclick="goTab('bakiye',this)">💼 Bakiyem</button>
   <button class="nb" onclick="goTab('hedef',this)">🎯 Hedef</button>
+  <button class="nb" onclick="goTab('alarmlar',this)">🔔 Alarmlar</button>
   <button class="nb" onclick="goTab('bordro',this)">📋 Bordro Güncelle</button>
   <button class="nb" onclick="goTab('calculator',this)">Hesap Makinesi</button>
   <button class="nb" onclick="goTab('freedom',this)">Yol Haritası</button>
@@ -537,6 +538,99 @@ input[type=range]{width:80px;accent-color:var(--gold);}
     </div>
   </div>
 
+</div>
+
+<div class="tab" id="tab-alarmlar">
+
+  <!-- Bildirim İzni -->
+  <div id="bildirim-banner" style="display:none;background:var(--blue-bg);border:1px solid var(--blue-bd);border-radius:10px;padding:12px 14px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;gap:10px;">
+    <div style="font-size:12px;color:var(--blue);line-height:1.6;">📲 Anlık bildirim almak için izin ver — fiyat alarmlarda anında haberdar ol.</div>
+    <button onclick="bildirimIzniIste()" style="flex-shrink:0;padding:7px 14px;background:var(--blue);color:white;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);">İzin Ver</button>
+  </div>
+
+  <div class="g2">
+    <!-- Sol: Fiyat Alarmları -->
+    <div class="card" style="margin-bottom:0;">
+      <div class="ct">Fiyat Alarmları</div>
+      <p style="font-size:12px;color:var(--ink3);margin-bottom:14px;line-height:1.6;">Belirlediğin fiyata gelince uygulama açıkken seni uyarır.</p>
+
+      <!-- Alarm Ekle -->
+      <div style="background:var(--cream);border-radius:10px;padding:12px;border:1px solid var(--border);margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Yeni Alarm</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
+          <div>
+            <label style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;display:block;margin-bottom:4px;">Araç</label>
+            <select id="al-arac" class="month-select" style="font-size:14px;padding:8px 10px;">
+              <option value="altin">Gram Altın (₺)</option>
+              <option value="usd">USD/TL</option>
+              <option value="eur">EUR/TL</option>
+              <option value="ons">ONS ($)</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;display:block;margin-bottom:4px;">Yön</label>
+            <select id="al-yon" class="month-select" style="font-size:14px;padding:8px 10px;">
+              <option value="yukari">↑ Yukarı geçince</option>
+              <option value="asagi">↓ Aşağı düşünce</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-bottom:8px;">
+          <label style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;display:block;margin-bottom:4px;">Hedef Fiyat</label>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <input type="number" id="al-fiyat" class="form-input" placeholder="örn: 7500" inputmode="decimal" autocomplete="off" style="flex:1;">
+            <div id="al-simdi" style="font-size:11px;color:var(--ink3);white-space:nowrap;">Şu an: —</div>
+          </div>
+        </div>
+        <button onclick="alarmEkle()" style="width:100%;padding:9px;background:var(--gold);color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);">+ Alarm Ekle</button>
+      </div>
+
+      <!-- Aktif Alarmlar -->
+      <div class="ct">Aktif Alarmlar</div>
+      <div id="alarm-liste"><div style="font-size:12px;color:var(--ink3);text-align:center;padding:16px 0;">Henüz alarm yok.</div></div>
+    </div>
+
+    <!-- Sağ: Hatırlatıcılar + Geçmiş -->
+    <div style="display:flex;flex-direction:column;gap:12px;">
+
+      <!-- Maaş Günü Hatırlatıcısı -->
+      <div class="card" style="margin-bottom:0;">
+        <div class="ct">Maaş Günü Hatırlatıcısı</div>
+        <p style="font-size:12px;color:var(--ink3);margin-bottom:12px;line-height:1.6;">Maaş günün kaçı? Hatırlatıcı ayarla — yatırım yapmayı unutma.</p>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+          <div style="flex:1;">
+            <label style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;display:block;margin-bottom:4px;">Her ayın kaçı?</label>
+            <input type="number" id="maas-gun" value="15" min="1" max="31" inputmode="numeric"
+              style="width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:16px;font-weight:600;font-family:var(--sans);">
+          </div>
+          <div style="flex:1;">
+            <label style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;display:block;margin-bottom:4px;">Hatırlatıcı</label>
+            <select id="maas-hatir" class="month-select" style="font-size:14px;padding:8px 10px;">
+              <option value="0">Aynı gün</option>
+              <option value="1">1 gün önce</option>
+              <option value="2">2 gün önce</option>
+            </select>
+          </div>
+        </div>
+        <button onclick="maasHatirlaticiKaydet()" style="width:100%;padding:9px;background:var(--green);color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);">Kaydet</button>
+        <div id="maas-durum" style="font-size:11px;margin-top:8px;text-align:center;color:var(--ink3);"></div>
+      </div>
+
+      <!-- Tetiklenen Alarmlar Geçmişi -->
+      <div class="card" style="margin-bottom:0;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+          <div class="ct" style="margin-bottom:0;">Son Bildirimler</div>
+          <button onclick="gecmisiTemizle()" style="font-size:10px;color:var(--red);background:none;border:none;cursor:pointer;font-family:var(--sans);">Temizle</button>
+        </div>
+        <div id="alarm-gecmis"><div style="font-size:12px;color:var(--ink3);text-align:center;padding:12px 0;">Henüz bildirim yok.</div></div>
+      </div>
+
+      <!-- iOS Notu -->
+      <div class="info" style="margin-bottom:0;">
+        <strong>iOS Notu:</strong> iPhone'da bildirimler uygulama açıkken çalışır. Daha iyi deneyim için uygulamayı arka planda açık bırak veya sık sık kontrol et.
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="tab" id="tab-bordro">
@@ -1109,6 +1203,7 @@ function goTab(name, btn) {
   if (name === 'calculator') setTimeout(cu, 50);
   if (name === 'bakiye') setTimeout(renderBakiye, 50);
   if (name === 'hedef') setTimeout(renderHedef, 50);
+  if (name === 'alarmlar') { setTimeout(renderAlarmListe, 50); setTimeout(renderAlarmGecmis, 50); setTimeout(bildirimBannerKontrol, 50); }
 }
 
 async function fetchRates() {
@@ -1127,6 +1222,8 @@ async function fetchRates() {
     document.getElementById('upd-time').textContent = 'Tahmini değerler';
   }
   updateAll();
+  if (typeof alarmlariKontrolEt === 'function') alarmlariKontrolEt();
+  if (typeof maasHatirlaticiKontrol === 'function') maasHatirlaticiKontrol();
 }
 
 function chg(c, p) {
@@ -1971,11 +2068,239 @@ function hedefKaydet() {
   renderHedef();
 }
 
+// ─── ALARMLAR ─────────────────────────────────────────────────────────────
+
+S.alarmlar = JSON.parse((function(){ try{ return localStorage.getItem('fa-alarmlar')||'[]' }catch(e){ return '[]' } })());
+S.alarmGecmis = JSON.parse((function(){ try{ return localStorage.getItem('fa-alarm-gecmis')||'[]' }catch(e){ return '[]' } })());
+
+var ARAC_ADLAR = { altin:'Gram Altın', usd:'USD/TL', eur:'EUR/TL', ons:'ONS/$' };
+
+// Bildirim izni iste
+function bildirimIzniIste() {
+  if (!('Notification' in window)) {
+    alert('Bu tarayıcı bildirimleri desteklemiyor.');
+    return;
+  }
+  Notification.requestPermission().then(function(p) {
+    if (p === 'granted') {
+      document.getElementById('bildirim-banner').style.display = 'none';
+      try { localStorage.setItem('fa-notif', '1'); } catch(e) {}
+      bildirimGonder('Banker Furkan', 'Bildirimler aktif! Fiyat alarmları çalışmaya başladı.');
+    }
+  });
+}
+
+function bildirimGonder(baslik, mesaj, ikon) {
+  if (Notification.permission === 'granted') {
+    new Notification(baslik, {
+      body: mesaj,
+      icon: ikon || 'https://placehold.co/64x64/B8860B/FFFFFF?text=F'
+    });
+  }
+  // Geçmişe ekle
+  S.alarmGecmis.unshift({
+    zaman: new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}),
+    tarih: new Date().toLocaleDateString('tr-TR'),
+    baslik: baslik,
+    mesaj: mesaj
+  });
+  if (S.alarmGecmis.length > 20) S.alarmGecmis.pop();
+  try { localStorage.setItem('fa-alarm-gecmis', JSON.stringify(S.alarmGecmis)); } catch(e) {}
+  renderAlarmGecmis();
+}
+
+// Alarm ekle
+function alarmEkle() {
+  var arac   = document.getElementById('al-arac').value;
+  var yon    = document.getElementById('al-yon').value;
+  var fiyat  = parseFloat(document.getElementById('al-fiyat').value);
+  if (!fiyat || fiyat <= 0) { alert('Geçerli bir fiyat girin.'); return; }
+  S.alarmlar.push({
+    id: Date.now(),
+    arac: arac,
+    ad: ARAC_ADLAR[arac],
+    yon: yon,
+    fiyat: fiyat,
+    aktif: true,
+    tetiklendi: false
+  });
+  try { localStorage.setItem('fa-alarmlar', JSON.stringify(S.alarmlar)); } catch(e) {}
+  document.getElementById('al-fiyat').value = '';
+  renderAlarmListe();
+}
+
+// Alarm sil
+function alarmSil(id) {
+  S.alarmlar = S.alarmlar.filter(function(a){ return a.id !== id; });
+  try { localStorage.setItem('fa-alarmlar', JSON.stringify(S.alarmlar)); } catch(e) {}
+  renderAlarmListe();
+}
+
+// Alarm aktif/pasif
+function alarmToggle(id) {
+  S.alarmlar = S.alarmlar.map(function(a) {
+    if (a.id === id) { a.aktif = !a.aktif; a.tetiklendi = false; }
+    return a;
+  });
+  try { localStorage.setItem('fa-alarmlar', JSON.stringify(S.alarmlar)); } catch(e) {}
+  renderAlarmListe();
+}
+
+// Alarm listesini render et
+function renderAlarmListe() {
+  var el = document.getElementById('alarm-liste');
+  if (!el) return;
+  if (!S.alarmlar.length) {
+    el.innerHTML = '<div style="font-size:12px;color:var(--ink3);text-align:center;padding:16px 0;">Henüz alarm yok.</div>';
+    return;
+  }
+  el.innerHTML = S.alarmlar.map(function(a) {
+    var guncelFiyat = a.arac === 'altin' ? S.rates.altin :
+                     a.arac === 'usd'   ? S.rates.usd   :
+                     a.arac === 'eur'   ? S.rates.eur   :
+                     a.arac === 'ons'   ? S.rates.ons   : 0;
+    var tetiklenmeyeYakin = guncelFiyat && Math.abs(guncelFiyat - a.fiyat) / a.fiyat < 0.02;
+    var bg = a.tetiklendi ? 'var(--green-bg)' : tetiklenmeyeYakin ? 'var(--gold-bg)' : 'var(--cream)';
+    var bd = a.tetiklendi ? 'var(--green-bd)' : tetiklenmeyeYakin ? 'var(--gold-bd)' : 'var(--border)';
+    return '<div style="background:' + bg + ';border:1px solid ' + bd + ';border-radius:8px;padding:10px 12px;margin-bottom:8px;">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+      '<div>' +
+      '<div style="font-size:13px;font-weight:600;">' + a.ad + ' ' +
+      (a.yon === 'yukari' ? '↑' : '↓') + ' ' + a.fiyat.toLocaleString('tr-TR') +
+      (a.arac === 'ons' ? ' $' : ' ₺') + '</div>' +
+      '<div style="font-size:10px;color:var(--ink3);margin-top:2px;">' +
+      (a.yon === 'yukari' ? 'Yukarı geçince' : 'Aşağı düşünce') +
+      (guncelFiyat ? ' · Şu an: ' + guncelFiyat.toLocaleString('tr-TR') : '') +
+      (a.tetiklendi ? ' · ✓ Tetiklendi' : '') +
+      (tetiklenmeyeYakin && !a.tetiklendi ? ' · ⚡ Yaklaşıyor!' : '') +
+      '</div>' +
+      '</div>' +
+      '<div style="display:flex;gap:8px;align-items:center;">' +
+      '<button onclick="alarmToggle(' + a.id + ')" style="font-size:10px;padding:3px 8px;border-radius:12px;border:1px solid var(--border);background:' +
+      (a.aktif ? 'var(--green-bg)' : 'var(--cream)') + ';color:' + (a.aktif ? 'var(--green)' : 'var(--ink3)') + ';cursor:pointer;font-family:var(--sans);font-weight:600;">' +
+      (a.aktif ? 'Aktif' : 'Pasif') + '</button>' +
+      '<button onclick="alarmSil(' + a.id + ')" style="font-size:14px;background:none;border:none;cursor:pointer;color:var(--ink3);">×</button>' +
+      '</div>' +
+      '</div>' +
+      '</div>';
+  }).join('');
+}
+
+// Alarmları kontrol et - fetchRates her çağrıldığında
+function alarmlariKontrolEt() {
+  if (!S.rates.altin) return;
+  var FIYATLAR = { altin: S.rates.altin, usd: S.rates.usd, eur: S.rates.eur, ons: S.rates.ons };
+  var degisti = false;
+  S.alarmlar.forEach(function(a) {
+    if (!a.aktif || a.tetiklendi) return;
+    var guncel = FIYATLAR[a.arac];
+    if (!guncel) return;
+    var tetiklendi = (a.yon === 'yukari' && guncel >= a.fiyat) ||
+                     (a.yon === 'asagi'  && guncel <= a.fiyat);
+    if (tetiklendi) {
+      a.tetiklendi = true;
+      degisti = true;
+      var mesaj = a.ad + ' ' + guncel.toLocaleString('tr-TR') +
+        (a.arac === 'ons' ? '$' : '₺') + ' seviyesine ' +
+        (a.yon === 'yukari' ? 'yukseldi' : 'dushtu') + '!';
+      bildirimGonder('Fiyat Alarmi Tetiklendi!', mesaj);
+      // Ses efekti (opsiyonel)
+      try {
+        var ctx = new (window.AudioContext || window.webkitAudioContext)();
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.frequency.value = 880;
+        gain.gain.setValueAtTime(0.3, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.5);
+      } catch(e) {}
+    }
+  });
+  if (degisti) {
+    try { localStorage.setItem('fa-alarmlar', JSON.stringify(S.alarmlar)); } catch(e) {}
+    renderAlarmListe();
+  }
+  // Anlık fiyat göster
+  var secili = document.getElementById('al-arac');
+  if (secili) {
+    var f = FIYATLAR[secili.value];
+    var simdiEl = document.getElementById('al-simdi');
+    if (simdiEl && f) simdiEl.textContent = 'Şu an: ' + f.toLocaleString('tr-TR');
+  }
+}
+
+// Maaş günü hatırlatıcısı
+function maasHatirlaticiKaydet() {
+  var gun   = parseInt(document.getElementById('maas-gun').value) || 15;
+  var hatir = parseInt(document.getElementById('maas-hatir').value) || 0;
+  var ayar  = { gun: gun, hatirlatma: hatir };
+  try { localStorage.setItem('fa-maas-gun', JSON.stringify(ayar)); } catch(e) {}
+  maasHatirlaticiKontrol(ayar);
+  document.getElementById('maas-durum').textContent = '✓ Kaydedildi! Her ayın ' + gun + '. gününde hatırlatılacak.';
+  document.getElementById('maas-durum').style.color = 'var(--green)';
+}
+
+function maasHatirlaticiKontrol(ayar) {
+  if (!ayar) {
+    try { ayar = JSON.parse(localStorage.getItem('fa-maas-gun')); } catch(e) {}
+    if (!ayar) return;
+  }
+  var bugun = new Date();
+  var hedefGun = ayar.gun - (ayar.hatirlatma || 0);
+  if (bugun.getDate() === hedefGun) {
+    var kacGun = ayar.hatirlatma > 0 ? ayar.hatirlatma + ' gün sonra maaş günün!' : 'Bugün maaş günün!';
+    bildirimGonder('Maaş Günü Hatırlatıcısı', kacGun + ' Yatırımını yapmayı unutma.');
+  }
+}
+
+// Geçmişi render et
+function renderAlarmGecmis() {
+  var el = document.getElementById('alarm-gecmis');
+  if (!el) return;
+  if (!S.alarmGecmis.length) {
+    el.innerHTML = '<div style="font-size:12px;color:var(--ink3);text-align:center;padding:12px 0;">Henüz bildirim yok.</div>';
+    return;
+  }
+  el.innerHTML = S.alarmGecmis.slice(0, 10).map(function(g) {
+    return '<div style="padding:7px 0;border-bottom:1px solid var(--border);">' +
+      '<div style="display:flex;justify-content:space-between;">' +
+      '<span style="font-size:12px;font-weight:600;">' + g.baslik + '</span>' +
+      '<span style="font-size:10px;color:var(--ink3);">' + g.zaman + '</span>' +
+      '</div>' +
+      '<div style="font-size:11px;color:var(--ink3);margin-top:1px;">' + g.mesaj + '</div>' +
+      '</div>';
+  }).join('');
+}
+
+function gecmisiTemizle() {
+  S.alarmGecmis = [];
+  try { localStorage.removeItem('fa-alarm-gecmis'); } catch(e) {}
+  renderAlarmGecmis();
+}
+
+// Bildirim banner kontrolü
+function bildirimBannerKontrol() {
+  var banner = document.getElementById('bildirim-banner');
+  if (!banner) return;
+  if (!('Notification' in window) || Notification.permission === 'granted') {
+    banner.style.display = 'none';
+  } else {
+    banner.style.display = 'flex';
+  }
+}
+
+// goTab'a alarmlar ekle - zaten var ama render gerekiyor
 renderAct();
 renderHistory();
 renderDagılım();
 renderBakiye();
 renderHedef();
+renderAlarmListe();
+renderAlarmGecmis();
+bildirimBannerKontrol();
+maasHatirlaticiKontrol();
 cu();
 fetchRates();
 
@@ -2010,6 +2335,17 @@ if (S.bordrolar.length > 0) {
   document.getElementById('s-maas').textContent     = fmtN(last.net) + ' ₺';
   document.getElementById('s-maas-sub').textContent = last.ay + ' bordrousu';
 }
+
+// Maaş günü ayarını yükle
+try {
+  var savedMaasGun = JSON.parse(localStorage.getItem('fa-maas-gun'));
+  if (savedMaasGun) {
+    var mgEl = document.getElementById('maas-gun');
+    var mhEl = document.getElementById('maas-hatir');
+    if (mgEl) mgEl.value = savedMaasGun.gun;
+    if (mhEl) mhEl.value = savedMaasGun.hatirlatma || 0;
+  }
+} catch(e) {}
 
 // Kayıtlı yatırım miktarını yükle
 try {
