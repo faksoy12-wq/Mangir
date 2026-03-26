@@ -3,1557 +3,221 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Mangır">
-<meta name="theme-color" content="#B8860B">
-<title>Mangır — Kişisel Finans</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Mangır — Kişisel Finans Asistanı</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --cream:#FAFAF7;--white:#fff;--ink:#1C1C1E;--ink2:#48484A;--ink3:#8E8E93;
-  --gold:#B8860B;--gold-bg:#FFF8E7;--gold-bd:#F0D080;--gold-dark:#8B6508;
-  --green:#1A7A4A;--green-bg:#EDFAF3;--green-bd:#A8DFC0;
-  --red:#C0392B;--red-bg:#FEF0EE;--red-bd:#F5C5C0;
-  --blue:#1A5FAA;--blue-bg:#EEF4FD;--blue-bd:#C0D8F5;
-  --purple:#7B3FBE;--purple-bg:#F3EEFF;--purple-bd:#D4B8F0;
-  --border:#E5E5EA;--sh:0 1px 3px rgba(0,0,0,0.07),0 4px 16px rgba(0,0,0,0.05);
-  --serif:'Playfair Display',Georgia,serif;
-  --sans:'Plus Jakarta Sans',sans-serif;
-  --r:14px;
+:root {
+  --gold: #B8860B; --cream: #FAFAF7; --ink: #1C1C1E; --white: #fff;
+  --soft-gray: #F2F2F7; --border: #E5E5EA;
 }
-body{background:var(--cream);font-family:var(--sans);color:var(--ink);font-size:14px;min-height:100vh;}
-input,select,textarea,button{-webkit-appearance:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
-input[type=number],input[type=text],input[type=email],select{font-size:16px!important;}
-input[type=range]{-webkit-appearance:slider-horizontal;font-size:14px!important;}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--cream); color: var(--ink); line-height: 1.5; overflow-x: hidden; }
 
-/* ── ONBOARDING ─────────────────────────────────────────────── */
-#onboarding{min-height:100vh;display:flex;flex-direction:column;}
-#onboarding.hidden{display:none;}
+/* --- Slider Modernizasyonu --- */
+input[type=range] { -webkit-appearance: none; width: 100%; height: 12px; background: var(--border); border-radius: 10px; outline: none; margin: 20px 0; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; background: var(--gold); border-radius: 50%; cursor: pointer; border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
 
-.ob-header{background:var(--white);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;}
-.ob-logo{font-family:var(--serif);font-size:22px;font-weight:700;color:var(--gold);}
-.ob-progress-wrap{flex:1;margin:0 20px;max-width:200px;}
-.ob-progress-bar{height:4px;background:var(--border);border-radius:2px;overflow:hidden;}
-.ob-progress-fill{height:100%;background:var(--gold);border-radius:2px;transition:width .4s ease;}
-.ob-progress-text{font-size:10px;color:var(--ink3);margin-top:4px;text-align:right;}
+/* --- Sayfa Yapısı --- */
+.page-section { display: none; min-height: 100vh; width: 100%; position: absolute; top: 0; left: 0; }
+.visible { display: flex !important; flex-direction: column; animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-.ob-content{flex:1;padding:24px 20px;max-width:520px;margin:0 auto;width:100%;}
-.ob-step{display:none;animation:fadeIn .3s ease;}
-.ob-step.active{display:block;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.container { padding: 24px; max-width: 500px; margin: 0 auto; width: 100%; }
+.card { background: var(--white); border-radius: 24px; padding: 20px; margin-bottom: 16px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
 
-.ob-emoji{font-size:48px;margin-bottom:16px;display:block;}
-.ob-title{font-family:var(--serif);font-size:26px;font-weight:700;color:var(--ink);margin-bottom:8px;line-height:1.3;}
-.ob-sub{font-size:14px;color:var(--ink3);margin-bottom:28px;line-height:1.6;}
+/* --- Profil Giriş --- */
+.profile-item { display: flex; align-items: center; padding: 16px; background: var(--soft-gray); border-radius: 16px; margin-top: 12px; cursor: pointer; border: 2px solid transparent; }
+.profile-item:hover { border-color: var(--gold); }
 
-.ob-label{font-size:11px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:8px;}
-.ob-input{width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:var(--r);font-size:16px;font-weight:600;font-family:var(--sans);color:var(--ink);background:var(--white);outline:none;transition:border .15s;margin-bottom:16px;}
-.ob-input:focus{border-color:var(--gold-bd);background:var(--white);}
-.ob-select{width:100%;padding:14px 16px;border:1.5px solid var(--border);border-radius:var(--r);font-size:16px;font-family:var(--sans);color:var(--ink);background:var(--white);outline:none;margin-bottom:16px;}
+/* --- Emoji & Başlık Standart --- */
+.h-icon { font-size: 1.4rem; margin-right: 10px; }
+.section-title { display: flex; align-items: center; font-family: 'Playfair Display'; font-size: 1.5rem; margin-bottom: 20px; }
 
-.ob-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
-.ob-card{border:2px solid var(--border);border-radius:var(--r);padding:16px 12px;cursor:pointer;transition:all .15s;text-align:center;background:var(--white);}
-.ob-card:hover{border-color:var(--gold-bd);background:var(--gold-bg);}
-.ob-card.selected{border-color:var(--gold);background:var(--gold-bg);}
-.ob-card-icon{font-size:28px;margin-bottom:8px;display:block;}
-.ob-card-title{font-size:13px;font-weight:700;color:var(--ink);}
-.ob-card-sub{font-size:11px;color:var(--ink3);margin-top:3px;}
+/* Onboarding */
+#onboarding { background: var(--cream); justify-content: center; z-index: 100; }
+.btn-main { background: var(--ink); color: var(--white); padding: 18px; border-radius: 16px; border: none; font-weight: 700; font-size: 1rem; cursor: pointer; width: 100%; transition: 0.2s; }
+.btn-main:active { transform: scale(0.98); }
 
-.ob-range-wrap{margin-bottom:20px;}
-.ob-range-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);margin-bottom:8px;}
-.ob-range-val{text-align:center;font-family:var(--serif);font-size:32px;font-weight:700;color:var(--gold);margin-bottom:12px;}
-.ob-range-sub{text-align:center;font-size:12px;color:var(--ink3);margin-bottom:8px;}
-input[type=range]{width:100%;accent-color:var(--gold);height:6px;cursor:pointer;}
-
-.ob-hint{background:var(--gold-bg);border:1px solid var(--gold-bd);border-radius:10px;padding:12px 14px;font-size:12px;color:var(--gold);line-height:1.6;margin-bottom:20px;}
-.ob-hint strong{font-weight:700;}
-
-.ob-footer{padding:16px 20px;background:var(--white);border-top:1px solid var(--border);position:sticky;bottom:0;}
-.ob-btn{width:100%;padding:15px;background:var(--gold);color:white;font-size:15px;font-weight:700;border:none;border-radius:var(--r);cursor:pointer;font-family:var(--sans);transition:opacity .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
-.ob-btn:hover{opacity:.9;}
-.ob-btn:disabled{opacity:.4;cursor:not-allowed;}
-.ob-btn-outline{background:var(--white);color:var(--ink3);border:1.5px solid var(--border);}
-.ob-btn-skip{background:none;border:none;color:var(--ink3);font-size:13px;width:100%;padding:10px;cursor:pointer;font-family:var(--sans);margin-top:8px;}
-
-.ob-summary{background:var(--white);border-radius:var(--r);border:1px solid var(--border);padding:16px;margin-bottom:20px;}
-.ob-sum-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
-.ob-sum-row:last-child{border-bottom:none;}
-.ob-sum-lbl{color:var(--ink3);}
-.ob-sum-val{font-weight:700;color:var(--ink);}
-
-/* Splash screen */
-#splash{position:fixed;inset:0;background:var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;transition:opacity .5s;}
-#splash.fade{opacity:0;pointer-events:none;}
-.splash-logo{font-family:var(--serif);font-size:64px;font-weight:700;color:white;margin-bottom:8px;}
-.splash-sub{font-size:16px;color:rgba(255,255,255,.8);}
-.splash-loader{width:40px;height:4px;background:rgba(255,255,255,.3);border-radius:2px;margin-top:32px;overflow:hidden;}
-.splash-loader-fill{height:100%;background:white;border-radius:2px;animation:load 1.5s ease forwards;}
-@keyframes load{from{width:0}to{width:100%}}
-
-/* ── DASHBOARD ──────────────────────────────────────────────── */
-#dashboard{display:none;}
-#dashboard.visible{display:block;}
-
-.header{background:var(--white);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;position:sticky;top:0;z-index:100;}
-.h-name{font-family:var(--serif);font-size:18px;font-weight:700;}
-.h-sub{font-size:11px;color:var(--ink3);margin-top:1px;}
-.h-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.pill{font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;}
-.pill-gold{background:var(--gold-bg);border:1px solid var(--gold-bd);color:var(--gold);}
-.pill-green{background:var(--green-bg);border:1px solid var(--green-bd);color:var(--green);}
-.reset-btn{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--ink3);cursor:pointer;font-family:var(--sans);}
-
-.ticker{background:var(--white);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;gap:10px;flex-wrap:nowrap;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;width:100%;}
-.ticker::-webkit-scrollbar{display:none;}
-.tk-item{display:flex;align-items:center;gap:6px;flex-shrink:0;}
-.tk-lbl{font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;}
-.tk-val{font-size:13px;font-weight:700;white-space:nowrap;}
-.tk-chg{font-size:10px;font-weight:700;padding:2px 5px;border-radius:4px;}
-.chg-u{background:var(--green-bg);color:var(--green);}
-.chg-d{background:var(--red-bg);color:var(--red);}
-.chg-n{background:#F2F2F7;color:var(--ink3);}
-.tk-div{width:1px;height:22px;background:var(--border);flex-shrink:0;}
-.tk-hide-mobile{display:none;}
-@media(min-width:600px){.tk-hide-mobile{display:flex;}}
-
-.nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 16px;display:flex;gap:2px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;position:sticky;top:57px;z-index:99;}
-.nav::-webkit-scrollbar{display:none;}
-.nb{font-size:12px;font-weight:500;color:var(--ink3);background:none;border:none;border-bottom:2px solid transparent;padding:11px 12px;cursor:pointer;white-space:nowrap;transition:all .15s;font-family:var(--sans);}
-.nb:hover{color:var(--ink);}
-.nb.active{color:var(--gold);border-bottom-color:var(--gold);font-weight:600;}
-
-.content{padding:16px;max-width:1100px;}
-.tab{display:none;}.tab.active{display:block;}
-
-.g4{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px;}
-@media(min-width:600px){.g4{grid-template-columns:repeat(4,minmax(0,1fr));}}
-.g2{display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:14px;}
-@media(min-width:700px){.g2{grid-template-columns:repeat(2,minmax(0,1fr));}}
-.g21{display:grid;grid-template-columns:1fr;gap:14px;margin-bottom:14px;}
-@media(min-width:700px){.g21{grid-template-columns:3fr 2fr;}}
-
-.card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:16px;box-shadow:var(--sh);margin-bottom:14px;}
-.ct{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin-bottom:12px;}
-.stat{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;box-shadow:var(--sh);}
-.sl{font-size:10px;color:var(--ink3);font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-bottom:5px;}
-.sv{font-size:20px;font-weight:700;}
-.ss{font-size:10px;color:var(--ink3);margin-top:3px;}
-
-.arow{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);}
-.arow:last-child{border-bottom:none;}
-.adot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
-.an{flex:1;min-width:0;overflow:hidden;}
-.an-m{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.an-s{font-size:10px;color:var(--ink3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.abw{width:40px;height:4px;background:#F2F2F7;border-radius:2px;flex-shrink:0;}
-.ab{height:4px;border-radius:2px;}
-.ap{font-size:11px;font-weight:600;color:var(--ink3);min-width:26px;text-align:right;}
-.aa{font-size:13px;font-weight:700;min-width:76px;text-align:right;}
-
-.srow{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--border);}
-.srow:last-child{border-bottom:none;}
-.slbl{font-size:12px;color:var(--ink2);flex:1;}
-.sval{font-size:13px;font-weight:700;color:var(--gold);min-width:50px;text-align:right;}
-input[type=range]{width:80px;accent-color:var(--gold);}
-
-.res-box{background:var(--gold-bg);border:1px solid var(--gold-bd);border-radius:10px;padding:13px 15px;margin-top:10px;}
-.res-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:3px;}
-.res-val{font-family:var(--serif);font-size:22px;color:var(--gold);}
-.chart-wrap{position:relative;width:100%;height:200px;}
-
-.tl{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
-.tl:last-child{border-bottom:none;}
-.tl-b{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;flex-shrink:0;margin-top:2px;min-width:52px;text-align:center;}
-.tl-t{font-size:13px;font-weight:600;margin-bottom:2px;}
-.tl-d{font-size:11px;color:var(--ink3);line-height:1.5;}
-.tl-a{font-size:12px;font-weight:700;color:var(--green);margin-top:3px;}
-
-.warn{background:var(--gold-bg);border:1px solid var(--gold-bd);border-radius:8px;padding:9px 12px;font-size:11px;color:var(--gold);line-height:1.6;margin-top:10px;}
-.info{background:var(--blue-bg);border:1px solid var(--blue-bd);border-radius:8px;padding:9px 12px;font-size:11px;color:var(--blue);line-height:1.6;margin-top:10px;}
-
-.form-group{margin-bottom:14px;}
-.form-label{font-size:11px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;display:block;}
-.form-input{width:100%;padding:10px 13px;border:1px solid var(--border);border-radius:8px;font-size:16px;font-weight:600;font-family:var(--sans);color:var(--ink);background:var(--cream);outline:none;transition:border .15s;}
-.form-input:focus{border-color:var(--gold-bd);background:var(--white);}
-.form-hint{font-size:10px;color:var(--ink3);margin-top:4px;}
-.save-btn{width:100%;padding:12px;background:var(--gold);color:white;font-size:13px;font-weight:700;border:none;border-radius:8px;cursor:pointer;font-family:var(--sans);transition:opacity .2s;margin-top:4px;}
-.save-btn:hover{opacity:.9;}
-.month-select{width:100%;padding:10px 13px;border:1px solid var(--border);border-radius:8px;font-size:16px;font-family:var(--sans);color:var(--ink);background:var(--cream);outline:none;}
-.history-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;background:var(--cream);border:1px solid var(--border);margin-bottom:6px;}
-.h-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-bd);flex-shrink:0;}
-.h-net{font-size:14px;font-weight:700;color:var(--green);}
-.h-del{font-size:10px;color:var(--red);cursor:pointer;margin-left:auto;padding:2px 7px;border:1px solid var(--red-bd);border-radius:4px;background:var(--red-bg);flex-shrink:0;}
-.success-box{background:var(--green-bg);border:1px solid var(--green-bd);border-radius:10px;padding:14px;margin-top:12px;display:none;}
-
-/* Profil rozeti */
-.risk-badge{display:inline-block;font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;}
-.risk-konser{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-bd);}
-.risk-dengeli{background:var(--gold-bg);color:var(--gold);border:1px solid var(--gold-bd);}
-.risk-agresif{background:var(--red-bg);color:var(--red);border:1px solid var(--red-bd);}
-
-@media(max-width:600px){
-  .content{padding:12px;}
-  .header{padding:12px 16px;}
-  .abw{display:none;}
-}
+.hidden { display: none !important; }
 </style>
 </head>
 <body>
 
-<!-- SPLASH -->
-<div id="splash">
-  <div class="splash-logo">Mangır</div>
-  <div class="splash-sub">Kişisel Finans & Yatırım</div>
-  <div class="splash-loader"><div class="splash-loader-fill"></div></div>
-</div>
-
-<!-- ONBOARDING -->
-<div id="onboarding">
-  <div class="ob-header">
-    <div class="ob-logo">Mangır</div>
-    <div class="ob-progress-wrap">
-      <div class="ob-progress-bar"><div class="ob-progress-fill" id="ob-prog" style="width:10%"></div></div>
-      <div class="ob-progress-text" id="ob-prog-text">1 / 8</div>
-    </div>
-  </div>
-
-  <div class="ob-content">
-
-    <!-- ADIM 1: Hoşgeldin -->
-    <div class="ob-step active" id="step-1">
-      <span class="ob-emoji">👋</span>
-      <div class="ob-title">Hoşgeldin! Ben Mangır.</div>
-      <div class="ob-sub">Sana özel bir finansal yol haritası oluşturalım. 2 dakika sürecek, söz.</div>
-      <label class="ob-label">Adın ne?</label>
-      <input class="ob-input" type="text" id="ob-ad" placeholder="Adın" autocomplete="given-name">
-      <label class="ob-label">Kaç yaşındasın?</label>
-      <input class="ob-input" type="number" id="ob-yas" placeholder="27" inputmode="numeric" min="18" max="65">
-    </div>
-
-    <!-- ADIM 2: Meslek -->
-    <div class="ob-step" id="step-2">
-      <span class="ob-emoji">💼</span>
-      <div class="ob-title">Mesleğin ne?</div>
-      <div class="ob-sub">Bordro yapına göre sana özel öneriler sunacağız.</div>
-      <div class="ob-cards" id="meslek-cards">
-        <div class="ob-card" onclick="selectCard(this,'meslek','doktor')" data-val="doktor">
-          <span class="ob-card-icon">👨‍⚕️</span>
-          <div class="ob-card-title">Doktor / Hekim</div>
-          <div class="ob-card-sub">Devlet veya özel</div>
-        </div>
-        <div class="ob-card" onclick="selectCard(this,'meslek','ogretmen')" data-val="ogretmen">
-          <span class="ob-card-icon">👨‍🏫</span>
-          <div class="ob-card-title">Öğretmen / Akademisyen</div>
-          <div class="ob-card-sub">Devlet memuru</div>
-        </div>
-        <div class="ob-card" onclick="selectCard(this,'meslek','muhendis')" data-val="muhendis">
-          <span class="ob-card-icon">👨‍💻</span>
-          <div class="ob-card-title">Mühendis / Teknolog</div>
-          <div class="ob-card-sub">Özel sektör</div>
-        </div>
-        <div class="ob-card" onclick="selectCard(this,'meslek','memur')" data-val="memur">
-          <span class="ob-card-icon">🏛️</span>
-          <div class="ob-card-title">Devlet Memuru</div>
-          <div class="ob-card-sub">Kamu sektörü</div>
-        </div>
-        <div class="ob-card" onclick="selectCard(this,'meslek','ozel')" data-val="ozel">
-          <span class="ob-card-icon">🏢</span>
-          <div class="ob-card-title">Özel Sektör</div>
-          <div class="ob-card-sub">Şirket çalışanı</div>
-        </div>
-        <div class="ob-card" onclick="selectCard(this,'meslek','serbest')" data-val="serbest">
-          <span class="ob-card-icon">🚀</span>
-          <div class="ob-card-title">Serbest / Girişimci</div>
-          <div class="ob-card-sub">Değişken gelir</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ADIM 3: Gelir -->
-    <div class="ob-step" id="step-3">
-      <span class="ob-emoji">💰</span>
-      <div class="ob-title">Aylık net geliriniz ne kadar?</div>
-      <div class="ob-sub">Tüm gelirlerinizin toplamı (maaş + ek gelir). Yaklaşık olabilir.</div>
-      <div class="ob-range-wrap">
-        <div class="ob-range-val" id="gelir-val">75.000 ₺</div>
-        <input type="range" id="ob-gelir" min="20000" max="500000" step="5000" value="75000" oninput="updateRange('gelir')">
-        <div class="ob-range-labels"><span>20K ₺</span><span>500K ₺</span></div>
-        <div class="ob-range-sub" id="gelir-sub">veya doğrudan girin:</div>
-      </div>
-      <input class="ob-input" type="number" id="ob-gelir-txt" placeholder="Tutar giriniz" inputmode="numeric" oninput="syncGelir(this.value)" style="margin-top:0;">
-    </div>
-
-    <!-- ADIM 4: Yatırım -->
-    <div class="ob-step" id="step-4">
-      <span class="ob-emoji">📈</span>
-      <div class="ob-title">Her ay ne kadar yatırım yapabilirsin?</div>
-      <div class="ob-sub">Fatura ve masraflar çıktıktan sonra kalan miktar.</div>
-      <div class="ob-range-wrap">
-        <div class="ob-range-val" id="yatirim-val">30.000 ₺</div>
-        <input type="range" id="ob-yatirim" min="1000" max="300000" step="1000" value="30000" oninput="updateRange('yatirim')">
-        <div class="ob-range-labels"><span>1K ₺</span><span>300K ₺</span></div>
-      </div>
-      <input class="ob-input" type="number" id="ob-yatirim-txt" placeholder="Tutar giriniz" inputmode="numeric" oninput="syncYatirim(this.value)">
-      <div class="ob-hint" id="yatirim-hint">
-        <strong>Gelirinizin %X'i yatırıma gidecek.</strong> Uzmanlar minimum %20 öneriyor.
-      </div>
-    </div>
-
-    <!-- ADIM 5: Risk -->
-    <div class="ob-step" id="step-5">
-      <span class="ob-emoji">⚖️</span>
-      <div class="ob-title">Risk toleransın nasıl?</div>
-      <div class="ob-sub">Bu, yatırım dağılımını belirleyecek. Doğru ya da yanlış cevap yok.</div>
-      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
-        <div class="ob-card" style="text-align:left;display:flex;align-items:center;gap:12px;" onclick="selectCard(this,'risk','konser')">
-          <span style="font-size:28px;">🛡️</span>
-          <div>
-            <div class="ob-card-title">Muhafazakâr</div>
-            <div class="ob-card-sub">Kaybetmek istemiyorum, düşük getiri olsa da olur</div>
-          </div>
-        </div>
-        <div class="ob-card" style="text-align:left;display:flex;align-items:center;gap:12px;" onclick="selectCard(this,'risk','dengeli')">
-          <span style="font-size:28px;">⚖️</span>
-          <div>
-            <div class="ob-card-title">Dengeli</div>
-            <div class="ob-card-sub">Biraz risk alabilirim, uzun vadede büyümek istiyorum</div>
-          </div>
-        </div>
-        <div class="ob-card" style="text-align:left;display:flex;align-items:center;gap:12px;" onclick="selectCard(this,'risk','agresif')">
-          <span style="font-size:28px;">🚀</span>
-          <div>
-            <div class="ob-card-title">Agresif</div>
-            <div class="ob-card-sub">Yüksek getiri için yüksek risk alabilirim</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ADIM 6: Hedef Yaş -->
-    <div class="ob-step" id="step-6">
-      <span class="ob-emoji">🎯</span>
-      <div class="ob-title">Kaç yaşında finansal özgürlüğe ulaşmak istiyorsun?</div>
-      <div class="ob-sub">Çalışmak zorunda olmadığın, istersen çalıştığın yaş.</div>
-      <div class="ob-range-wrap">
-        <div class="ob-range-val" id="emek-val">55 yaş</div>
-        <input type="range" id="ob-emek" min="40" max="70" step="1" value="55" oninput="updateRange('emek')">
-        <div class="ob-range-labels"><span>40 yaş</span><span>70 yaş</span></div>
-        <div class="ob-range-sub" id="emek-sub">Şu an ile hedef arasında <span id="emek-kalan">—</span> yıl var.</div>
-      </div>
-    </div>
-
-    <!-- ADIM 7: Büyüme -->
-    <div class="ob-step" id="step-7">
-      <span class="ob-emoji">📊</span>
-      <div class="ob-title">6 ayda bir yatırımını ne kadar artırabilirsin?</div>
-      <div class="ob-sub">Maaş zammı, kariyer ilerlemesi veya ek gelir ile. 0 seçersen sabit kalır.</div>
-      <div class="ob-range-wrap">
-        <div class="ob-range-val" id="artis-val">%0</div>
-        <input type="range" id="ob-artis" min="0" max="20" step="1" value="0" oninput="updateRange('artis')">
-        <div class="ob-range-labels"><span>%0 (sabit)</span><span>%20</span></div>
-      </div>
-      <div class="ob-hint" id="artis-hint">Sabit yatırımla devam edeceksin.</div>
-    </div>
-
-    <!-- ADIM 8: Özet -->
-    <div class="ob-step" id="step-8">
-      <span class="ob-emoji">✨</span>
-      <div class="ob-title">Hazır! İşte planın.</div>
-      <div class="ob-sub">Girdiğin bilgilere göre kişisel yatırım planın oluşturuldu.</div>
-      <div class="ob-summary" id="ob-ozet"></div>
-      <div class="ob-hint" id="ob-projeksiyon"></div>
-    </div>
-
-  </div>
-
-  <div class="ob-footer">
-    <button class="ob-btn" id="ob-next-btn" onclick="nextStep()">Devam Et →</button>
-    <button class="ob-btn-skip" id="ob-back-btn" onclick="prevStep()" style="display:none;">← Geri</button>
-  </div>
-</div>
-
-<!-- DASHBOARD -->
-<div id="dashboard">
-
-  <div class="header">
-    <div>
-      <div class="h-name" id="d-isim">Kullanıcı</div>
-      <div class="h-sub" id="d-meslek">Finansal Özgürlük Planı</div>
-    </div>
-    <div class="h-actions">
-      <span class="pill pill-gold" id="d-yas-pill">— yaş</span>
-      <span class="pill pill-green" id="d-tasarruf-pill">—% tasarruf</span>
-      <span style="font-size:10px;color:var(--ink3);" id="upd-time">Yükleniyor...</span>
-      <button class="reset-btn" onclick="resetApp()">⚙️ Profil</button>
-    </div>
-  </div>
-
-  <div class="ticker">
-    <span style="font-size:10px;font-weight:700;color:var(--ink3);letter-spacing:.05em;flex-shrink:0;">CANLI</span>
-    <div class="tk-div"></div>
-    <div class="tk-item" style="flex-shrink:0;"><span class="tk-lbl">Gram Altın</span><span class="tk-val" id="t-altin">—</span><span class="tk-chg chg-n" id="t-ac">—</span></div>
-    <div class="tk-div"></div>
-    <div class="tk-item" style="flex-shrink:0;"><span class="tk-lbl">USD/TL</span><span class="tk-val" id="t-usd">—</span><span class="tk-chg chg-n" id="t-uc">—</span></div>
-    <div class="tk-div tk-hide-mobile"></div>
-    <div class="tk-item tk-hide-mobile" style="flex-shrink:0;"><span class="tk-lbl">EUR/TL</span><span class="tk-val" id="t-eur">—</span><span class="tk-chg chg-n" id="t-ec">—</span></div>
-    <div class="tk-div tk-hide-mobile"></div>
-    <div class="tk-item tk-hide-mobile" style="flex-shrink:0;"><span class="tk-lbl">ONS/$</span><span class="tk-val" id="t-ons">—</span><span class="tk-chg chg-n" id="t-oc">—</span></div>
-    <div class="tk-div"></div>
-    <div class="tk-item" style="flex-shrink:0;"><span class="tk-lbl" id="t-gram-lbl">— =</span><span class="tk-val" id="t-gram" style="color:#C9A84C;">— gram</span></div>
-  </div>
-
-  <div class="nav">
-    <button class="nb active" onclick="goTab('portfolio',this)">Portföy</button>
-    <button class="nb" onclick="goTab('bakiye',this)">💼 Bakiyem</button>
-    <button class="nb" onclick="goTab('hedef',this)">🎯 Hedef</button>
-    <button class="nb" onclick="goTab('calculator',this)">Hesap Makinesi</button>
-    <button class="nb" onclick="goTab('bordro',this)">📋 Bordro</button>
-    <button class="nb" onclick="goTab('vergi',this)">Vergi</button>
-  </div>
-
-  <div class="content">
-
-    <!-- PORTFÖY -->
-    <div class="tab active" id="tab-portfolio">
-      <div class="g4">
-        <div class="stat"><div class="sl">Aylık Gelir</div><div class="sv" id="s-maas" style="font-size:16px;">—</div><div class="ss" id="s-maas-sub">Net gelir</div></div>
-        <div class="stat" style="cursor:pointer;border:1px solid var(--green-bd);background:var(--green-bg);" onclick="toggleYatirimEdit()">
-          <div class="sl" style="color:var(--green);">Aylık Yatırım <span style="font-size:9px;background:var(--green);color:white;padding:1px 5px;border-radius:3px;margin-left:3px;">DÜZENLE</span></div>
-          <div id="yatirim-display">
-            <div class="sv" id="s-yatirim" style="font-size:16px;color:var(--green);">—</div>
-            <div class="ss" id="s-oran">—</div>
-          </div>
-          <div id="yatirim-edit" style="display:none;" onclick="event.stopPropagation()">
-            <input type="number" id="yatirim-input" inputmode="numeric" autocomplete="off"
-              style="width:100%;padding:5px 8px;border:1.5px solid var(--green-bd);border-radius:6px;font-size:16px;font-weight:700;color:var(--green);background:var(--white);outline:none;margin-top:4px;font-family:var(--sans);">
-            <div style="display:flex;gap:5px;margin-top:5px;">
-              <button onclick="saveYatirim()" style="flex:1;padding:5px;background:var(--green);color:white;border:none;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--sans);">Kaydet</button>
-              <button onclick="cancelYatirim()" style="flex:1;padding:5px;background:var(--white);color:var(--ink3);border:1px solid var(--border);border-radius:5px;font-size:11px;cursor:pointer;font-family:var(--sans);">İptal</button>
+<section id="auth-screen" class="page-section visible">
+    <div class="container">
+        <h1 style="font-family:'Playfair Display'; font-size: 3rem; margin-top: 40px;">Mangır 🏦</h1>
+        <p style="color: var(--ink2); margin-bottom: 40px;">Finansal yol haritanıza hoş geldiniz.</p>
+        
+        <div id="saved-profiles">
             </div>
-          </div>
-        </div>
-        <div class="stat"><div class="sl">Risk Profili</div><div class="sv" id="s-risk" style="font-size:14px;margin-top:4px;">—</div><div class="ss" id="s-risk-sub">—</div></div>
-        <div class="stat"><div class="sl">Yıllık Vergi Avantajı</div><div class="sv" id="s-vergi" style="font-size:16px;color:var(--green);">—</div><div class="ss">Hesaplanıyor</div></div>
-      </div>
-
-      <div class="g21">
-        <div class="card" style="margin-bottom:0;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-            <div class="ct" style="margin-bottom:0;">Aylık <span id="yatirim-baslik">—</span> Dağılımı</div>
-            <button onclick="toggleAracDuzenle()" id="arac-btn" style="font-size:11px;padding:4px 10px;border:1px solid var(--gold-bd);background:var(--gold-bg);color:var(--gold);border-radius:6px;cursor:pointer;font-family:var(--sans);font-weight:600;">✏️ Düzenle</button>
-          </div>
-          <div id="dagılım-normal">
-            <div id="dagılım-satirlar"></div>
-            <div class="arow" style="opacity:.4;"><div class="adot" style="background:#aaa;"></div><div class="an"><div class="an-m">Zorunlu BES</div><div class="an-s">Bordrodan otomatik</div></div><div class="abw"></div><div class="ap">—</div><div class="aa" style="color:#aaa;">Otomatik</div></div>
-          </div>
-          <div id="dagılım-duzenle" style="display:none;">
-            <div style="font-size:11px;color:var(--ink3);margin-bottom:10px;background:var(--gold-bg);border-radius:6px;padding:8px 10px;">Oranları değiştir veya yeni araç ekle. Toplam %100 olmalı.</div>
-            <div id="arac-liste"></div>
-            <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap;">
-              <button onclick="aracEkle('Gümüş','#9E9E9E','5')" style="font-size:11px;padding:5px 10px;border:1px solid var(--border);background:var(--cream);border-radius:6px;cursor:pointer;font-family:var(--sans);">+ Gümüş</button>
-              <button onclick="aracEkle('BIST 50','#1A5FAA','5')" style="font-size:11px;padding:5px 10px;border:1px solid var(--border);background:var(--cream);border-radius:6px;cursor:pointer;font-family:var(--sans);">+ BIST 50</button>
-              <button onclick="aracEkle('Eurobond','#E8A020','5')" style="font-size:11px;padding:5px 10px;border:1px solid var(--border);background:var(--cream);border-radius:6px;cursor:pointer;font-family:var(--sans);">+ Eurobond</button>
-              <button onclick="aracEkle('Özel','#888','5')" style="font-size:11px;padding:5px 10px;border:1px solid var(--border);background:var(--cream);border-radius:6px;cursor:pointer;font-family:var(--sans);">+ Özel</button>
-            </div>
-            <div id="toplam-oran-uyari" style="font-size:11px;font-weight:600;margin-top:8px;padding:6px 10px;border-radius:6px;display:none;"></div>
-            <div style="display:flex;gap:6px;margin-top:10px;">
-              <button onclick="dagılımKaydet()" style="flex:1;padding:8px;background:var(--green);color:white;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--sans);">Kaydet</button>
-              <button onclick="dagılımIptal()" style="flex:1;padding:8px;background:var(--white);color:var(--ink3);border:1px solid var(--border);border-radius:8px;font-size:12px;cursor:pointer;font-family:var(--sans);">İptal</button>
-            </div>
-          </div>
-        </div>
-
-        <div style="display:flex;flex-direction:column;gap:12px;">
-          <div class="card" style="margin-bottom:0;">
-            <div class="ct">Anlık Hesaplamalar</div>
-            <div style="font-size:12px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
-                <span style="color:var(--ink3);">Altın alımı</span>
-                <span id="c-gram" style="font-weight:700;color:#C9A84C;">—</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);">
-                <span style="color:var(--ink3);">Dolar alımı</span>
-                <span id="c-usd" style="font-weight:700;color:#7B3FBE;">—</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;">
-                <span style="color:var(--ink3);">Hedef süre</span>
-                <span id="c-sure" style="font-weight:700;color:var(--gold);">—</span>
-              </div>
-            </div>
-          </div>
-          <div class="card" style="margin-bottom:0;">
-            <div class="ct">56 Yaşında Portföy</div>
-            <div style="display:flex;flex-direction:column;gap:6px;" id="senaryo-cards"></div>
-          </div>
-        </div>
-      </div>
+        
+        <button class="btn-main" onclick="startNewOnboarding()" style="margin-top: 20px; background: transparent; color: var(--ink); border: 2px solid var(--ink);">+ Yeni Profil Oluştur</button>
     </div>
+</section>
 
-    <!-- BAKİYEM -->
-    <div class="tab" id="tab-bakiye">
-      <div class="g2">
-        <div class="card" style="margin-bottom:0;">
-          <div class="ct">Pozisyon Ekle</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
-            <div>
-              <label style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;display:block;margin-bottom:4px;">Araç</label>
-              <select id="bk-arac" class="month-select" style="font-size:14px;padding:8px 10px;">
-                <option value="altin">Gram Altın</option>
-                <option value="ppf">Para Piyasası Fonu</option>
-                <option value="bist">BİST 30 Endeks Fonu</option>
-                <option value="usd">Döviz Fonu (USD)</option>
+<section id="onboarding" class="page-section">
+    <div class="container">
+        <div class="card" id="ob-step-1">
+            <h2 class="section-title">👤 Profil Bilgileri</h2>
+            <label>Adınız</label>
+            <input type="text" id="user-name" class="btn-main" style="background: var(--soft-gray); color: var(--ink); text-align: left; margin: 10px 0;">
+            
+            <label>Meslek</label>
+            <select id="user-job" class="btn-main" style="background: var(--soft-gray); color: var(--ink); text-align: left;" onchange="checkJobDetails()">
                 <option value="diger">Diğer</option>
-              </select>
+                <option value="hekim">Hekim</option>
+                <option value="muhendis">Mühendis</option>
+                <option value="memur">Kamu Çalışanı</option>
+            </select>
+            <div id="job-detail-area" style="margin-top:10px; display:none;">
+                <select id="user-job-sub" class="btn-main" style="background: var(--soft-gray); color: var(--ink);"></select>
             </div>
-            <div>
-              <label style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;display:block;margin-bottom:4px;">Miktar</label>
-              <input type="number" id="bk-miktar" class="form-input" placeholder="örn: 8.5" inputmode="decimal" autocomplete="off" style="padding:8px 10px;font-size:16px;">
-            </div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
-            <div>
-              <label style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;display:block;margin-bottom:4px;">Alış Fiyatı (₺)</label>
-              <input type="number" id="bk-alis" class="form-input" placeholder="örn: 6800" inputmode="decimal" autocomplete="off" style="padding:8px 10px;font-size:16px;">
-            </div>
-            <div>
-              <label style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;display:block;margin-bottom:4px;">Toplam Maliyet</label>
-              <input type="number" id="bk-maliyet" class="form-input" placeholder="Otomatik" style="padding:8px 10px;font-size:16px;background:var(--cream);color:var(--ink3);" tabindex="-1">
-            </div>
-          </div>
-          <button onclick="bakiyeEkle()" style="width:100%;padding:10px;background:var(--green);color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--sans);">+ Pozisyon Ekle</button>
-          <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px;">
-            <div class="ct">Pozisyonlarım</div>
-            <div id="bakiye-liste"><div style="font-size:12px;color:var(--ink3);text-align:center;padding:16px 0;">Henüz pozisyon eklenmedi.</div></div>
-          </div>
+            
+            <label style="margin-top:20px; display:block;">Yaşınız: <span id="val-age">30</span></label>
+            <input type="range" min="18" max="75" value="30" oninput="document.getElementById('val-age').innerText=this.value">
+            
+            <button class="btn-main" onclick="saveAndNext(1)" style="margin-top:20px;">Devam Et →</button>
         </div>
-        <div style="display:flex;flex-direction:column;gap:12px;">
-          <div class="card" style="margin-bottom:0;background:var(--green-bg);border-color:var(--green-bd);">
-            <div class="ct" style="color:var(--green);">Toplam Portföy Değeri</div>
-            <div id="bk-toplam-deger" style="font-family:var(--serif);font-size:28px;color:var(--green);">—</div>
-            <div id="bk-toplam-maliyet" style="font-size:11px;color:var(--green);margin-top:3px;">—</div>
-          </div>
-          <div class="card" style="margin-bottom:0;">
-            <div class="ct">Kar / Zarar</div>
-            <div id="bk-karzarar" style="font-size:22px;font-weight:700;">—</div>
-            <div id="bk-karzarar-pct" style="font-size:12px;color:var(--ink3);margin-top:3px;">—</div>
-          </div>
-          <div class="card" style="margin-bottom:0;">
-            <div class="ct">Araç Bazlı Özet</div>
-            <div id="bk-ozet"></div>
-          </div>
-        </div>
-      </div>
     </div>
+</section>
 
-    <!-- HEDEF -->
-    <div class="tab" id="tab-hedef">
-      <div class="g4">
-        <div class="stat" style="background:var(--gold-bg);border-color:var(--gold-bd);">
-          <div class="sl" style="color:var(--gold);">Hedef Portföy</div>
-          <div class="sv" id="hd-hedef" style="font-size:15px;color:var(--gold);">—</div>
-          <div class="ss" id="hd-hedef-sub">—</div>
-        </div>
-        <div class="stat">
-          <div class="sl">Gerçek Birikim</div>
-          <div class="sv" id="hd-gercek" style="font-size:15px;color:var(--green);">—</div>
-          <div class="ss">Bakiyem'den otomatik</div>
-        </div>
-        <div class="stat">
-          <div class="sl">Hedefe Ulaşma</div>
-          <div class="sv" id="hd-pct" style="font-size:15px;">—</div>
-          <div class="ss" id="hd-pct-sub">—</div>
-        </div>
-        <div class="stat">
-          <div class="sl">Kalan Süre</div>
-          <div class="sv" id="hd-kalan" style="font-size:15px;color:var(--blue);">—</div>
-          <div class="ss" id="hd-kalan-sub">—</div>
-        </div>
-      </div>
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-          <div class="ct" style="margin-bottom:0;">İlerleme</div>
-          <div id="hd-rozet" style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:var(--cream);color:var(--ink3);border:1px solid var(--border);">—</div>
-        </div>
-        <div style="margin-bottom:16px;">
-          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink3);margin-bottom:4px;">
-            <span id="hd-baslangic-lbl">— yaş</span><span id="hd-simdi-label">Şimdi</span><span id="hd-hedef-yas-lbl">— yaş</span>
-          </div>
-          <div style="height:8px;background:#F2F2F7;border-radius:4px;overflow:hidden;">
-            <div id="hd-zaman-bar" style="height:100%;background:var(--gold);border-radius:4px;transition:width .5s;width:0%;"></div>
-          </div>
-          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink3);margin-top:4px;">
-            <span>Başlangıç</span><span id="hd-gecen">—</span><span>Hedef</span>
-          </div>
-        </div>
-        <div>
-          <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink3);margin-bottom:4px;">
-            <span>Birikim İlerlemesi</span><span id="hd-birikim-pct-lbl">%0</span>
-          </div>
-          <div style="height:12px;background:#F2F2F7;border-radius:6px;overflow:hidden;">
-            <div id="hd-birikim-bar" style="height:100%;background:linear-gradient(90deg,var(--green),#4CAF50);border-radius:6px;transition:width .5s;width:0%;"></div>
-          </div>
-        </div>
-      </div>
-      <div class="g2">
-        <div class="card" style="margin-bottom:0;">
-          <div class="ct">Beklenen vs Gerçek</div>
-          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span style="font-size:12px;color:var(--ink3);">Bu aşamada olmalıydın</span><span id="hd-beklenen" style="font-size:13px;font-weight:700;color:var(--gold);">—</span></div>
-          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);"><span style="font-size:12px;color:var(--ink3);">Gerçek birikimin</span><span id="hd-gercek2" style="font-size:13px;font-weight:700;color:var(--green);">—</span></div>
-          <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:12px;font-weight:600;">Fark</span><span id="hd-fark" style="font-size:14px;font-weight:700;">—</span></div>
-          <div id="hd-yorum" style="font-size:11px;padding:8px 10px;border-radius:8px;line-height:1.6;margin-top:8px;"></div>
-        </div>
-        <div class="card" style="margin-bottom:0;">
-          <div class="ct">Kilometre Taşları</div>
-          <div id="hd-taslar"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- HESAP MAKİNESİ -->
-    <div class="tab" id="tab-calculator">
-      <div class="g2">
-        <div class="card" style="margin-bottom:0;">
-          <div class="ct">Parametreler</div>
-          <div class="srow"><span class="slbl">Başlangıç yatırım</span><input type="range" id="c-m" min="1000" max="400000" step="1000" value="30000" oninput="cu()"><span class="sval" id="c-m-o">30K ₺</span></div>
-          <div class="srow"><span class="slbl">Yıllık getiri</span><input type="range" id="c-r" min="10" max="40" step="1" value="18" oninput="cu()"><span class="sval" id="c-r-o">%18</span></div>
-          <div class="srow"><span class="slbl">Süre</span><input type="range" id="c-y" min="5" max="40" step="1" value="25" oninput="cu()"><span class="sval" id="c-y-o">25 yıl</span></div>
-          <div class="srow" style="background:var(--gold-bg);border-radius:8px;padding:8px 10px;border:1px solid var(--gold-bd);margin-top:4px;">
-            <span class="slbl" style="color:var(--gold);font-weight:600;">6 ayda artış</span>
-            <input type="range" id="c-inc" min="0" max="20" step="1" value="0" oninput="cu()" style="accent-color:var(--gold);">
-            <span class="sval" id="c-inc-o" style="color:var(--gold);">%0</span>
-          </div>
-          <div class="res-box">
-            <div class="res-lbl">Dönem Sonu Portföy</div>
-            <div class="res-val" id="c-res">—</div>
-          </div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;">
-            <div style="background:var(--cream);border-radius:8px;padding:10px;border:1px solid var(--border);"><div style="font-size:10px;color:var(--ink3);margin-bottom:2px;">Toplam yatırdığın</div><div id="c-inv" style="font-size:14px;font-weight:700;">—</div></div>
-            <div style="background:var(--green-bg);border-radius:8px;padding:10px;border:1px solid var(--green-bd);"><div style="font-size:10px;color:var(--green);margin-bottom:2px;">Faizden kazancın</div><div id="c-gain" style="font-size:14px;font-weight:700;color:var(--green);">—</div></div>
-          </div>
-          <div style="background:var(--gold-bg);border-radius:8px;padding:10px;margin-top:8px;border:1px solid var(--gold-bd);"><div style="font-size:10px;color:var(--gold);font-weight:700;margin-bottom:2px;">Aylık güvenli çekim</div><div id="c-income" style="font-size:18px;font-weight:700;color:var(--gold);">—</div></div>
-        </div>
-        <div class="card" style="margin-bottom:0;">
-          <div class="ct">Büyüme Grafiği</div>
-          <div class="chart-wrap"><canvas id="cc"></canvas></div>
-          <div style="margin-top:14px;"><div class="ct">Kilometre Taşları</div><div id="ms"></div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- BORDRO -->
-    <div class="tab" id="tab-bordro">
-      <div class="g2">
-        <div class="card" style="margin-bottom:0;">
-          <div class="ct">Her Ay Bordrodan Gir</div>
-          <p style="font-size:12px;color:var(--ink3);margin-bottom:16px;line-height:1.7;">3 rakam gir — vergi dilimi ve iade otomatik hesaplanır.</p>
-          <div class="form-group">
-            <label class="form-label">Hangi Ay?</label>
-            <select class="month-select" id="f-ay"></select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">ÖDEME TOPLAMI (Net) ₺</label>
-            <input class="form-input" type="number" id="f-net" placeholder="örn: 85000" oninput="calcPreview()" inputmode="numeric" autocomplete="off">
-            <div class="form-hint">Bordrodaki "ÖDEME TOPLAMI" satırı</div>
-          </div>
-          <div class="form-group">
-            <label class="form-label">BRÜT ÜCRET ₺</label>
-            <input class="form-input" type="number" id="f-brut" placeholder="örn: 110000" oninput="calcPreview()" inputmode="numeric" autocomplete="off">
-          </div>
-          <div class="form-group">
-            <label class="form-label">GELİR VERGİSİ ₺</label>
-            <input class="form-input" type="number" id="f-vergi" placeholder="örn: 18000" inputmode="numeric" autocomplete="off">
-          </div>
-          <div id="preview-box" style="display:none;background:var(--cream);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:14px;">
-            <div style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px;">Önizleme</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;">
-              <div style="background:var(--white);border-radius:8px;padding:10px;border:1px solid var(--border);"><div style="color:var(--ink3);margin-bottom:3px;">Net maaşın</div><div id="prev-net" style="font-size:16px;font-weight:700;">—</div></div>
-              <div style="background:var(--white);border-radius:8px;padding:10px;border:1px solid var(--border);"><div style="color:var(--ink3);margin-bottom:3px;">Vergi dilimi</div><div id="prev-dilim" style="font-size:16px;font-weight:700;color:var(--gold);">—</div></div>
-              <div style="background:var(--white);border-radius:8px;padding:10px;border:1px solid var(--border);"><div style="color:var(--ink3);margin-bottom:3px;">Aylık vergi iadesi</div><div id="prev-iade" style="font-size:16px;font-weight:700;color:var(--green);">—</div></div>
-              <div style="background:var(--white);border-radius:8px;padding:10px;border:1px solid var(--border);"><div style="color:var(--ink3);margin-bottom:3px;">Yıllık vergi iadesi</div><div id="prev-yiade" style="font-size:16px;font-weight:700;color:var(--green);">—</div></div>
+<section id="dashboard" class="page-section">
+    <div class="container" style="padding-bottom: 100px;">
+        <h2 class="section-title">📊 Özet <span id="display-name" style="font-size: 0.9rem; margin-left: auto; opacity: 0.6;"></span></h2>
+        
+        <div class="card">
+            <h3 class="section-title"><span class="h-icon">🛡️</span>Vergi & Sigorta</h3>
+            <p>Hayat Sigortası Poliçeniz var mı?</p>
+            <div style="display:flex; gap:10px; margin: 10px 0;">
+                <button onclick="setInsurance(true)" class="btn-main" style="flex:1; font-size:0.8rem;">Evet</button>
+                <button onclick="setInsurance(false)" class="btn-main" style="flex:1; font-size:0.8rem; background:var(--border); color:var(--ink);">Hayır</button>
             </div>
-          </div>
-          <button class="save-btn" onclick="saveBordro()">Kaydet ve Güncelle</button>
-          <div id="success-box" class="success-box"><div style="font-size:13px;font-weight:700;color:var(--green);margin-bottom:4px;">✓ Güncellendi!</div><div id="success-msg" style="font-size:12px;color:var(--ink3);"></div></div>
-        </div>
-        <div class="card" style="margin-bottom:0;">
-          <div class="ct">Bordro Geçmişi</div>
-          <div id="bordro-history"><div style="font-size:12px;color:var(--ink3);text-align:center;padding:24px 0;line-height:1.8;">Henüz bordro girilmedi.</div></div>
-          <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px;">
-            <div class="ct">Ortalama Net Maaş</div>
-            <div style="font-family:var(--serif);font-size:26px;color:var(--gold);" id="avg-maas">—</div>
-            <div style="font-size:11px;color:var(--ink3);margin-top:3px;" id="avg-sub">Bordro girildikçe hesaplanacak</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- VERGİ -->
-    <div class="tab" id="tab-vergi">
-      <div class="g2">
-        <div class="card" style="margin-bottom:0;">
-          <div class="ct">Yıllık Vergi Avantajı</div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--ink2);">Hayat sigortası vergi iadesi</span><span style="font-weight:700;color:var(--green);" id="v-yillik">—</span></div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--ink2);">PPF stopaj avantajı</span><span style="font-weight:700;color:var(--green);">+~4.500 ₺</span></div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;"><span style="color:var(--ink2);">Zorunlu BES devlet katkısı</span><span style="font-weight:700;color:var(--green);">Otomatik ✓</span></div>
-          <div style="display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-top:2px solid var(--border);margin-top:4px;font-size:13px;"><span style="font-weight:700;">Toplam yıllık avantaj</span><span style="font-size:18px;font-weight:700;color:var(--green);" id="v-toplam">—</span></div>
-        </div>
-        <div class="card" style="margin-bottom:0;">
-          <div class="ct">Vergi Dilimin</div>
-          <div style="font-family:var(--serif);font-size:44px;text-align:center;margin:10px 0;" id="v-dilim-big">—</div>
-          <div class="info" id="v-dilim-acikla">Vergi diliminiz bordro girilince hesaplanacak.</div>
-          <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:14px;">
-            <div class="ct">2026 Türkiye Gelir Vergisi Dilimleri</div>
-            <div style="font-size:11px;line-height:2.2;color:var(--ink3);">
-              <div>%15 → Yıllık 0 - 96.000 ₺</div>
-              <div>%20 → Yıllık 96.001 - 230.000 ₺</div>
-              <div>%27 → Yıllık 230.001 - 870.000 ₺</div>
-              <div>%35 → Yıllık 870.001 - 3.000.000 ₺</div>
-              <div>%40 → Yıllık 3.000.000 ₺ üzeri</div>
+            <div id="insurance-details" style="display:none;">
+                <label>Aylık Prim Miktarı</label>
+                <div style="display:flex; gap:5px;">
+                    <input type="number" id="ins-amount" placeholder="0" style="flex:2; padding:10px; border-radius:8px; border:1px solid var(--border);">
+                    <select id="ins-curr" style="flex:1; border-radius:8px;">
+                        <option value="TRY">TL</option>
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                    </select>
+                </div>
+                <div id="tax-advantage-result" style="margin-top:15px; padding:10px; background:var(--cream); border-radius:12px; font-size:0.9rem;">
+                    Aylık Vergi Avantajı: <strong>0 TL</strong>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
-    </div>
 
-  </div>
-</div>
+        <div class="card">
+            <h3 class="section-title"><span class="h-icon">📈</span>Strateji (Yaşa Göre)</h3>
+            <div id="strategy-box">
+                </div>
+            <hr style="margin:15px 0; border:0; border-top:1px solid var(--border);">
+            <h3 class="section-title"><span class="h-icon">⚖️</span>Portföy Hesap Makinesi</h3>
+            </div>
+
+        <div class="card" style="background: var(--ink); color: var(--white);">
+            <h3 class="section-title" style="color:var(--white)"><span class="h-icon">🗺️</span>Yol Haritası</h3>
+            <ul id="roadmap-list" style="list-style:none; font-size:0.9rem;">
+                <li style="margin-bottom:10px;">⚪ Acil Durum Fonu Oluştur</li>
+                <li style="margin-bottom:10px;">⚪ Bireysel Emeklilik Başlat</li>
+                <li style="margin-bottom:10px;">⚪ Vergi İadesini Yatırıma Dönüştür</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3 class="section-title"><span class="h-icon">🔔</span>Aktif Alarmlar</h3>
+            <p style="font-size:0.8rem; color:var(--ink3)">Gram Altın > 3500 TL olduğunda haber ver.</p>
+        </div>
+    </div>
+</section>
 
 <script>
-// ── STATE ────────────────────────────────────────────────────────────────────
-var P = {}; // Profil
-var S = {
-  yatirim: 30000, maas: 75000, brut: 0, vergiBrut: 0,
-  rates: {altin:null,usd:null,eur:null,ons:null},
-  prev:  {altin:null,usd:null,eur:null,ons:null},
-  bordrolar: [],
-  bakiye:    [],
-  araclar:   [],
+let P = { name: "", job: "", age: 30, hasInsurance: false, insAmount: 0, insCurr: "TRY" };
+let profiles = JSON.parse(localStorage.getItem('mn_profiles') || '[]');
+
+window.onload = function() {
+    renderProfiles();
 };
 
-// ── FORMAT ───────────────────────────────────────────────────────────────────
-var fmtN = function(n){ return Math.round(n).toLocaleString('tr-TR'); };
-var fmt  = function(n){ return n>=1e9?(n/1e9).toFixed(2)+' Milyar ₺':n>=1e6?(n/1e6).toFixed(1)+' Milyon ₺':n>=1e3?(n/1e3).toFixed(0)+'K ₺':fmtN(n)+' ₺'; };
-var fs   = function(n){ return n>=1e9?(n/1e9).toFixed(1)+'Mr':n>=1e6?(n/1e6).toFixed(0)+'M':n>=1e3?(n/1e3).toFixed(0)+'K':Math.round(n); };
-
-// ── ONBOARDING STATE ─────────────────────────────────────────────────────────
-var obStep = 1;
-var obTotal = 8;
-var obData = { ad:'', yas:27, meslek:'', gelir:75000, yatirim:30000, risk:'dengeli', emekYas:55, artis:0 };
-
-function updateObProgress() {
-  document.getElementById('ob-prog').style.width = (obStep/obTotal*100)+'%';
-  document.getElementById('ob-prog-text').textContent = obStep + ' / ' + obTotal;
+function renderProfiles() {
+    const box = document.getElementById('saved-profiles');
+    box.innerHTML = profiles.length ? '' : '<p>Henüz profil yok.</p>';
+    profiles.forEach((p, index) => {
+        box.innerHTML += `
+            <div class="profile-item" onclick="loadProfile(${index})">
+                <div style="font-size:2rem; margin-right:15px;">👤</div>
+                <div>
+                    <strong>${p.name}</strong><br>
+                    <small>${p.job} - ${p.age} Yaş</small>
+                </div>
+            </div>
+        `;
+    });
 }
 
-function nextStep() {
-  if (!validateStep(obStep)) return;
-  if (obStep === 8) { startDashboard(); return; }
-  document.getElementById('step-'+obStep).classList.remove('active');
-  obStep++;
-  document.getElementById('step-'+obStep).classList.add('active');
-  document.getElementById('ob-back-btn').style.display = obStep > 1 ? 'block' : 'none';
-  if (obStep === 8) {
-    document.getElementById('ob-next-btn').textContent = '🚀 Planımı Oluştur';
-    buildSummary();
-  } else {
-    document.getElementById('ob-next-btn').textContent = 'Devam Et →';
-  }
-  updateObProgress();
-  // Yatırım hint güncelle
-  if (obStep === 4) updateYatirimHint();
-  if (obStep === 6) updateEmekSub();
-  window.scrollTo(0,0);
+function startNewOnboarding() {
+    document.getElementById('auth-screen').classList.remove('visible');
+    document.getElementById('onboarding').classList.add('visible');
 }
 
-function prevStep() {
-  if (obStep <= 1) return;
-  document.getElementById('step-'+obStep).classList.remove('active');
-  obStep--;
-  document.getElementById('step-'+obStep).classList.add('active');
-  document.getElementById('ob-back-btn').style.display = obStep > 1 ? 'block' : 'none';
-  document.getElementById('ob-next-btn').textContent = 'Devam Et →';
-  updateObProgress();
-}
-
-function validateStep(step) {
-  if (step === 1) {
-    var ad = document.getElementById('ob-ad').value.trim();
-    var yas = parseInt(document.getElementById('ob-yas').value);
-    if (!ad) { alert('Adınızı girin.'); return false; }
-    if (!yas || yas < 18 || yas > 65) { alert('Geçerli bir yaş girin (18-65).'); return false; }
-    obData.ad = ad; obData.yas = yas;
-  }
-  if (step === 2) {
-    if (!obData.meslek) { alert('Mesleğinizi seçin.'); return false; }
-  }
-  if (step === 3) {
-    var g = parseInt(document.getElementById('ob-gelir').value);
-    if (!g || g < 1000) { alert('Geçerli bir gelir girin.'); return false; }
-    obData.gelir = g;
-  }
-  if (step === 4) {
-    var y = parseInt(document.getElementById('ob-yatirim').value);
-    if (!y || y < 100) { alert('Geçerli bir yatırım tutarı girin.'); return false; }
-    obData.yatirim = y;
-  }
-  if (step === 5) {
-    if (!obData.risk) { alert('Risk toleransınızı seçin.'); return false; }
-  }
-  if (step === 6) {
-    var e = parseInt(document.getElementById('ob-emek').value);
-    if (!e || e <= obData.yas) { alert('Hedef yaş mevcut yaşınızdan büyük olmalı.'); return false; }
-    obData.emekYas = e;
-  }
-  if (step === 7) {
-    obData.artis = parseInt(document.getElementById('ob-artis').value) || 0;
-  }
-  return true;
-}
-
-function selectCard(el, group, val) {
-  document.querySelectorAll('[onclick*="'+group+'"]').forEach(function(c){ c.classList.remove('selected'); });
-  el.classList.add('selected');
-  if (group === 'meslek') obData.meslek = val;
-  if (group === 'risk') obData.risk = val;
-}
-
-function updateRange(type) {
-  if (type === 'gelir') {
-    var v = parseInt(document.getElementById('ob-gelir').value);
-    document.getElementById('gelir-val').textContent = fmtN(v) + ' ₺';
-    document.getElementById('ob-gelir-txt').value = v;
-    obData.gelir = v;
-  }
-  if (type === 'yatirim') {
-    var v = parseInt(document.getElementById('ob-yatirim').value);
-    document.getElementById('yatirim-val').textContent = fmtN(v) + ' ₺';
-    document.getElementById('ob-yatirim-txt').value = v;
-    obData.yatirim = v;
-    updateYatirimHint();
-  }
-  if (type === 'emek') {
-    var v = parseInt(document.getElementById('ob-emek').value);
-    document.getElementById('emek-val').textContent = v + ' yaş';
-    obData.emekYas = v;
-    updateEmekSub();
-  }
-  if (type === 'artis') {
-    var v = parseInt(document.getElementById('ob-artis').value);
-    document.getElementById('artis-val').textContent = v > 0 ? '%'+v : '%0';
-    obData.artis = v;
-    var hint = document.getElementById('artis-hint');
-    if (v === 0) {
-      hint.textContent = 'Sabit yatırımla devam edeceksin.';
+function checkJobDetails() {
+    const job = document.getElementById('user-job').value;
+    const area = document.getElementById('job-detail-area');
+    const sub = document.getElementById('user-job-sub');
+    if(job === 'hekim') {
+        area.style.display = 'block';
+        sub.innerHTML = '<option>Pratisyen Hekim</option><option>Uzman Hekim</option><option>Asistan Hekim</option>';
     } else {
-      // Projeksiyon hesapla
-      var yil = obData.emekYas - obData.yas;
-      var artisli = calcPortfoy(obData.yatirim, 18, yil, v);
-      var sabit   = calcPortfoy(obData.yatirim, 18, yil, 0);
-      hint.innerHTML = '<strong>%'+v+' artışla:</strong> ' + fmt(artisli) + ' <span style="color:var(--green);">(sabit plana göre +' + fmt(artisli-sabit) + ' fazla)</span>';
+        area.style.display = 'none';
     }
-  }
 }
 
-function syncGelir(v) {
-  var n = parseInt(v) || 20000;
-  n = Math.max(20000, Math.min(500000, n));
-  document.getElementById('ob-gelir').value = n;
-  document.getElementById('gelir-val').textContent = fmtN(n) + ' ₺';
-  obData.gelir = n;
-}
-
-function syncYatirim(v) {
-  var n = parseInt(v) || 1000;
-  n = Math.max(1000, Math.min(300000, n));
-  document.getElementById('ob-yatirim').value = n;
-  document.getElementById('yatirim-val').textContent = fmtN(n) + ' ₺';
-  obData.yatirim = n;
-  updateYatirimHint();
-}
-
-function updateYatirimHint() {
-  var pct = obData.gelir > 0 ? Math.round(obData.yatirim/obData.gelir*100) : 0;
-  var renk = pct >= 30 ? 'var(--green)' : pct >= 20 ? 'var(--gold)' : 'var(--red)';
-  var mesaj = pct >= 30 ? 'Harika! Finansal uzmanlar %20+ öneriyor, sen çok üzerindesin.' :
-              pct >= 20 ? 'İyi! Minimum %20 hedefliyorsun.' :
-              'Uzmanlar minimum %20 öneriyor. Artırabilir misin?';
-  document.getElementById('yatirim-hint').innerHTML =
-    '<strong style="color:'+renk+'">Gelirinizin %'+pct+"'i yatırıma gidecek.</strong> " + mesaj;
-}
-
-function updateEmekSub() {
-  var kalan = obData.emekYas - obData.yas;
-  document.getElementById('emek-sub').innerHTML = 'Şu an ile hedef arasında <span id="emek-kalan"><strong>' + kalan + ' yıl</strong></span> var.';
-}
-
-function buildSummary() {
-  var kalan = obData.emekYas - obData.yas;
-  var hedefPortfoy = calcPortfoy(obData.yatirim, 18, kalan, obData.artis);
-  var aylikGelir = Math.round(hedefPortfoy * 0.18 / 12);
-  var riskAdlar = { konser:'Muhafazakâr 🛡️', dengeli:'Dengeli ⚖️', agresif:'Agresif 🚀' };
-  var meslekAdlar = { doktor:'Doktor/Hekim', ogretmen:'Öğretmen', muhendis:'Mühendis', memur:'Devlet Memuru', ozel:'Özel Sektör', serbest:'Serbest/Girişimci' };
-
-  document.getElementById('ob-ozet').innerHTML =
-    '<div class="ob-sum-row"><span class="ob-sum-lbl">İsim</span><span class="ob-sum-val">'+obData.ad+', '+obData.yas+' yaş</span></div>'+
-    '<div class="ob-sum-row"><span class="ob-sum-lbl">Meslek</span><span class="ob-sum-val">'+(meslekAdlar[obData.meslek]||obData.meslek)+'</span></div>'+
-    '<div class="ob-sum-row"><span class="ob-sum-lbl">Aylık gelir</span><span class="ob-sum-val">'+fmtN(obData.gelir)+' ₺</span></div>'+
-    '<div class="ob-sum-row"><span class="ob-sum-lbl">Aylık yatırım</span><span class="ob-sum-val" style="color:var(--green);">'+fmtN(obData.yatirim)+' ₺ (%'+Math.round(obData.yatirim/obData.gelir*100)+')</span></div>'+
-    '<div class="ob-sum-row"><span class="ob-sum-lbl">Risk profili</span><span class="ob-sum-val">'+(riskAdlar[obData.risk]||obData.risk)+'</span></div>'+
-    '<div class="ob-sum-row"><span class="ob-sum-lbl">Hedef yaş</span><span class="ob-sum-val">'+obData.emekYas+' yaş ('+kalan+' yıl)</span></div>'+
-    (obData.artis > 0 ? '<div class="ob-sum-row"><span class="ob-sum-lbl">6 ayda artış</span><span class="ob-sum-val" style="color:var(--gold);">%'+obData.artis+'</span></div>' : '');
-
-  document.getElementById('ob-projeksiyon').innerHTML =
-    '<strong>🎯 Tahminî Hedef Portföy:</strong> ' + fmt(hedefPortfoy) +
-    '<br>Bu portföyle aylık <strong>' + fmtN(aylikGelir) + ' ₺</strong> pasif gelir elde edebilirsin (anapara korunarak, %18 getiri).';
-}
-
-// ── DASHBOARD BAŞLAT ─────────────────────────────────────────────────────────
-function startDashboard() {
-  // Profili kaydet
-  P = {
-    ad: obData.ad, yas: obData.yas, meslek: obData.meslek,
-    gelir: obData.gelir, yatirim: obData.yatirim,
-    risk: obData.risk, emekYas: obData.emekYas, artis: obData.artis
-  };
-  try { localStorage.setItem('mn-profil', JSON.stringify(P)); } catch(e) {}
-
-  // State güncelle
-  S.yatirim = P.yatirim;
-  S.maas    = P.gelir;
-
-  // Riske göre varsayılan araçlar belirle
-  S.araclar = getDefaultAraclar(P.risk);
-  try { localStorage.setItem('mn-araclar', JSON.stringify(S.araclar)); } catch(e) {}
-
-  // Diğer verileri yükle
-  S.bordrolar = JSON.parse((function(){ try{ return localStorage.getItem('mn-bordro')||'[]' }catch(e){ return '[]' } })());
-  S.bakiye    = JSON.parse((function(){ try{ return localStorage.getItem('mn-bakiye')||'[]' }catch(e){ return '[]' } })());
-
-  document.getElementById('onboarding').classList.add('hidden');
-  document.getElementById('dashboard').classList.add('visible');
-
-  initDashboard();
-  fetchRates();
-  setInterval(fetchRates, 30000);
-}
-
-function getDefaultAraclar(risk) {
-  if (risk === 'konser') return [
-    {id:'ppf',   ad:'Para Piyasası Fonu', renk:'#1A7A4A', oran:50, platform:'Ziraat → Fon → ZPP',     aciklama:'faiz'},
-    {id:'altin', ad:'Gram Altın',         renk:'#C9A84C', oran:30, platform:'Ziraat → Altın Hesabı',   aciklama:'gram'},
-    {id:'usd',   ad:'Döviz Fonu (USD)',   renk:'#7B3FBE', oran:20, platform:'Ziraat → Fon → Döviz',    aciklama:'usd'},
-  ];
-  if (risk === 'agresif') return [
-    {id:'bist',  ad:'BİST 30 Endeks',     renk:'#1A5FAA', oran:40, platform:'Ziraat → Fon → Endeks',   aciklama:''},
-    {id:'altin', ad:'Gram Altın',         renk:'#C9A84C', oran:35, platform:'Ziraat → Altın Hesabı',   aciklama:'gram'},
-    {id:'ppf',   ad:'Para Piyasası Fonu', renk:'#1A7A4A', oran:15, platform:'Ziraat → Fon → ZPP',      aciklama:'faiz'},
-    {id:'usd',   ad:'Döviz Fonu (USD)',   renk:'#7B3FBE', oran:10, platform:'Ziraat → Fon → Döviz',    aciklama:'usd'},
-  ];
-  // dengeli (default)
-  return [
-    {id:'altin', ad:'Gram Altın',         renk:'#C9A84C', oran:45, platform:'Ziraat → Altın Hesabı',   aciklama:'gram'},
-    {id:'ppf',   ad:'Para Piyasası Fonu', renk:'#1A7A4A', oran:30, platform:'Ziraat → Fon → ZPP',      aciklama:'faiz'},
-    {id:'bist',  ad:'BİST 30 Endeks',     renk:'#1A5FAA', oran:15, platform:'Ziraat → Fon → Endeks',   aciklama:''},
-    {id:'usd',   ad:'Döviz Fonu (USD)',   renk:'#7B3FBE', oran:10, platform:'Ziraat → Fon → Döviz',    aciklama:'usd'},
-  ];
-}
-
-function initDashboard() {
-  var riskAdlar = { konser:'Muhafazakâr 🛡️', dengeli:'Dengeli ⚖️', agresif:'Agresif 🚀' };
-  var meslekAdlar = { doktor:'Aile Hekimi', ogretmen:'Öğretmen', muhendis:'Mühendis', memur:'Devlet Memuru', ozel:'Özel Sektör Çalışanı', serbest:'Girişimci' };
-  var kalan = P.emekYas - P.yas;
-  var pct = Math.round(P.yatirim / P.gelir * 100);
-
-  document.getElementById('d-isim').textContent = P.ad;
-  document.getElementById('d-meslek').textContent = (meslekAdlar[P.meslek]||P.meslek) + ' · Finansal Özgürlük Planı';
-  document.getElementById('d-yas-pill').textContent = P.yas + ' yaş · ' + P.emekYas + "'a " + kalan + ' yıl';
-  document.getElementById('d-tasarruf-pill').textContent = '%' + pct + ' tasarruf';
-  document.getElementById('s-maas').textContent = fmtN(P.gelir) + ' ₺';
-  document.getElementById('s-yatirim').textContent = fmtN(P.yatirim) + ' ₺';
-  document.getElementById('s-oran').textContent = "Gelirin %" + pct + "'i yatırıma";
-  document.getElementById('s-risk').innerHTML = '<span class="risk-badge risk-' + P.risk + '">' + (riskAdlar[P.risk]||P.risk) + '</span>';
-  document.getElementById('s-risk-sub').textContent = kalan + ' yıl planlama';
-  document.getElementById('c-m').value = P.yatirim;
-  document.getElementById('c-y').value = kalan;
-  document.getElementById('c-inc').value = P.artis;
-
-  // Senaryo kartları
-  var senaryolar = [
-    {lbl:'Kötümser', getiri:12, renk:'var(--red)', bg:'var(--red-bg)', bd:'var(--red-bd)'},
-    {lbl:'Gerçekçi ✓', getiri:18, renk:'var(--green)', bg:'var(--green-bg)', bd:'var(--green-bd)', bold:true},
-    {lbl:'İyimser', getiri:25, renk:'var(--blue)', bg:'var(--blue-bg)', bd:'var(--blue-bd)'},
-  ];
-  document.getElementById('senaryo-cards').innerHTML = senaryolar.map(function(s) {
-    var v = calcPortfoy(P.yatirim, s.getiri, kalan, P.artis);
-    return '<div style="background:'+s.bg+';border:1px solid '+s.bd+';border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;">'+
-      '<div><div style="font-size:10px;font-weight:700;color:'+s.renk+';margin-bottom:2px;">'+s.lbl+'</div>'+
-      '<div style="font-size:10px;color:var(--ink3);">%'+s.getiri+' yıllık</div></div>'+
-      '<div style="font-size:'+(s.bold?'15':'13')+'px;font-weight:700;color:'+s.renk+';">'+fmt(v)+'</div></div>';
-  }).join('');
-
-  // Anlık hesaplama sub
-  document.getElementById('c-sure').textContent = kalan + ' yıl · ' + P.emekYas + ' yaş hedefi';
-
-  // Hesap makinesi başlangıç
-  cu();
-
-  // Bordro ay listesi
-  var aylar = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
-  var opts = [];
-  var now = new Date();
-  for (var y = 2024; y <= 2060; y++) {
-    for (var m = 0; m < 12; m++) {
-      var sel = (y === now.getFullYear() && m === now.getMonth()) ? ' selected' : '';
-      opts.push('<option value="'+aylar[m]+' '+y+'"'+sel+'>'+aylar[m]+' '+y+'</option>');
+function saveAndNext(step) {
+    if(step === 1) {
+        P.name = document.getElementById('user-name').value || "Yatırımcı";
+        P.job = document.getElementById('user-job').value;
+        P.age = parseInt(document.querySelector('input[type=range]').value);
+        
+        profiles.push(P);
+        localStorage.setItem('mn_profiles', JSON.stringify(profiles));
+        
+        goToDashboard();
     }
-  }
-  document.getElementById('f-ay').innerHTML = opts.join('');
-
-  renderDagılım();
-  renderBakiye();
-  renderHistory();
 }
 
-// ── PORTFÖY HESAPLA ──────────────────────────────────────────────────────────
-function calcPortfoy(aylik, getiriPct, yil, artisPct) {
-  var mr = getiriPct / 100 / 12;
-  var p  = aylik;
-  var m  = aylik;
-  for (var mo = 1; mo <= yil * 12; mo++) {
-    if (artisPct > 0 && mo > 1 && mo % 6 === 1) m = Math.round(m * (1 + artisPct/100));
-    p = p * (1 + mr) + m;
-  }
-  return Math.round(p);
+function loadProfile(index) {
+    P = profiles[index];
+    goToDashboard();
 }
 
-// ── KURLAR ───────────────────────────────────────────────────────────────────
-async function fetchRates() {
-  try {
-    var r = await fetch('/api/rates');
-    var d = await r.json();
-    S.prev = Object.assign({}, S.rates);
-    S.rates.usd   = d.usd   || 42.8;
-    S.rates.eur   = d.eur   || 50.2;
-    S.rates.altin = d.altin || 7100;
-    S.rates.ons   = d.ons   || 3000;
-    var n = new Date();
-    document.getElementById('upd-time').textContent = 'Canlı · ' + n.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
-  } catch(e) {
-    S.rates = {altin:7100,usd:42.8,eur:50.2,ons:3000};
-    document.getElementById('upd-time').textContent = 'Tahmini';
-  }
-  updateAll();
-  if (typeof alarmlariKontrolEt === 'function') alarmlariKontrolEt();
+function goToDashboard() {
+    document.getElementById('auth-screen').classList.remove('visible');
+    document.getElementById('onboarding').classList.remove('visible');
+    document.getElementById('dashboard').classList.add('visible');
+    document.getElementById('display-name').innerText = P.name;
+    updateStrategy();
 }
 
-function updateChg(id, c, p) {
-  var el = document.getElementById(id);
-  if (!el) return;
-  if (!p || !c) { el.textContent = '—'; el.className = 'tk-chg chg-n'; return; }
-  var pct = ((c-p)/p*100).toFixed(2);
-  el.textContent = (c>p?'+':'')+pct+'%';
-  el.className = 'tk-chg ' + (c>p?'chg-u':c<p?'chg-d':'chg-n');
+function setInsurance(val) {
+    P.hasInsurance = val;
+    document.getElementById('insurance-details').style.display = val ? 'block' : 'none';
 }
 
-function vergiBelirle(b) {
-  if (!b || b === 0) return 0.27;
-  if (b > 150000) return 0.40;
-  if (b > 60000)  return 0.35;
-  if (b > 22000)  return 0.27;
-  if (b > 8000)   return 0.20;
-  return 0.15;
+function updateStrategy() {
+    const box = document.getElementById('strategy-box');
+    let risk = P.age < 35 ? "Agresif (Hisse Ağırlıklı)" : (P.age < 50 ? "Dengeli" : "Muhafazakar (Altın/Mevduat)");
+    box.innerHTML = `<p>Yaşınıza uygun strateji: <strong>${risk}</strong></p>`;
 }
 
-function vergiBelirleGercek(brut, vergi) {
-  if (vergi && vergi > 0 && brut > 0) {
-    var ef = vergi / brut;
-    if (ef >= 0.36) return 0.40;
-    if (ef >= 0.30) return 0.35;
-    if (ef >= 0.22) return 0.27;
-    if (ef >= 0.16) return 0.20;
-    return 0.15;
-  }
-  return vergiBelirle(brut);
-}
-
-function updateAll() {
-  var altin = S.rates.altin, usd = S.rates.usd, eur = S.rates.eur, ons = S.rates.ons;
-  if (!altin) return;
-  var y = S.yatirim;
-
-  document.getElementById('t-altin').textContent = fmtN(altin)+' ₺';
-  document.getElementById('t-usd').textContent   = usd.toFixed(2)+' ₺';
-  document.getElementById('t-eur').textContent   = eur.toFixed(2)+' ₺';
-  document.getElementById('t-ons').textContent   = Math.round(ons).toLocaleString('tr-TR')+' $';
-  updateChg('t-ac', altin, S.prev.altin);
-  updateChg('t-uc', usd,   S.prev.usd);
-  updateChg('t-ec', eur,   S.prev.eur);
-  updateChg('t-oc', ons,   S.prev.ons);
-
-  // t-gram: altın payını göster
-  var altinArac = S.araclar.find(function(a){ return a.id==='altin'; });
-  var altinOran = altinArac ? altinArac.oran/100 : 0.45;
-  var altinTutar = y * altinOran;
-  document.getElementById('t-gram-lbl').textContent = fmtN(altinTutar)+'₺ =';
-  document.getElementById('t-gram').textContent = (altinTutar/altin).toFixed(2)+' gram';
-
-  renderDagılım();
-  document.getElementById('p-allianz') && (document.getElementById('p-allianz').textContent = '');
-  document.getElementById('yatirim-baslik').textContent = fmtN(y)+' ₺';
-  document.getElementById('s-yatirim').textContent = fmtN(y)+' ₺';
-  var pct = P.gelir > 0 ? Math.round(y/P.gelir*100) : 0;
-  document.getElementById('s-oran').textContent = "Gelirin %"+pct+"'i yatırıma";
-  document.getElementById('d-tasarruf-pill').textContent = '%'+pct+' tasarruf';
-
-  // Anlık hesaplamalar
-  var usdArac = S.araclar.find(function(a){ return a.id==='usd'; });
-  var usdOran = usdArac ? usdArac.oran/100 : 0.10;
-  document.getElementById('c-gram').textContent = (y*altinOran/altin).toFixed(2)+' gram';
-  document.getElementById('c-usd').textContent  = Math.round(y*usdOran/usd).toLocaleString('tr-TR')+' $';
-
-  // Vergi
-  var oran   = vergiBelirleGercek(S.brut, S.vergiBrut);
-  var aylik  = (S.maas * 0.05) * oran; // Hayat sigortası tahmini
-  var yillik = aylik * 12;
-  document.getElementById('s-vergi').textContent  = '~'+fmtN(yillik+4500)+' ₺';
-  document.getElementById('v-yillik').textContent = '~'+fmtN(yillik)+' ₺';
-  document.getElementById('v-toplam').textContent = '~'+fmtN(yillik+4500)+' ₺';
-  var dilimPct = Math.round(oran*100);
-  document.getElementById('v-dilim-big').textContent = '%'+dilimPct;
-  document.getElementById('v-dilim-big').style.color  = dilimPct>=35?'var(--red)':dilimPct>=27?'var(--gold)':'var(--green)';
-  document.getElementById('v-dilim-acikla').textContent = 'Brüt maaşınıza göre tahmini vergi dilimi: %'+dilimPct+'. Bordro girerek kesin hesaplama yapın.';
-
-  // Hedef sekmesi aktifse güncelle
-  var hedefTab = document.getElementById('tab-hedef');
-  if (hedefTab && hedefTab.classList.contains('active')) renderHedef();
-}
-
-// ── TAB ──────────────────────────────────────────────────────────────────────
-function goTab(name, btn) {
-  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
-  document.querySelectorAll('.nb').forEach(function(b){ b.classList.remove('active'); });
-  document.getElementById('tab-'+name).classList.add('active');
-  btn.classList.add('active');
-  if (name === 'calculator') setTimeout(cu, 50);
-  if (name === 'bakiye')     setTimeout(renderBakiye, 50);
-  if (name === 'hedef')      setTimeout(renderHedef, 50);
-}
-
-// ── YATIRIM DÜZENLE ──────────────────────────────────────────────────────────
-function toggleYatirimEdit() {
-  var d = document.getElementById('yatirim-display');
-  var e = document.getElementById('yatirim-edit');
-  var i = document.getElementById('yatirim-input');
-  if (e.style.display === 'none') { e.style.display='block'; d.style.display='none'; i.value=S.yatirim; i.focus(); i.select(); }
-  else cancelYatirim();
-}
-function cancelYatirim() {
-  document.getElementById('yatirim-edit').style.display='none';
-  document.getElementById('yatirim-display').style.display='block';
-}
-function saveYatirim() {
-  var v = parseInt(document.getElementById('yatirim-input').value);
-  if (!v || v < 100) { alert('Geçerli bir tutar girin.'); return; }
-  S.yatirim = v; P.yatirim = v;
-  try { localStorage.setItem('mn-yatirim', v); localStorage.setItem('mn-profil', JSON.stringify(P)); } catch(e) {}
-  document.getElementById('s-yatirim').textContent = fmtN(v)+' ₺';
-  document.getElementById('yatirim-baslik').textContent = fmtN(v)+' ₺';
-  document.getElementById('c-m').value = v;
-  renderDagılım(); updateAll(); renderHedef(); cancelYatirim(); cu();
-}
-
-// ── DAĞILIM ──────────────────────────────────────────────────────────────────
-function loadAraclar() {
-  try { var s = localStorage.getItem('mn-araclar'); if(s) return JSON.parse(s); } catch(e) {}
-  return getDefaultAraclar(P.risk || 'dengeli');
-}
-
-var ARAC_INFO = {
-  altin: {fiyatFn: function(){ return S.rates.altin||7100; }},
-  usd:   {fiyatFn: function(){ return S.rates.usd||44; }},
-  ppf:   {fiyatFn: function(){ return 1; }},
-  bist:  {fiyatFn: function(){ return 1; }},
-  diger: {fiyatFn: function(){ return 1; }},
-};
-
-function renderDagılım() {
-  if (!S.araclar || !S.araclar.length) { S.araclar = loadAraclar(); }
-  var container = document.getElementById('dagılım-satirlar');
-  if (!container) return;
-  container.innerHTML = S.araclar.map(function(a) {
-    var tutar = Math.round(S.yatirim * a.oran / 100);
-    var extra = '';
-    if (a.aciklama==='gram' && S.rates.altin) extra = (tutar/S.rates.altin).toFixed(2)+' gram alınır';
-    else if (a.aciklama==='usd' && S.rates.usd) extra = '~'+Math.round(tutar/S.rates.usd)+' USD';
-    else if (a.aciklama==='faiz') extra = 'Günlük ~%0.10 faiz';
-    return '<div class="arow">'+
-      '<div class="adot" style="background:'+a.renk+';"></div>'+
-      '<div class="an"><div class="an-m">'+a.ad+'</div><div class="an-s">'+a.platform+'</div></div>'+
-      '<div class="abw"><div class="ab" style="width:'+Math.min(a.oran,100)+'%;background:'+a.renk+';"></div></div>'+
-      '<div class="ap">%'+a.oran+'</div>'+
-      '<div class="aa" style="color:'+a.renk+';">'+fmtN(tutar)+' ₺</div>'+
-      '</div>';
-  }).join('');
-}
-
-function renderAracListe() {
-  var c = document.getElementById('arac-liste');
-  if (!c) return;
-  c.innerHTML = S.araclar.map(function(a,i) {
-    return '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);">'+
-      '<div style="width:12px;height:12px;border-radius:50%;background:'+a.renk+';flex-shrink:0;"></div>'+
-      '<div style="flex:1;font-size:13px;font-weight:500;">'+a.ad+'</div>'+
-      '<div style="display:flex;align-items:center;gap:4px;"><span style="font-size:12px;color:var(--ink3);">%</span>'+
-      '<input type="number" value="'+a.oran+'" min="0" max="100" step="1" style="width:52px;padding:4px 6px;border:1px solid var(--border);border-radius:6px;font-size:14px;font-weight:600;text-align:center;font-family:var(--sans);font-size:16px;" oninput="oranGuncelle('+i+',this.value)"></div>'+
-      '<button onclick="aracSil('+i+')" style="font-size:18px;background:none;border:none;cursor:pointer;color:var(--ink3);padding:0 4px;">×</button>'+
-      '</div>';
-  }).join('');
-  toplamGoster();
-}
-
-function oranGuncelle(i,v){ S.araclar[i].oran=parseInt(v)||0; toplamGoster(); }
-function toplamGoster() {
-  var t = S.araclar.reduce(function(s,a){ return s+a.oran; },0);
-  var el = document.getElementById('toplam-oran-uyari'); if(!el) return;
-  el.style.display='block';
-  if (t===100) { el.style.background='var(--green-bg)';el.style.color='var(--green)';el.textContent='✓ Toplam: %100'; }
-  else if (t<100) { el.style.background='var(--gold-bg)';el.style.color='var(--gold)';el.textContent='⚠ Toplam: %'+t+' — '+(100-t)+'% eksik'; }
-  else { el.style.background='var(--red-bg)';el.style.color='var(--red)';el.textContent='✗ Toplam: %'+t+' — '+(t-100)+'% fazla'; }
-}
-function aracEkle(ad,renk,oran) {
-  S.araclar.push({id:'ozel_'+Date.now(),ad:ad,renk:renk,oran:parseInt(oran),platform:'Ziraat → Yatırım',aciklama:''});
-  renderAracListe();
-}
-function aracSil(i) { if(S.araclar.length<=1){alert('En az 1 araç olmalı');return;} S.araclar.splice(i,1); renderAracListe(); }
-function toggleAracDuzenle() {
-  var n=document.getElementById('dagılım-normal'),d=document.getElementById('dagılım-duzenle'),b=document.getElementById('arac-btn');
-  if(d.style.display==='none'){d.style.display='block';n.style.display='none';b.textContent='✕ Kapat';renderAracListe();}
-  else dagılımIptal();
-}
-function dagılımKaydet() {
-  var t=S.araclar.reduce(function(s,a){return s+a.oran;},0);
-  if(t!==100){alert('Oranların toplamı %100 olmalı! Şu an: %'+t);return;}
-  try{localStorage.setItem('mn-araclar',JSON.stringify(S.araclar));}catch(e){}
-  renderDagılım(); updateAll(); renderHedef(); dagılımIptal();
-}
-function dagılımIptal() {
-  S.araclar=loadAraclar();
-  document.getElementById('dagılım-duzenle').style.display='none';
-  document.getElementById('dagılım-normal').style.display='block';
-  document.getElementById('arac-btn').textContent='✏️ Düzenle';
-}
-
-// ── BORDRO ───────────────────────────────────────────────────────────────────
-function calcPreview() {
-  var net=parseInt(document.getElementById('f-net').value)||0;
-  var brut=parseInt(document.getElementById('f-brut').value)||0;
-  if(!net&&!brut){document.getElementById('preview-box').style.display='none';return;}
-  document.getElementById('preview-box').style.display='block';
-  var oran=vergiBelirleGercek(brut,parseInt(document.getElementById('f-vergi').value)||0);
-  var prim=S.maas*0.05; var iade=prim*0.5*oran;
-  document.getElementById('prev-net').textContent=fmtN(net)+' ₺';
-  document.getElementById('prev-dilim').textContent='%'+(oran*100);
-  document.getElementById('prev-iade').textContent='~'+fmtN(iade)+' ₺';
-  document.getElementById('prev-yiade').textContent='~'+fmtN(iade*12)+' ₺';
-}
-function saveBordro() {
-  var ay=document.getElementById('f-ay').value;
-  var net=parseInt(document.getElementById('f-net').value);
-  var brut=parseInt(document.getElementById('f-brut').value);
-  var vergi=parseInt(document.getElementById('f-vergi').value);
-  if(!net||!brut){alert('Lütfen en az Net Maaş ve Brüt Ücret girin.');return;}
-  S.maas=net; S.brut=brut; S.vergiBrut=vergi||0; P.gelir=net;
-  document.getElementById('s-maas').textContent=fmtN(net)+' ₺';
-  document.getElementById('s-maas-sub').textContent=ay+' bordrousu';
-  var e={ay,net,brut,vergi,tarih:new Date().toLocaleDateString('tr-TR')};
-  S.bordrolar=S.bordrolar.filter(function(b){return b.ay!==ay;});
-  S.bordrolar.unshift(e);
-  if(S.bordrolar.length>12)S.bordrolar.pop();
-  try{localStorage.setItem('mn-bordro',JSON.stringify(S.bordrolar));}catch(e){}
-  renderHistory(); updateAll();
-  document.getElementById('success-box').style.display='block';
-  document.getElementById('success-msg').textContent=ay+' bordrousu kaydedildi. Net: '+fmtN(net)+' ₺';
-  document.getElementById('f-net').value='';document.getElementById('f-brut').value='';document.getElementById('f-vergi').value='';
-  document.getElementById('preview-box').style.display='none';
-}
-function renderHistory() {
-  var c=document.getElementById('bordro-history');
-  if(!S.bordrolar.length){
-    c.innerHTML='<div style="font-size:12px;color:var(--ink3);text-align:center;padding:24px 0;">Henüz bordro girilmedi.</div>';
-    document.getElementById('avg-maas').textContent='—';return;
-  }
-  c.innerHTML=S.bordrolar.map(function(b,i){
-    return '<div class="history-item"><span class="h-badge">'+b.ay+'</span><span class="h-net">'+fmtN(b.net)+' ₺</span>'+
-      '<span style="font-size:10px;color:var(--ink3);">'+b.tarih+'</span>'+
-      '<span class="h-del" onclick="delBordro('+i+')">Sil</span></div>';
-  }).join('');
-  var avg=S.bordrolar.reduce(function(a,b){return a+b.net;},0)/S.bordrolar.length;
-  document.getElementById('avg-maas').textContent=fmtN(avg)+' ₺';
-  document.getElementById('avg-sub').textContent='Son '+S.bordrolar.length+' bordronun ortalaması';
-}
-function delBordro(i){
-  if(!confirm(S.bordrolar[i].ay+' bordrosunu silmek istiyor musunuz?'))return;
-  S.bordrolar.splice(i,1);
-  try{localStorage.setItem('mn-bordro',JSON.stringify(S.bordrolar));}catch(e){}
-  renderHistory();
-}
-function editBordro(i){
-  var b=S.bordrolar[i];
-  document.getElementById('f-ay').value=b.ay;
-  document.getElementById('f-net').value=b.net;
-  document.getElementById('f-brut').value=b.brut||'';
-  document.getElementById('f-vergi').value=b.vergi||'';
-  calcPreview();
-  goTab('bordro',document.querySelectorAll('.nb')[4]);
-  S.bordrolar.splice(i,1);
-  try{localStorage.setItem('mn-bordro',JSON.stringify(S.bordrolar));}catch(e){}
-  renderHistory();
-}
-
-// ── HESAP MAKİNESİ ────────────────────────────────────────────────────────────
-var cc;
-function cu() {
-  var m=parseInt(document.getElementById('c-m').value);
-  var r=parseInt(document.getElementById('c-r').value);
-  var y=parseInt(document.getElementById('c-y').value);
-  var inc=parseInt(document.getElementById('c-inc').value);
-  document.getElementById('c-m-o').textContent=(m/1000)+'K ₺';
-  document.getElementById('c-r-o').textContent='%'+r;
-  document.getElementById('c-y-o').textContent=y+' yıl';
-  document.getElementById('c-inc-o').textContent='%'+inc;
-  var mr=r/100/12;
-  var p=m,inv=m,pA=[m],iA=[m],mA=m;
-  for(var mo=1;mo<=y*12;mo++){
-    if(inc>0&&mo>1&&mo%6===1)mA=Math.round(mA*(1+inc/100));
-    p=p*(1+mr)+mA;inv+=mA;pA.push(Math.round(p));iA.push(Math.round(inv));
-  }
-  document.getElementById('c-res').textContent=fmt(p);
-  document.getElementById('c-inv').textContent=fmt(inv);
-  document.getElementById('c-gain').textContent='+'+fmt(p-inv);
-  document.getElementById('c-income').textContent=fmt(Math.round(p*r/100/12))+' / ay';
-  var startAge=P.yas||27;
-  var ms='';
-  var milestones=[5,10,15,20,y];
-  var shown={};
-  milestones.forEach(function(a){
-    if(shown[a])return;shown[a]=true;
-    if(a>y)return;
-    var age=startAge+a,idx=a*12,f=(a===y);
-    ms+='<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);'+(f?'font-weight:700;':'')+'">'+
-      '<span style="color:'+(f?'var(--green)':'var(--ink3)')+';">'+age+' yaş ('+a+'. yıl)</span>'+
-      '<span style="color:'+(f?'var(--green)':'var(--ink)')+';">'+fmt(pA[Math.min(idx,pA.length-1)])+'</span></div>';
-  });
-  document.getElementById('ms').innerHTML=ms;
-  var labels=Array.from({length:y*12+1},function(_,i){return i%12===0?(startAge+i/12)+' yaş':'';});
-  if(cc)cc.destroy();
-  cc=new Chart(document.getElementById('cc'),{
-    type:'line',
-    data:{labels:labels,datasets:[
-      {label:'Portföy',data:pA,borderColor:'#B8860B',backgroundColor:'rgba(184,134,11,0.05)',fill:true,tension:0.4,pointRadius:0,borderWidth:2},
-      {label:'Yatırılan',data:iA,borderColor:'#C8C8D0',borderDash:[4,4],fill:false,tension:0,pointRadius:0,borderWidth:1.5}
-    ]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{labels:{boxWidth:8,font:{size:11},color:'#8E8E93',padding:10}}},
-      scales:{y:{ticks:{callback:function(v){return fs(v);},font:{size:10},color:'#8E8E93'},grid:{color:'rgba(0,0,0,0.04)'}},
-        x:{ticks:{font:{size:10},color:'#8E8E93',maxRotation:0},grid:{display:false}}}
-    }
-  });
-}
-
-// ── BAKİYEM ──────────────────────────────────────────────────────────────────
-document.addEventListener('input', function(e) {
-  if (e.target.id==='bk-miktar'||e.target.id==='bk-alis') {
-    var m=parseFloat(document.getElementById('bk-miktar').value)||0;
-    var a=parseFloat(document.getElementById('bk-alis').value)||0;
-    document.getElementById('bk-maliyet').value=m&&a?Math.round(m*a).toLocaleString('tr-TR'):'';
-  }
+// Basit Vergi Avantajı Hesaplama (Simüle)
+document.getElementById('ins-amount')?.addEventListener('input', function() {
+    let amt = this.value;
+    let advantage = amt * 0.15; // %15 dilim varsayımı
+    document.getElementById('tax-advantage-result').innerHTML = `Aylık Vergi Avantajı: <strong>${advantage.toFixed(2)} TL</strong> <br> <small>Bu tutar net maaşınıza eklenir.</small>`;
 });
-function bakiyeEkle() {
-  var arac=document.getElementById('bk-arac').value;
-  var miktar=parseFloat(document.getElementById('bk-miktar').value);
-  var alis=parseFloat(document.getElementById('bk-alis').value);
-  if(!miktar||!alis){alert('Miktar ve alış fiyatı giriniz.');return;}
-  var ARAC_ADLAR={altin:{ad:'Gram Altın',renk:'#C9A84C',birim:'gram'},ppf:{ad:'Para Piyasası Fonu',renk:'#1A7A4A',birim:'₺'},bist:{ad:'BİST 30 Endeks',renk:'#1A5FAA',birim:'pay'},usd:{ad:'Döviz Fonu',renk:'#7B3FBE',birim:'$'},diger:{ad:'Diğer',renk:'#888',birim:'adet'}};
-  var info=ARAC_ADLAR[arac]||ARAC_ADLAR['diger'];
-  S.bakiye.push({id:Date.now(),arac:arac,ad:info.ad,renk:info.renk,birim:info.birim,miktar:miktar,alis:alis,maliyet:Math.round(miktar*alis),tarih:new Date().toLocaleDateString('tr-TR')});
-  try{localStorage.setItem('mn-bakiye',JSON.stringify(S.bakiye));}catch(e){}
-  document.getElementById('bk-miktar').value='';document.getElementById('bk-alis').value='';document.getElementById('bk-maliyet').value='';
-  renderBakiye();renderHedef();
-}
-function bakiyeSil(id){
-  if(!confirm('Bu pozisyonu silmek istiyor musunuz?'))return;
-  S.bakiye=S.bakiye.filter(function(b){return b.id!==id;});
-  try{localStorage.setItem('mn-bakiye',JSON.stringify(S.bakiye));}catch(e){}
-  renderBakiye();renderHedef();
-}
-function renderBakiye() {
-  var liste=document.getElementById('bakiye-liste');
-  var ozet=document.getElementById('bk-ozet');
-  if(!liste||!ozet)return;
-  if(!S.bakiye.length){
-    liste.innerHTML='<div style="font-size:12px;color:var(--ink3);text-align:center;padding:16px 0;">Henüz pozisyon eklenmedi.</div>';
-    document.getElementById('bk-toplam-deger').textContent='—';
-    document.getElementById('bk-toplam-maliyet').textContent='—';
-    document.getElementById('bk-karzarar').textContent='—';
-    document.getElementById('bk-karzarar-pct').textContent='—';
-    ozet.innerHTML='';return;
-  }
-  var toplamM=0,toplamD=0;
-  var aracOzetler={};
-  var rows=S.bakiye.map(function(b){
-    var info=ARAC_INFO[b.arac]||ARAC_INFO['diger'];
-    var gf=info.fiyatFn();
-    var gd=(b.arac==='ppf'||b.arac==='diger')?b.maliyet:Math.round(b.miktar*gf);
-    var kz=gd-b.maliyet;
-    var kzP=b.maliyet>0?((kz/b.maliyet)*100).toFixed(1):0;
-    toplamM+=b.maliyet;toplamD+=gd;
-    if(!aracOzetler[b.arac])aracOzetler[b.arac]={ad:b.ad,renk:b.renk,maliyet:0,deger:0};
-    aracOzetler[b.arac].maliyet+=b.maliyet;aracOzetler[b.arac].deger+=gd;
-    var kzC=kz>0?'var(--green)':kz<0?'var(--red)':'var(--ink3)';
-    return '<div style="background:var(--cream);border-radius:8px;padding:10px 12px;margin-bottom:8px;border:1px solid var(--border);">'+
-      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">'+
-      '<div style="display:flex;align-items:center;gap:8px;"><div style="width:8px;height:8px;border-radius:50%;background:'+b.renk+';"></div>'+
-      '<span style="font-size:13px;font-weight:600;">'+b.ad+'</span><span style="font-size:10px;color:var(--ink3);">'+b.tarih+'</span></div>'+
-      '<button onclick="bakiyeSil('+b.id+')" style="font-size:16px;background:none;border:none;cursor:pointer;color:var(--ink3);">×</button></div>'+
-      '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;font-size:11px;">'+
-      '<div><div style="color:var(--ink3);">Miktar</div><div style="font-weight:600;">'+b.miktar+' '+b.birim+'</div></div>'+
-      '<div><div style="color:var(--ink3);">Maliyet</div><div style="font-weight:600;">'+Math.round(b.maliyet).toLocaleString('tr-TR')+' ₺</div></div>'+
-      '<div><div style="color:var(--ink3);">Güncel</div><div style="font-weight:600;">'+gd.toLocaleString('tr-TR')+' ₺</div></div></div>'+
-      '<div style="margin-top:6px;font-size:12px;font-weight:700;color:'+kzC+';">'+(kz>0?'+':'')+Math.round(kz).toLocaleString('tr-TR')+' ₺ ('+(kz>0?'+':'')+kzP+'%)</div></div>';
-  }).join('');
-  liste.innerHTML=rows;
-  var toplamKZ=toplamD-toplamM;
-  var toplamP=toplamM>0?((toplamKZ/toplamM)*100).toFixed(1):0;
-  var kzC=toplamKZ>0?'var(--green)':toplamKZ<0?'var(--red)':'var(--ink3)';
-  document.getElementById('bk-toplam-deger').textContent=Math.round(toplamD).toLocaleString('tr-TR')+' ₺';
-  document.getElementById('bk-toplam-maliyet').textContent='Toplam maliyet: '+Math.round(toplamM).toLocaleString('tr-TR')+' ₺';
-  document.getElementById('bk-karzarar').textContent=(toplamKZ>0?'+':'')+Math.round(toplamKZ).toLocaleString('tr-TR')+' ₺';
-  document.getElementById('bk-karzarar').style.color=kzC;
-  document.getElementById('bk-karzarar-pct').textContent=(toplamKZ>0?'+':'')+toplamP+'% · Alış fiyatına göre';
-  ozet.innerHTML=Object.values(aracOzetler).map(function(a){
-    var kz=a.deger-a.maliyet;var kzP=a.maliyet>0?((kz/a.maliyet)*100).toFixed(1):0;var kzC=kz>0?'var(--green)':kz<0?'var(--red)':'var(--ink3)';
-    return '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);">'+
-      '<div style="display:flex;align-items:center;gap:7px;"><div style="width:8px;height:8px;border-radius:50%;background:'+a.renk+';"></div><span style="font-size:12px;font-weight:500;">'+a.ad+'</span></div>'+
-      '<div style="text-align:right;"><div style="font-size:13px;font-weight:700;">'+Math.round(a.deger).toLocaleString('tr-TR')+' ₺</div>'+
-      '<div style="font-size:10px;font-weight:600;color:'+kzC+';">'+(kz>0?'+':'')+kzP+'%</div></div></div>';
-  }).join('');
-}
 
-// ── HEDEF ────────────────────────────────────────────────────────────────────
-function renderHedef() {
-  if (!P.yas) return;
-  var yas=P.yas, hedefYas=P.emekYas||55, getiri=18, artis=P.artis||0;
-  var toplamYil=hedefYas-yas;
-  var aylikYat=S.yatirim||P.yatirim||30000;
-  var hedefPortfoy=calcPortfoy(aylikYat,getiri,toplamYil,artis);
-  var gercek=S.bakiye.reduce(function(t,b){
-    var info=ARAC_INFO[b.arac]||ARAC_INFO['diger'];
-    return t+(b.arac==='ppf'||b.arac==='diger'?b.maliyet:Math.round(b.miktar*info.fiyatFn()));
-  },0);
-  var gecenAy=S.bordrolar.length;
-  var gecenYil=gecenAy/12;
-  var zamanPct=Math.min((gecenYil/toplamYil)*100,100).toFixed(1);
-  var beklenen=gecenYil>0?calcPortfoy(aylikYat,getiri,gecenYil,artis):0;
-  var birikimPct=hedefPortfoy>0?Math.min((gercek/hedefPortfoy)*100,100).toFixed(2):0;
-  var fark=gercek-beklenen;
-  var farkC=fark>=0?'var(--green)':'var(--red)';
-
-  document.getElementById('hd-hedef').textContent=fmt(hedefPortfoy);
-  document.getElementById('hd-hedef-sub').textContent=hedefYas+' yaşında · %'+getiri+' getiri';
-  document.getElementById('hd-gercek').textContent=gercek>0?fmt(gercek):'Bakiye gir';
-  document.getElementById('hd-pct').textContent=gercek>0?'%'+birikimPct:'—';
-  document.getElementById('hd-pct').style.color=gercek>0?'var(--green)':'var(--ink3)';
-  document.getElementById('hd-pct-sub').textContent=gercek>0?'Hedefe ulaşma':'Bakiyem sekmesine gir';
-  document.getElementById('hd-kalan').textContent=(toplamYil-gecenYil).toFixed(1)+' yıl';
-  document.getElementById('hd-kalan-sub').textContent=hedefYas+' yaşına kalan';
-  document.getElementById('hd-baslangic-lbl').textContent=yas+' yaş';
-  document.getElementById('hd-hedef-yas-lbl').textContent=hedefYas+' yaş';
-  document.getElementById('hd-zaman-bar').style.width=zamanPct+'%';
-  document.getElementById('hd-gecen').textContent='← '+gecenYil.toFixed(1)+' yıl ('+zamanPct+'%)';
-  document.getElementById('hd-birikim-bar').style.width=birikimPct+'%';
-  document.getElementById('hd-birikim-pct-lbl').textContent='%'+birikimPct;
-  document.getElementById('hd-beklenen').textContent=beklenen>0?fmt(beklenen):'—';
-  document.getElementById('hd-gercek2').textContent=gercek>0?fmt(gercek):'—';
-  document.getElementById('hd-fark').textContent=beklenen>0?(fark>=0?'+':'')+fmt(Math.abs(fark)):'—';
-  document.getElementById('hd-fark').style.color=farkC;
-  var yorumEl=document.getElementById('hd-yorum');
-  if(gercek===0){yorumEl.style.background='var(--blue-bg)';yorumEl.style.color='var(--blue)';yorumEl.textContent='💡 Bakiyem sekmesine gerçek birikimini gir.';}
-  else if(fark>=0){yorumEl.style.background='var(--green-bg)';yorumEl.style.color='var(--green)';yorumEl.textContent='🎉 Harika! Beklenenin önündesin.';}
-  else{yorumEl.style.background='var(--gold-bg)';yorumEl.style.color='var(--gold)';yorumEl.textContent='📊 Biraz geride. Aylık yatırımını artırarak telafi edebilirsin.';}
-  var rozetEl=document.getElementById('hd-rozet');
-  if(gercek===0){rozetEl.textContent='⏳ Başlangıç';rozetEl.style.background='#F2F2F7';rozetEl.style.color='var(--ink3)';}
-  else if(fark>=0){rozetEl.textContent='🚀 Hedefte';rozetEl.style.background='var(--green-bg)';rozetEl.style.color='var(--green)';}
-  else{rozetEl.textContent='⚡ Yakala';rozetEl.style.background='var(--gold-bg)';rozetEl.style.color='var(--gold)';}
-  var taslar='';
-  [5,10,15,20,toplamYil].forEach(function(a){
-    if(a>toplamYil)return;
-    var age=yas+a,b=calcPortfoy(aylikYat,getiri,a,artis),f=(a===toplamYil);
-    var gecildi=gecenYil>=a;
-    taslar+='<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);">'+
-      '<div style="display:flex;align-items:center;gap:8px;"><div style="width:8px;height:8px;border-radius:50%;background:'+(gecildi?'var(--green)':f?'var(--gold)':'#DDD')+';"></div>'+
-      '<span style="font-size:12px;'+(f?'font-weight:700;':'')+'color:'+(f?'var(--gold)':gecildi?'var(--green)':'var(--ink3)')+';">'+age+' yaş ('+a+'. yıl)</span></div>'+
-      '<span style="font-size:13px;font-weight:700;color:'+(f?'var(--gold)':gecildi?'var(--green)':'var(--ink)')+';">'+fmt(b)+'</span></div>';
-  });
-  document.getElementById('hd-taslar').innerHTML=taslar;
-}
-
-// ── PROFIL SIFIRLA ───────────────────────────────────────────────────────────
-function resetApp() {
-  if (!confirm('Profilini sıfırlamak istiyor musun? Bordro ve bakiye verilerin korunur.')) return;
-  try { localStorage.removeItem('mn-profil'); } catch(e) {}
-  document.getElementById('dashboard').classList.remove('visible');
-  document.getElementById('onboarding').classList.remove('hidden');
-  P = {}; obStep = 1; obData = { ad:'', yas:27, meslek:'', gelir:75000, yatirim:30000, risk:'dengeli', emekYas:55, artis:0 };
-  document.querySelectorAll('.ob-step').forEach(function(s){ s.classList.remove('active'); });
-  document.getElementById('step-1').classList.add('active');
-  document.querySelectorAll('.ob-card').forEach(function(c){ c.classList.remove('selected'); });
-  document.getElementById('ob-next-btn').textContent = 'Devam Et →';
-  document.getElementById('ob-back-btn').style.display = 'none';
-  updateObProgress();
-}
-
-// ── INIT ─────────────────────────────────────────────────────────────────────
-// Splash
-setTimeout(function() {
-  document.getElementById('splash').classList.add('fade');
-  setTimeout(function() { document.getElementById('splash').style.display='none'; }, 500);
-
-  // Kayıtlı profil var mı?
-  try {
-    var saved = localStorage.getItem('mn-profil');
-    if (saved) {
-      P = JSON.parse(saved);
-      // Kaydedilmiş araçları yükle
-      var savedAraclar = localStorage.getItem('mn-araclar');
-      S.araclar = savedAraclar ? JSON.parse(savedAraclar) : getDefaultAraclar(P.risk||'dengeli');
-      S.yatirim = parseInt(localStorage.getItem('mn-yatirim')) || P.yatirim;
-      S.maas    = P.gelir;
-      S.bordrolar = JSON.parse(localStorage.getItem('mn-bordro')||'[]');
-      S.bakiye    = JSON.parse(localStorage.getItem('mn-bakiye')||'[]');
-      document.getElementById('onboarding').classList.add('hidden');
-      document.getElementById('dashboard').classList.add('visible');
-      initDashboard();
-      fetchRates();
-      setInterval(fetchRates, 30000);
-      document.addEventListener('visibilitychange', function(){ if(document.visibilityState==='visible') fetchRates(); });
-      window.addEventListener('focus', fetchRates);
-      return;
-    }
-  } catch(e) {}
-
-  // Yeni kullanıcı - onboarding göster
-  document.getElementById('onboarding').style.display='flex';
-  updateObProgress();
-
-}, 1800);
-
-document.addEventListener('visibilitychange', function(){ if(document.visibilityState==='visible' && S.rates.altin) fetchRates(); });
-window.addEventListener('focus', function(){ if(S.rates.altin) fetchRates(); });
 </script>
 </body>
 </html>
