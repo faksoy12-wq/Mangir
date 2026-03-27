@@ -140,14 +140,18 @@ input[type=range]{appearance:slider-horizontal;-webkit-appearance:slider-horizon
 /* DASHBOARD */
 #dashboard{display:none;overflow-x:hidden;}
 #dashboard.visible{display:block;}
-.header{background:rgba(250,250,250,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;position:sticky;top:0;z-index:100;}
+.header{background:rgba(250,250,250,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;justify-content:space-between;align-items:center;gap:12px;position:sticky;top:0;z-index:100;}
 [data-theme="dark"] .header{background:rgba(10,10,10,0.92);}
+.h-left{flex-shrink:0;}
 .h-name{font-family:var(--serif);font-size:18px;font-weight:700;letter-spacing:-0.01em;}
-.h-sub{font-size:12px;color:var(--ink3);margin-top:2px;}
-.h-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
-.pill{font-size:12px;font-weight:600;padding:4px 10px;border-radius:24px;}
+.h-sub{font-size:11px;color:var(--ink3);margin-top:1px;}
+.h-right{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end;}
+.h-pill{font-size:11px;font-weight:600;padding:3px 8px;border-radius:24px;}
 .pill-gold{background:var(--gold-bg);border:1px solid var(--gold-bd);color:var(--gold);}
 .pill-green{background:var(--green-bg);border:1px solid var(--green-bd);color:var(--green);}
+.h-live{font-size:9px;color:var(--ink3);white-space:nowrap;}
+.h-icon-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:all .2s;flex-shrink:0;padding:0;}
+.h-icon-btn:hover{border-color:var(--border-hover);background:var(--cream);transform:scale(1.05);}
 .reset-btn{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--ink3);cursor:pointer;font-family:var(--sans);}
 .ticker{background:var(--white);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;gap:10px;flex-wrap:nowrap;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;width:100%;}
 .ticker::-webkit-scrollbar{display:none;}
@@ -199,6 +203,20 @@ input[type=range]{width:80px;accent-color:var(--gold);}
 .res-box{background:var(--gold-bg);border:1px solid var(--gold-bd);border-radius:10px;padding:13px 15px;margin-top:10px;}
 .res-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);margin-bottom:3px;}
 .res-val{font-family:var(--serif);font-size:22px;color:var(--gold);}
+/* ── STEPPER CONTROL ── */
+.stepper{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--cream);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;}
+.stepper-label{font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;}
+.stepper-controls{display:flex;align-items:center;gap:10px;}
+.stepper-btn{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--white);color:var(--ink);cursor:pointer;font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center;padding:0;transition:all .2s;font-family:var(--sans);}
+.stepper-btn:hover{background:var(--cream);border-color:var(--border-hover);}
+.stepper-btn:active{transform:scale(0.9);}
+.stepper-val{font-size:18px;font-weight:800;font-family:var(--serif);min-width:28px;text-align:center;}
+/* ── SETTINGS ICON BUTTON ── */
+.settings-icon{width:28px;height:28px;border-radius:50%;border:1px solid var(--border);background:var(--white);cursor:pointer;font-size:13px;display:inline-flex;align-items:center;justify-content:center;transition:all .25s;padding:0;flex-shrink:0;}
+.settings-icon:hover{border-color:var(--border-hover);transform:rotate(45deg);background:var(--cream);}
+/* ── EDIT BTN (compact) ── */
+.edit-pill{font-size:10px;padding:3px 10px;border:1px solid var(--border);background:var(--white);color:var(--ink3);border-radius:20px;cursor:pointer;font-family:var(--sans);font-weight:600;transition:all .2s;display:inline-flex;align-items:center;gap:3px;}
+.edit-pill:hover{border-color:var(--border-hover);color:var(--ink);}
 .chart-wrap{position:relative;width:100%;height:200px;}
 .tl{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
 .tl:last-child{border-bottom:none;}
@@ -274,10 +292,16 @@ input[type=range]{width:80px;accent-color:var(--gold);}
   /* Overflow kill */
   #dashboard,.content,.card,.stat,.g4,.g2,.g21,.ticker,.ob-step-content{max-width:100vw;overflow-x:hidden;}
   .arow{flex-wrap:wrap;}
-  .h-actions{max-width:100%;overflow:hidden;}
-  /* Header solid bg for mobile (no blur glitch) */
-  .header{background:var(--cream) !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;}
+  /* ── MOBILE HEADER ── */
+  .header{flex-direction:column;align-items:stretch;padding:10px 14px;gap:8px;background:var(--cream) !important;backdrop-filter:none !important;-webkit-backdrop-filter:none !important;}
   [data-theme="dark"] .header{background:var(--cream) !important;}
+  .h-left{display:flex;align-items:center;gap:10px;}
+  .h-left .h-name{font-size:16px;}
+  .h-left .h-sub{display:none;}
+  .h-right{flex-wrap:nowrap;gap:5px;justify-content:space-between;}
+  .h-pill{font-size:9px;padding:2px 6px;}
+  .h-live{font-size:8px;}
+  .h-icon-btn{width:28px;height:28px;font-size:12px;}
 }
 /* ── DARK MODE ── */
 [data-theme="dark"]{
@@ -526,16 +550,19 @@ html{scroll-behavior:smooth;}
 <!-- DASHBOARD -->
 <div id="dashboard">
   <div class="header">
-    <div><div class="h-name" id="d-isim">—</div><div class="h-sub" id="d-meslek">Finansal Özgürlük Planı</div></div>
-    <div class="h-actions">
-      <span class="pill pill-gold" id="d-yas-pill">—</span>
-      <span class="pill pill-green" id="d-tasarruf-pill">—</span>
-      <span style="font-size:10px;color:var(--ink3);" id="upd-time">Yükleniyor...</span>
-      <button class="reset-btn" id="gizlilik-btn" onclick="toggleGizlilik()" title="Rakamları maskele">👁️</button>
-      <button class="reset-btn" onclick="showAuthScreen()">👤 Profil</button>
+    <div class="h-left">
+      <div class="h-name" id="d-isim">—</div>
+      <div class="h-sub" id="d-meslek">Finansal Özgürlük Planı</div>
+    </div>
+    <div class="h-right">
+      <span class="pill pill-gold h-pill" id="d-yas-pill">—</span>
+      <span class="pill pill-green h-pill" id="d-tasarruf-pill">—</span>
+      <span class="h-live" id="upd-time">Yükleniyor...</span>
+      <button class="h-icon-btn" id="gizlilik-btn" onclick="toggleGizlilik()" title="Rakamları maskele">👁️</button>
+      <button class="h-icon-btn" onclick="showAuthScreen()" title="Profil değiştir">👤</button>
       <button class="export-btn" onclick="exportData()">📥 Yedekle</button>
       <label class="export-btn" style="cursor:pointer;">📤 Yükle<input type="file" id="import-file" accept=".json" onchange="importData(event)" style="display:none;"></label>
-      <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()" title="Tema değiştir">🌙</button>
+      <button class="h-icon-btn" id="theme-btn" onclick="toggleTheme()" title="Tema değiştir">🌙</button>
     </div>
   </div>
   <div class="ticker">
@@ -569,28 +596,28 @@ html{scroll-behavior:smooth;}
       <div class="g4">
         <div class="stat"><div class="sl">💰 Aylık Gelir</div><div class="sv" id="s-maas" style="font-size:16px;">—</div><div class="ss" id="s-maas-sub">Net gelir</div></div>
         <div class="stat" style="cursor:pointer;border:1px solid var(--green-bd);background:var(--green-bg);" onclick="toggleYatirimEdit()">
-          <div class="sl" style="color:var(--green);">📈 Aylık Yatırım <span style="font-size:9px;background:var(--green);color:white;padding:1px 5px;border-radius:3px;margin-left:3px;">DÜZENLE</span></div>
+          <div class="sl" style="color:var(--green);">📈 Aylık Yatırım <button class="settings-icon" style="margin-left:auto;" onclick="event.stopPropagation();toggleYatirimEdit()">⚙️</button></div>
           <div id="yatirim-display"><div class="sv" id="s-yatirim" style="font-size:16px;color:var(--green);">—</div><div class="ss" id="s-oran">—</div></div>
           <div id="yatirim-edit" style="display:none;" onclick="event.stopPropagation()">
-            <input type="number" id="yatirim-input" inputmode="numeric" autocomplete="off" style="width:100%;padding:5px 8px;border:1.5px solid var(--green-bd);border-radius:6px;font-size:16px;font-weight:700;color:var(--green);background:var(--white);outline:none;margin-top:4px;font-family:var(--sans);">
-            <div style="display:flex;gap:5px;margin-top:5px;">
-              <button onclick="saveYatirim()" style="flex:1;padding:5px;background:var(--green);color:white;border:none;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--sans);">Kaydet</button>
-              <button onclick="cancelYatirim()" style="flex:1;padding:5px;background:var(--white);color:var(--ink3);border:1px solid var(--border);border-radius:5px;font-size:11px;cursor:pointer;font-family:var(--sans);">İptal</button>
+            <input type="number" id="yatirim-input" inputmode="numeric" autocomplete="off" style="width:100%;padding:6px 10px;border:1.5px solid var(--green-bd);border-radius:8px;font-size:16px;font-weight:700;color:var(--green);background:var(--white);outline:none;margin-top:4px;font-family:var(--sans);">
+            <div style="display:flex;gap:5px;margin-top:6px;">
+              <button onclick="saveYatirim()" style="flex:1;padding:6px;background:var(--green);color:white;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--sans);">✓ Kaydet</button>
+              <button onclick="cancelYatirim()" style="flex:1;padding:6px;background:var(--white);color:var(--ink3);border:1px solid var(--border);border-radius:6px;font-size:11px;cursor:pointer;font-family:var(--sans);">İptal</button>
             </div>
           </div>
         </div>
         <div class="stat" style="cursor:pointer;border:1px solid var(--gold-bd);background:var(--gold-bg);" onclick="toggleRiskEdit()">
-          <div class="sl" style="color:var(--gold);">⚖️ Risk Profili <span style="font-size:9px;background:var(--gold);color:white;padding:1px 5px;border-radius:3px;margin-left:3px;">DÜZENLE</span></div>
+          <div class="sl" style="color:var(--gold);">⚖️ Risk Profili <button class="settings-icon" style="margin-left:auto;" onclick="event.stopPropagation();toggleRiskEdit()">⚙️</button></div>
           <div id="risk-display"><div class="sv" id="s-risk" style="font-size:14px;color:var(--gold);margin-top:4px;font-weight:700;">—</div><div class="ss" id="s-risk-sub" style="color:var(--ink3);">—</div></div>
           <div id="risk-edit" style="display:none;" onclick="event.stopPropagation()">
-            <select id="risk-input" style="width:100%;padding:5px 8px;border:1.5px solid var(--gold-bd);border-radius:6px;font-size:13px;font-weight:700;color:var(--gold);background:var(--white);outline:none;margin-top:4px;font-family:var(--sans);">
+            <select id="risk-input" style="width:100%;padding:6px 10px;border:1.5px solid var(--gold-bd);border-radius:8px;font-size:13px;font-weight:700;color:var(--gold);background:var(--white);outline:none;margin-top:4px;font-family:var(--sans);">
               <option value="konser">🛡️ Muhafazakâr</option>
               <option value="dengeli">⚖️ Dengeli</option>
               <option value="agresif">🚀 Agresif</option>
             </select>
-            <div style="display:flex;gap:5px;margin-top:5px;">
-              <button onclick="saveRisk()" style="flex:1;padding:5px;background:var(--gold);color:white;border:none;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--sans);">Kaydet</button>
-              <button onclick="cancelRisk()" style="flex:1;padding:5px;background:var(--white);color:var(--ink3);border:1px solid var(--border);border-radius:5px;font-size:11px;cursor:pointer;font-family:var(--sans);">İptal</button>
+            <div style="display:flex;gap:5px;margin-top:6px;">
+              <button onclick="saveRisk()" style="flex:1;padding:6px;background:var(--gold);color:white;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--sans);">✓ Kaydet</button>
+              <button onclick="cancelRisk()" style="flex:1;padding:6px;background:var(--white);color:var(--ink3);border:1px solid var(--border);border-radius:6px;font-size:11px;cursor:pointer;font-family:var(--sans);">İptal</button>
             </div>
           </div>
         </div>
@@ -600,7 +627,7 @@ html{scroll-behavior:smooth;}
         <div class="card" style="margin-bottom:0;">
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
             <div class="ct" style="margin-bottom:0;">📊 Aylık <span id="yatirim-baslik">—</span> Dağılımı</div>
-            <button onclick="toggleAracDuzenle()" id="arac-btn" style="font-size:11px;padding:4px 10px;border:1px solid var(--gold-bd);background:var(--gold-bg);color:var(--gold);border-radius:6px;cursor:pointer;font-family:var(--sans);font-weight:600;">✏️ Düzenle</button>
+            <button onclick="toggleAracDuzenle()" id="arac-btn" class="edit-pill">⚙️ Düzenle</button>
           </div>
           <div id="dagılım-normal"><div id="dagılım-satirlar"></div><div class="arow" style="opacity:.4;"><div class="adot" style="background:#aaa;"></div><div class="an"><div class="an-m">Zorunlu BES</div><div class="an-s">Bordrodan otomatik</div></div><div class="abw"></div><div class="ap">—</div><div class="aa" style="color:#aaa;">Otomatik</div></div></div>
           <div id="dagılım-duzenle" style="display:none;">
@@ -632,24 +659,24 @@ html{scroll-behavior:smooth;}
           </div>
           <div class="card" style="margin-bottom:0;">
             <div class="ct">📅 Yaşa Göre Strateji</div>
-            <div style="background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:8px 12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
-               <div style="font-size:11px;color:var(--ink3);font-weight:600;">MEVCUT YAŞ (SİMÜLASYON)</div>
-               <div style="display:flex;align-items:center;gap:8px;">
-                  <button onclick="changeMevcutYas(-1)" style="width:24px;height:24px;border-radius:12px;border:1px solid var(--border);background:var(--white);color:var(--ink);cursor:pointer;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:0;padding-bottom:2px;">-</button>
-                  <span id="yas-edit-val" style="font-size:14px;font-weight:700;min-width:20px;text-align:center;">27</span>
-                  <button onclick="changeMevcutYas(1)" style="width:24px;height:24px;border-radius:12px;border:1px solid var(--border);background:var(--white);color:var(--ink);cursor:pointer;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:0;padding-bottom:2px;">+</button>
+            <div class="stepper">
+               <div class="stepper-label">Mevcut Yaş (Simülasyon)</div>
+               <div class="stepper-controls">
+                  <button class="stepper-btn" onclick="changeMevcutYas(-1)">−</button>
+                  <span class="stepper-val" id="yas-edit-val">27</span>
+                  <button class="stepper-btn" onclick="changeMevcutYas(1)">+</button>
                </div>
             </div>
             <div id="yas-strateji"></div>
           </div>
           <div class="card" style="margin-bottom:0;">
             <div class="ct">📉 Senaryo Analizi</div>
-            <div style="background:var(--cream);border:1px solid var(--border);border-radius:8px;padding:8px 12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
-               <div style="font-size:11px;color:var(--ink3);font-weight:600;">HEDEF EMEKLİLİK YILI / YAŞI</div>
-               <div style="display:flex;align-items:center;gap:8px;">
-                  <button onclick="changeEmekYas(-1)" style="width:24px;height:24px;border-radius:12px;border:1px solid var(--border);background:var(--white);color:var(--ink);cursor:pointer;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:0;padding-bottom:2px;">-</button>
-                  <span id="emek-edit-val" style="font-size:14px;font-weight:700;min-width:20px;text-align:center;">55</span>
-                  <button onclick="changeEmekYas(1)" style="width:24px;height:24px;border-radius:12px;border:1px solid var(--border);background:var(--white);color:var(--ink);cursor:pointer;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:0;padding-bottom:2px;">+</button>
+            <div class="stepper">
+               <div class="stepper-label">Hedef Emeklilik Yaşı</div>
+               <div class="stepper-controls">
+                  <button class="stepper-btn" onclick="changeEmekYas(-1)">−</button>
+                  <span class="stepper-val" id="emek-edit-val">55</span>
+                  <button class="stepper-btn" onclick="changeEmekYas(1)">+</button>
                </div>
             </div>
             <div style="display:flex;flex-direction:column;gap:6px;" id="senaryo-cards"></div>
