@@ -977,11 +977,13 @@ function kayitOl() {
 function profilSec(i) {
   P = JSON.parse(JSON.stringify(TUM_PROFILLER[i]));
   loadProfileState();
-  GIZLI = false; // Her profil girişinde gizliliği sıfırla
+  try{ GIZLI = localStorage.getItem('mn-gizli')==='1'; }catch(e){ GIZLI=false; }
   document.getElementById('auth-screen').classList.remove('visible');
   document.getElementById('dashboard').classList.add('visible');
-  resetTabToPortfolio(); // Her zaman portföy sekmesinden başla
+  resetTabToPortfolio();
   initDashboard();
+  fetchRates();
+  setInterval(fetchRates,30000);
 }
 
 function showHata(form, msg) {
@@ -1215,8 +1217,16 @@ function initDashboard() {
 
 function buildYasStrateji() {
   var d=document.getElementById('yas-edit-val');if(d)d.textContent=P.yas||27;
-  var yas=P.yas||27;
-  var strats=[{range:'18–35',desc:'Altın ağır, agresif büyüme',c:yas>=18&&yas<35},{range:'35–44',desc:'BİST artır, BES başlat',c:yas>=35&&yas<44},{range:'44–50',desc:'BES artır, denge kur',c:yas>=44&&yas<50},{range:'50–56',desc:'BES maksimize, korumaya geç',c:yas>=50&&yas<56},{range:'56+',desc:'Finansal özgürlük, pasif gelir',c:yas>=56}];
+  var yas=P.yas||27, emek=P.emekYas||55;
+  var h=emek-18;if(h<0)h=0;
+  var p1=18+Math.floor(h*0.4), p2=p1+Math.floor(h*0.3), p3=p2+Math.floor(h*0.2);
+  var strats=[
+    {range:'18–'+p1,desc:'Altın/Hisse ağır, agresif büyüme',c:yas>=18&&yas<p1},
+    {range:p1+'–'+p2,desc:'BİST artır, fonlara geçiş',c:yas>=p1&&yas<p2},
+    {range:p2+'–'+p3,desc:'BES başlat, denge kur',c:yas>=p2&&yas<p3},
+    {range:p3+'–'+emek,desc:'BES maksimize, korumaya geç',c:yas>=p3&&yas<emek},
+    {range:emek+'+',desc:'Finansal özgürlük, pasif gelir',c:yas>=emek}
+  ];
   document.getElementById('yas-strateji').innerHTML=strats.map(function(s){
     return '<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);">'+
       '<div style="display:flex;align-items:center;gap:8px;"><div style="width:8px;height:8px;border-radius:50%;background:'+(s.c?'var(--green)':'#DDD')+';flex-shrink:0;"></div>'+
@@ -1324,7 +1334,7 @@ function sigortaKaydet(){
 // ── KURLAR ────────────────────────────────────────────────────────────────
 async function fetchRates(){
   try{
-    var u=(location.protocol==='file:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')?'https://banker-furkan.vercel.app/api/rates':'/api/rates';
+    var u='https://banker-furkan.vercel.app/api/rates';
     var r=await fetch(u),d=await r.json();
     S.prev=Object.assign({},S.rates);S.rates.usd=d.usd||42.8;S.rates.eur=d.eur||50.2;S.rates.altin=d.altin||7100;S.rates.ons=d.ons||3000;
     var n=new Date();document.getElementById('upd-time').textContent='Canlı · '+n.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
