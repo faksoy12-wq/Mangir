@@ -121,7 +121,7 @@ input[type=range]{appearance:slider-horizontal;-webkit-appearance:slider-horizon
 .ob-sum-row:last-child{border-bottom:none;}
 .ob-sum-lbl{color:var(--ink3);}
 .ob-sum-val{font-weight:700;}
-.ob-projeksiyon{background:linear-gradient(135deg,var(--gold-bg),#FFF3C4);border:2px solid var(--gold-bd);border-radius:12px;padding:16px;margin-bottom:16px;}
+.ob-projeksiyon{background:var(--gold-bg);border:1px solid var(--gold-bd);border-radius:12px;padding:16px;margin-bottom:16px;}
 /* DASHBOARD */
 #dashboard{display:none;}
 #dashboard.visible{display:block;}
@@ -277,24 +277,15 @@ html{scroll-behavior:smooth;}
       <button class="new-profile-btn" onclick="showNewProfile()">+ Yeni Profil Oluştur</button>
     </div>
     <div id="auth-form-mode">
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="tab-giris-btn" onclick="switchAuthTab('giris')">🔐 Giriş Yap</button>
-        <button class="auth-tab" id="tab-kayit-btn" onclick="switchAuthTab('kayit')">✨ Kayıt Ol</button>
-      </div>
-      <div id="auth-giris" class="auth-form active">
-        <div style="font-size:18px;font-weight:700;margin-bottom:6px;">Tekrar hoşgeldin!</div>
-        <div style="font-size:13px;color:var(--ink3);margin-bottom:20px;">Profilin ile devam et.</div>
-        <input class="auth-input" type="text" id="giris-ad" placeholder="Adın" autocomplete="given-name">
-        <div id="giris-hata" style="font-size:12px;color:var(--red);margin-bottom:8px;display:none;"></div>
-        <button class="auth-btn" onclick="girisYap()">Giriş Yap →</button>
-      </div>
-      <div id="auth-kayit" class="auth-form">
+      <div id="no-profile-msg" style="display:none;font-size:14px;color:var(--gold);margin-bottom:16px;background:var(--gold-bg);padding:10px;border-radius:8px;border:1px solid var(--gold-bd);">Kayıtlı profil bulunamadı, lütfen yeni bir profil oluştur.</div>
+      <div id="auth-kayit" class="auth-form active">
         <div style="font-size:18px;font-weight:700;margin-bottom:6px;">Yeni profil oluştur</div>
         <div style="font-size:13px;color:var(--ink3);margin-bottom:20px;">Sana özel plan hazırlayalım.</div>
         <input class="auth-input" type="text" id="kayit-ad" placeholder="Adın" autocomplete="given-name">
         <div id="kayit-hata" style="font-size:12px;color:var(--red);margin-bottom:8px;display:none;"></div>
         <button class="auth-btn" onclick="kayitOl()">Profil Oluştur & Başla →</button>
       </div>
+      <button class="ob-btn-back" onclick="iptalYeniProfil()" id="btn-iptal-profil" style="display:none;margin-top:8px;">← Geri Dön</button>
     </div>
   </div>
 </div>
@@ -319,6 +310,7 @@ html{scroll-behavior:smooth;}
         <div class="ob-slider-sub">Yaşını ayarla</div>
         <input type="range" class="ob-range" id="ob-yas" min="18" max="65" step="1" value="27" oninput="updateSlider('yas')">
         <div class="ob-range-labels"><span>18 yaş</span><span>65 yaş</span></div>
+        <input type="number" class="ob-manual-input" id="ob-yas-txt" placeholder="Tam yaşınızı yazın" inputmode="numeric" oninput="syncManual('yas',this.value)" style="margin-top:10px;">
       </div>
     </div>
     <div class="ob-step-footer"><button class="ob-btn" onclick="nextStep()">Devam Et →</button></div>
@@ -398,6 +390,7 @@ html{scroll-behavior:smooth;}
         <div class="ob-slider-sub" id="emek-kalan-sub">— yıl sonra</div>
         <input type="range" class="ob-range" id="ob-emek" min="40" max="70" step="1" value="55" oninput="updateSlider('emek')">
         <div class="ob-range-labels"><span>40 yaş</span><span>70 yaş</span></div>
+        <input type="number" class="ob-manual-input" id="ob-emek-txt" placeholder="Hedef yaşı yazın" inputmode="numeric" oninput="syncManual('emek',this.value)" style="margin-top:10px;">
       </div>
     </div>
     <div class="ob-step-footer"><button class="ob-btn" onclick="nextStep()">Devam Et →</button><button class="ob-btn-back" onclick="prevStep()">← Geri</button></div>
@@ -413,6 +406,7 @@ html{scroll-behavior:smooth;}
         <div class="ob-slider-sub" id="artis-sub">Sabit yatırımla devam</div>
         <input type="range" class="ob-range" id="ob-artis" min="0" max="20" step="1" value="0" oninput="updateSlider('artis')">
         <div class="ob-range-labels"><span>%0 (sabit)</span><span>%20</span></div>
+        <input type="number" class="ob-manual-input" id="ob-artis-txt" placeholder="Yüzdelik oran yazın (örn: 5)" inputmode="numeric" oninput="syncManual('artis',this.value)" style="margin-top:10px;">
       </div>
     </div>
     <div class="ob-step-footer"><button class="ob-btn" onclick="nextStep()">Devam Et →</button><button class="ob-btn-back" onclick="prevStep()">← Geri</button></div>
@@ -451,7 +445,7 @@ html{scroll-behavior:smooth;}
       <div class="ob-summary" id="ob-ozet"></div>
       <div class="ob-projeksiyon" id="ob-projeksiyon"></div>
     </div>
-    <div class="ob-step-footer"><button class="ob-btn" onclick="finalizeOnboarding()">🚀 Dashboarduma Git</button><button class="ob-btn-back" onclick="prevStep()">← Geri</button></div>
+    <div class="ob-step-footer"><button class="ob-btn" onclick="finalizeOnboarding()">🚀 Ana Ekrana Git</button><button class="ob-btn-back" onclick="prevStep()">← Geri</button></div>
   </div>
 </div>
 
@@ -510,7 +504,21 @@ html{scroll-behavior:smooth;}
             </div>
           </div>
         </div>
-        <div class="stat"><div class="sl">⚖️ Risk Profili</div><div class="sv" id="s-risk" style="font-size:14px;margin-top:4px;">—</div><div class="ss" id="s-risk-sub">—</div></div>
+        <div class="stat" style="cursor:pointer;border:1px solid var(--gold-bd);background:var(--gold-bg);" onclick="toggleRiskEdit()">
+          <div class="sl" style="color:var(--gold);">⚖️ Risk Profili <span style="font-size:9px;background:var(--gold);color:white;padding:1px 5px;border-radius:3px;margin-left:3px;">DÜZENLE</span></div>
+          <div id="risk-display"><div class="sv" id="s-risk" style="font-size:14px;color:var(--gold);margin-top:4px;font-weight:700;">—</div><div class="ss" id="s-risk-sub" style="color:var(--ink3);">—</div></div>
+          <div id="risk-edit" style="display:none;" onclick="event.stopPropagation()">
+            <select id="risk-input" style="width:100%;padding:5px 8px;border:1.5px solid var(--gold-bd);border-radius:6px;font-size:13px;font-weight:700;color:var(--gold);background:var(--white);outline:none;margin-top:4px;font-family:var(--sans);">
+              <option value="konser">🛡️ Muhafazakâr</option>
+              <option value="dengeli">⚖️ Dengeli</option>
+              <option value="agresif">🚀 Agresif</option>
+            </select>
+            <div style="display:flex;gap:5px;margin-top:5px;">
+              <button onclick="saveRisk()" style="flex:1;padding:5px;background:var(--gold);color:white;border:none;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--sans);">Kaydet</button>
+              <button onclick="cancelRisk()" style="flex:1;padding:5px;background:var(--white);color:var(--ink3);border:1px solid var(--border);border-radius:5px;font-size:11px;cursor:pointer;font-family:var(--sans);">İptal</button>
+            </div>
+          </div>
+        </div>
         <div class="stat"><div class="sl">💸 Yıllık Vergi Avantajı</div><div class="sv" id="s-vergi" style="font-size:16px;color:var(--green);">—</div><div class="ss">Hesaplanıyor</div></div>
       </div>
       <div class="g21">
@@ -1040,15 +1048,20 @@ function selectSigorta(val) {
 }
 
 function updateSlider(type) {
-  if(type==='yas'){var v=parseInt(document.getElementById('ob-yas').value);document.getElementById('yas-val').textContent=v+' yaş';obData.yas=v;}
+  if(type==='yas'){var v=parseInt(document.getElementById('ob-yas').value);document.getElementById('yas-val').textContent=v+' yaş';var t=document.getElementById('ob-yas-txt');if(t)t.value=v;obData.yas=v;}
   if(type==='gelir'){var v=parseInt(document.getElementById('ob-gelir').value);document.getElementById('gelir-val').textContent=fmtR(v)+' ₺';document.getElementById('ob-gelir-txt').value=v;obData.gelir=v;}
   if(type==='yatirim'){var v=parseInt(document.getElementById('ob-yatirim').value);document.getElementById('yatirim-val').textContent=fmtR(v)+' ₺';document.getElementById('ob-yatirim-txt').value=v;obData.yatirim=v;var pct=obData.gelir>0?Math.round(v/obData.gelir*100):0;document.getElementById('yatirim-pct-sub').textContent='Gelirinizin %'+pct+"'i";var h=document.getElementById('yatirim-hint');if(pct>=30){h.style.background='var(--green-bg)';h.style.color='var(--green)';h.textContent='🎉 Harika! %'+pct+' tasarruf oranı.';}else if(pct>=20){h.style.background='var(--gold-bg)';h.style.color='var(--gold)';h.textContent='👍 İyi! Minimum %20 hedefliyorsun.';}else{h.style.background='var(--red-bg)';h.style.color='var(--red)';h.textContent='⚠️ Uzmanlar minimum %20 öneriyor.';}}
-  if(type==='emek'){var v=parseInt(document.getElementById('ob-emek').value);document.getElementById('emek-val').textContent=v+' yaş';obData.emekYas=v;document.getElementById('emek-kalan-sub').textContent=(v-obData.yas)+' yıl sonra';}
-  if(type==='artis'){var v=parseInt(document.getElementById('ob-artis').value);document.getElementById('artis-val').textContent=v>0?'%'+v:'%0';obData.artis=v;var s=document.getElementById('artis-sub');if(v===0){s.textContent='Sabit yatırımla devam';}else{var artisli=calcPortfoy(obData.yatirim,18,obData.emekYas-obData.yas,v),sabit=calcPortfoy(obData.yatirim,18,obData.emekYas-obData.yas,0);s.textContent='%'+v+' artışla +'+fmtR(artisli-sabit)+' ₺ fazla';}}
+  if(type==='emek'){var v=parseInt(document.getElementById('ob-emek').value);document.getElementById('emek-val').textContent=v+' yaş';var t=document.getElementById('ob-emek-txt');if(t)t.value=v;obData.emekYas=v;document.getElementById('emek-kalan-sub').textContent=(v-obData.yas)+' yıl sonra';}
+  if(type==='artis'){var v=parseInt(document.getElementById('ob-artis').value);document.getElementById('artis-val').textContent=v>0?'%'+v:'%0';var t=document.getElementById('ob-artis-txt');if(t)t.value=v;obData.artis=v;var s=document.getElementById('artis-sub');if(v===0){s.textContent='Sabit yatırımla devam';}else{var artisli=calcPortfoy(obData.yatirim,18,obData.emekYas-obData.yas,v),sabit=calcPortfoy(obData.yatirim,18,obData.emekYas-obData.yas,0);s.textContent='%'+v+' artışla +'+fmtR(artisli-sabit)+' ₺ fazla';}}
 }
 
 function syncManual(type,v) {
   var prevN=parseInt(v)||0;
+  if(type==='yas'){
+    document.getElementById('ob-yas').value=Math.max(18,Math.min(65,prevN));
+    document.getElementById('yas-val').textContent=prevN+' yaş';
+    obData.yas=prevN;
+  }
   if(type==='gelir'){
     document.getElementById('ob-gelir').value=Math.max(20000,Math.min(500000,prevN));
     document.getElementById('gelir-val').textContent=fmtR(prevN)+' ₺';
@@ -1067,6 +1080,20 @@ function syncManual(type,v) {
       else if(pct>=20){h.style.background='var(--gold-bg)';h.style.color='var(--gold)';h.textContent='👍 İyi! Minimum %20 hedefliyorsun.';}
       else{h.style.background='var(--red-bg)';h.style.color='var(--red)';h.textContent='⚠️ Uzmanlar minimum %20 öneriyor.';}
     }
+  }
+  if(type==='emek'){
+    document.getElementById('ob-emek').value=Math.max(40,Math.min(70,prevN));
+    document.getElementById('emek-val').textContent=prevN+' yaş';
+    obData.emekYas=prevN;
+    document.getElementById('emek-kalan-sub').textContent=(prevN-obData.yas)+' yıl sonra';
+  }
+  if(type==='artis'){
+    document.getElementById('ob-artis').value=Math.max(0,Math.min(20,prevN));
+    document.getElementById('artis-val').textContent=prevN>0?'%'+prevN:'%0';
+    obData.artis=prevN;
+    var s=document.getElementById('artis-sub');
+    if(prevN===0){s.textContent='Sabit yatırımla devam';}
+    else{var artisli=calcPortfoy(obData.yatirim,18,obData.emekYas-obData.yas,prevN),sabit=calcPortfoy(obData.yatirim,18,obData.emekYas-obData.yas,0);s.textContent='%'+prevN+' artışla +'+fmtR(artisli-sabit)+' ₺ fazla';}
   }
 }
 
@@ -1331,10 +1358,21 @@ function goTab(name,btn) {
   if(name==='gider')setTimeout(function(){renderGiderler();renderGiderCharts();},50);
 }
 
-// ── YATIRIM DÜZENLE ───────────────────────────────────────────────────────
+// ── YATIRIM & RISK DÜZENLE ──────────────────────────────────────────────────
 function toggleYatirimEdit(){var d=document.getElementById('yatirim-display'),e=document.getElementById('yatirim-edit'),i=document.getElementById('yatirim-input');if(e.style.display==='none'){e.style.display='block';d.style.display='none';i.value=S.yatirim;i.focus();i.select();}else cancelYatirim();}
 function cancelYatirim(){document.getElementById('yatirim-edit').style.display='none';document.getElementById('yatirim-display').style.display='block';}
 function saveYatirim(){var v=parseInt(document.getElementById('yatirim-input').value);if(!v||v<100){alert('Geçerli bir tutar gir.');return;}S.yatirim=v;P.yatirim=v;saveState();updateAll();renderHedef();buildAksiyon();cancelYatirim();cu();}
+
+function toggleRiskEdit(){var d=document.getElementById('risk-display'),e=document.getElementById('risk-edit'),i=document.getElementById('risk-input');if(e.style.display==='none'){e.style.display='block';d.style.display='none';i.value=P.risk||'dengeli';i.focus();}else cancelRisk();}
+function cancelRisk(){document.getElementById('risk-edit').style.display='none';document.getElementById('risk-display').style.display='block';}
+function saveRisk(){
+  var r=document.getElementById('risk-input').value;
+  P.risk=r;
+  S.araclar=getDefaultAraclar(r);
+  var idx=TUM_PROFILLER.findIndex(function(x){return x.id===P.id;});
+  if(idx>=0){TUM_PROFILLER[idx]=P;try{localStorage.setItem('mn-profiller',JSON.stringify(TUM_PROFILLER));}catch(e){}}
+  saveState();updateAll();buildAksiyon();cancelRisk();
+}
 
 // ── DAĞILIM ───────────────────────────────────────────────────────────────
 var ARAC_FN={altin:function(){return S.rates.altin||7100;},usd:function(){return S.rates.usd||44;},ppf:function(){return 1;},bist:function(){return 1;},diger:function(){return 1;}};
