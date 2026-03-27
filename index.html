@@ -153,11 +153,11 @@ input[type=range]{appearance:slider-horizontal;-webkit-appearance:slider-horizon
 .h-icon-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:all .2s;flex-shrink:0;padding:0;}
 .h-icon-btn:hover{border-color:var(--border-hover);background:var(--cream);transform:scale(1.05);}
 .reset-btn{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--ink3);cursor:pointer;font-family:var(--sans);}
-.ticker{background:var(--white);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;gap:10px;flex-wrap:nowrap;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;width:100%;}
+.ticker{background:var(--white);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;gap:12px;flex-wrap:nowrap;align-items:center;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;width:100%;}
 .ticker::-webkit-scrollbar{display:none;}
-.tk-item{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.tk-item{display:flex;align-items:center;gap:5px;flex-shrink:0;}
 .tk-lbl{font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;}
-.tk-val{font-size:13px;font-weight:700;white-space:nowrap;}
+.tk-val{font-size:14px;font-weight:700;white-space:nowrap;}
 .tk-chg{font-size:10px;font-weight:700;padding:2px 5px;border-radius:4px;}
 .chg-u{background:var(--green-bg);color:var(--green);}
 .chg-d{background:var(--red-bg);color:var(--red);}
@@ -217,6 +217,14 @@ input[type=range]{width:80px;accent-color:var(--gold);}
 /* ── EDIT BTN (compact) ── */
 .edit-pill{font-size:10px;padding:3px 10px;border:1px solid var(--border);background:var(--white);color:var(--ink3);border-radius:20px;cursor:pointer;font-family:var(--sans);font-weight:600;transition:all .2s;display:inline-flex;align-items:center;gap:3px;}
 .edit-pill:hover{border-color:var(--border-hover);color:var(--ink);}
+/* ── COLLAPSIBLE INLINE STEPPER ── */
+.inline-stepper{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;}
+.inline-stepper-info{display:flex;align-items:center;gap:8px;}
+.inline-stepper-info .stepper-val{font-family:var(--serif);font-size:20px;font-weight:800;color:var(--ink);}
+.inline-stepper-info .stepper-sub{font-size:11px;color:var(--ink3);}
+.inline-stepper-panel{display:none;padding:10px 14px;background:var(--cream);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;animation:slideDown .2s ease;}
+.inline-stepper-panel.open{display:flex;align-items:center;justify-content:space-between;}
+@keyframes slideDown{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
 .chart-wrap{position:relative;width:100%;height:200px;}
 .tl{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--border);align-items:flex-start;}
 .tl:last-child{border-bottom:none;}
@@ -659,25 +667,39 @@ html{scroll-behavior:smooth;}
           </div>
           <div class="card" style="margin-bottom:0;">
             <div class="ct">📅 Yaşa Göre Strateji</div>
-            <div class="stepper">
-               <div class="stepper-label">Mevcut Yaş (Simülasyon)</div>
-               <div class="stepper-controls">
-                  <button class="stepper-btn" onclick="changeMevcutYas(-1)">−</button>
-                  <span class="stepper-val" id="yas-edit-val">27</span>
-                  <button class="stepper-btn" onclick="changeMevcutYas(1)">+</button>
-               </div>
+            <div class="inline-stepper">
+              <div class="inline-stepper-info">
+                <span class="stepper-sub">Mevcut Yaş</span>
+                <span class="stepper-val" id="yas-edit-val">27</span>
+              </div>
+              <button class="settings-icon" onclick="toggleStepperPanel('yas-panel')" title="Yaş ayarla">⚙️</button>
+            </div>
+            <div class="inline-stepper-panel" id="yas-panel">
+              <div class="stepper-label">Yaşı ayarla</div>
+              <div class="stepper-controls">
+                <button class="stepper-btn" onclick="changeMevcutYas(-1)">−</button>
+                <span class="stepper-val" id="yas-edit-val2">27</span>
+                <button class="stepper-btn" onclick="changeMevcutYas(1)">+</button>
+              </div>
             </div>
             <div id="yas-strateji"></div>
           </div>
           <div class="card" style="margin-bottom:0;">
             <div class="ct">📉 Senaryo Analizi</div>
-            <div class="stepper">
-               <div class="stepper-label">Hedef Emeklilik Yaşı</div>
-               <div class="stepper-controls">
-                  <button class="stepper-btn" onclick="changeEmekYas(-1)">−</button>
-                  <span class="stepper-val" id="emek-edit-val">55</span>
-                  <button class="stepper-btn" onclick="changeEmekYas(1)">+</button>
-               </div>
+            <div class="inline-stepper">
+              <div class="inline-stepper-info">
+                <span class="stepper-sub">Hedef Emeklilik Yaşı</span>
+                <span class="stepper-val" id="emek-edit-val">55</span>
+              </div>
+              <button class="settings-icon" onclick="toggleStepperPanel('emek-panel')" title="Hedef ayarla">⚙️</button>
+            </div>
+            <div class="inline-stepper-panel" id="emek-panel">
+              <div class="stepper-label">Yaşı ayarla</div>
+              <div class="stepper-controls">
+                <button class="stepper-btn" onclick="changeEmekYas(-1)">−</button>
+                <span class="stepper-val" id="emek-edit-val2">55</span>
+                <button class="stepper-btn" onclick="changeEmekYas(1)">+</button>
+              </div>
             </div>
             <div style="display:flex;flex-direction:column;gap:6px;" id="senaryo-cards"></div>
           </div>
@@ -964,6 +986,11 @@ function toggleGizlilik() {
   renderBakiye();
   renderHedef();
   renderHistory();
+}
+
+function toggleStepperPanel(panelId) {
+  var panel = document.getElementById(panelId);
+  if (panel) panel.classList.toggle('open');
 }
 
 // ── FORMAT ────────────────────────────────────────────────────────────────
@@ -1314,6 +1341,7 @@ function initDashboard() {
 
 function buildYasStrateji() {
   var d=document.getElementById('yas-edit-val');if(d)d.textContent=P.yas||27;
+  var d2=document.getElementById('yas-edit-val2');if(d2)d2.textContent=P.yas||27;
   var yas=P.yas||27, emek=P.emekYas||55;
   var h=emek-18;if(h<0)h=0;
   var p1=18+Math.floor(h*0.4), p2=p1+Math.floor(h*0.3), p3=p2+Math.floor(h*0.2);
@@ -1338,6 +1366,8 @@ function changeMevcutYas(dif){
   P.yas=y; S.yas=y;
   var idx=TUM_PROFILLER.findIndex(function(x){return x.id===P.id;});
   if(idx>=0){TUM_PROFILLER[idx]=P;try{localStorage.setItem('mn-profiller',JSON.stringify(TUM_PROFILLER));}catch(e){}}
+  var v1=document.getElementById('yas-edit-val');if(v1)v1.textContent=y;
+  var v2=document.getElementById('yas-edit-val2');if(v2)v2.textContent=y;
   saveState(); updateAll(); buildYasStrateji(); renderHedef(); buildAksiyon(); if(typeof cu==='function')cu();
 }
 
@@ -1347,11 +1377,14 @@ function changeEmekYas(dif){
   P.emekYas=y; S.emekYas=y;
   var idx=TUM_PROFILLER.findIndex(function(x){return x.id===P.id;});
   if(idx>=0){TUM_PROFILLER[idx]=P;try{localStorage.setItem('mn-profiller',JSON.stringify(TUM_PROFILLER));}catch(e){}}
+  var v1=document.getElementById('emek-edit-val');if(v1)v1.textContent=y;
+  var v2=document.getElementById('emek-edit-val2');if(v2)v2.textContent=y;
   saveState(); updateAll(); renderHedef(); buildAksiyon(); if(typeof cu==='function')cu();
 }
 
 function buildSenaryolar() {
   var d=document.getElementById('emek-edit-val');if(d)d.textContent=P.emekYas||55;
+  var d2=document.getElementById('emek-edit-val2');if(d2)d2.textContent=P.emekYas||55;
   var kalan=(P.emekYas||55)-(P.yas||27);
   var p=document.getElementById('d-yas-pill');if(p)p.textContent=(P.yas||27)+' yaş · '+(P.emekYas||55)+"'a "+kalan+' yıl';
   document.getElementById('senaryo-cards').innerHTML=[{lbl:'Kötümser',g:12,rk:'var(--red)',bg:'var(--red-bg)',bd:'var(--red-bd)'},{lbl:'Gerçekçi ✓',g:18,rk:'var(--green)',bg:'var(--green-bg)',bd:'var(--green-bd)',b:true},{lbl:'İyimser',g:25,rk:'var(--blue)',bg:'var(--blue-bg)',bd:'var(--blue-bd)'}].map(function(s){var v=calcPortfoy(S.yatirim,s.g,kalan,P.artis||0);return'<div style="background:'+s.bg+';border:1px solid '+s.bd+';border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;"><div><div style="font-size:10px;font-weight:700;color:'+s.rk+';margin-bottom:2px;">'+s.lbl+'</div><div style="font-size:10px;color:var(--ink3);">%'+s.g+' yıllık</div></div><div style="font-size:'+(s.b?'15':'13')+'px;font-weight:700;color:'+s.rk+';">'+fmt(v)+'</div></div>';}).join('');
