@@ -189,8 +189,26 @@ input[type=range]{appearance:slider-horizontal;-webkit-appearance:slider-horizon
 .tk-div{width:1px;height:22px;background:var(--border);flex-shrink:0;}
 .tk-hide-mobile{display:none;}
 @media(min-width:600px){.tk-hide-mobile{display:flex;}}
-.nav{background:var(--white);border-bottom:1px solid var(--border);padding:0 8px;display:flex;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;position:sticky;top:53px;z-index:99;}
+.nav-wrapper{position:sticky;top:53px;z-index:99;background:var(--white);border-bottom:1px solid var(--border);}
+.nav-container{position:relative;overflow:hidden;}
+.nav{background:transparent;padding:0 8px;display:flex;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 .nav::-webkit-scrollbar{display:none;}
+/* Scroll fade masks */
+.nav-container::before,.nav-container::after{content:"";position:absolute;top:0;bottom:0;width:28px;z-index:10;pointer-events:none;transition:opacity .3s ease;}
+.nav-container::before{left:0;background:linear-gradient(90deg,var(--white) 0%,transparent 100%);opacity:0;}
+.nav-container::after{right:0;background:linear-gradient(-90deg,var(--white) 0%,transparent 100%);opacity:1;}
+.nav-container.scroll-start::before{opacity:0;}
+.nav-container.scroll-end::after{opacity:0;}
+.nav-container.scroll-middle::before,.nav-container.scroll-middle::after{opacity:1;}
+/* Scroll hint arrow for nav */
+.scroll-hint-arrow{position:absolute;right:6px;top:50%;transform:translateY(-50%);z-index:11;pointer-events:none;display:flex;align-items:center;gap:2px;animation:scrollHintPulse 1.8s ease-in-out infinite;opacity:1;transition:opacity .4s ease;}
+.scroll-hint-arrow.hidden{opacity:0;pointer-events:none;}
+.scroll-hint-arrow span{display:block;width:6px;height:6px;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(-45deg);opacity:.5;}
+.scroll-hint-arrow span:nth-child(1){animation:scrollChevron 1.8s ease-in-out infinite;}
+.scroll-hint-arrow span:nth-child(2){animation:scrollChevron 1.8s ease-in-out .15s infinite;}
+.scroll-hint-arrow span:nth-child(3){animation:scrollChevron 1.8s ease-in-out .3s infinite;}
+@keyframes scrollHintPulse{0%,100%{transform:translateY(-50%) translateX(0);}50%{transform:translateY(-50%) translateX(3px);}}
+@keyframes scrollChevron{0%,100%{opacity:.3;}50%{opacity:1;}}
 .nb{font-size:12px;font-weight:500;color:var(--ink3);background:none;border:none;border-bottom:2px solid transparent;padding:10px 10px;cursor:pointer;white-space:nowrap;transition:all .15s;font-family:var(--sans);}
 .nb.active{color:var(--gold);border-bottom-color:var(--gold);font-weight:600;}
 .content{padding:24px;max-width:1200px;margin:0 auto;overflow-x:hidden;word-break:break-word;}
@@ -365,10 +383,31 @@ html{scroll-behavior:smooth;}
 .theme-toggle{width:34px;height:34px;border-radius:50%;border:1.5px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all .25s ease;flex-shrink:0;}
 .theme-toggle:hover{border-color:var(--gold-bd);background:var(--gold-bg);transform:scale(1.1);}
 /* ── BOTTOM NAV (FLOATING PILL) ── */
-.bottom-nav{display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);width:calc(100% - 48px);max-width:400px;background:rgba(255,255,255,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:32px;z-index:200;padding:8px 12px;box-shadow:0 12px 32px rgba(0,0,0,0.12);}
+.bottom-nav{display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);width:calc(100% - 48px);max-width:400px;background:rgba(255,255,255,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--border);border-radius:32px;z-index:200;padding:8px 12px;box-shadow:0 12px 32px rgba(0,0,0,0.12);overflow:hidden;}
 [data-theme="dark"] .bottom-nav{background:rgba(20,20,20,0.85);border:1px solid rgba(255,255,255,0.1);box-shadow:0 12px 32px rgba(0,0,0,0.5);}
 .bottom-nav-inner{display:flex;align-items:center;width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;gap:2px;padding:0 4px;}
 .bottom-nav-inner::-webkit-scrollbar{display:none;}
+/* Bottom nav scroll fades */
+.bottom-nav::before,.bottom-nav::after{content:"";position:absolute;top:0;bottom:0;width:24px;z-index:10;pointer-events:none;transition:opacity .3s ease;}
+.bottom-nav::before{left:0;background:linear-gradient(90deg,rgba(255,255,255,0.85) 0%,transparent 100%);border-radius:32px 0 0 32px;opacity:0;}
+.bottom-nav::after{right:0;background:linear-gradient(-90deg,rgba(255,255,255,0.85) 0%,transparent 100%);border-radius:0 32px 32px 0;opacity:1;}
+[data-theme="dark"] .bottom-nav::before{background:linear-gradient(90deg,rgba(20,20,20,0.85) 0%,transparent 100%);}
+[data-theme="dark"] .bottom-nav::after{background:linear-gradient(-90deg,rgba(20,20,20,0.85) 0%,transparent 100%);}
+.bottom-nav.bnav-scroll-start::before{opacity:0;}
+.bottom-nav.bnav-scroll-end::after{opacity:0;}
+.bottom-nav.bnav-scroll-middle::before,.bottom-nav.bnav-scroll-middle::after{opacity:1;}
+/* Bottom nav scroll hint dot trail */
+.bnav-scroll-hint{position:absolute;right:10px;top:50%;transform:translateY(-50%);z-index:11;pointer-events:none;display:flex;align-items:center;gap:3px;animation:scrollHintPulse 1.8s ease-in-out infinite;}
+.bnav-scroll-hint.hidden{opacity:0;transition:opacity .4s ease;}
+.bnav-scroll-hint span{display:block;width:5px;height:5px;border-right:1.5px solid var(--gold);border-bottom:1.5px solid var(--gold);transform:rotate(-45deg);}
+.bnav-scroll-hint span:nth-child(1){animation:scrollChevron 1.8s ease-in-out infinite;}
+.bnav-scroll-hint span:nth-child(2){animation:scrollChevron 1.8s ease-in-out .15s infinite;}
+.bnav-scroll-hint span:nth-child(3){animation:scrollChevron 1.8s ease-in-out .3s infinite;}
+/* Swipe hint tooltip */
+.swipe-hint-tooltip{position:absolute;right:12px;top:-36px;background:var(--ink);color:var(--white);font-size:11px;font-weight:600;padding:5px 12px;border-radius:16px;white-space:nowrap;z-index:250;opacity:0;transform:translateY(4px);animation:tooltipAppear 0.4s ease 1.5s forwards,tooltipDisappear 0.4s ease 5s forwards;font-family:var(--sans);pointer-events:none;}
+.swipe-hint-tooltip::after{content:"";position:absolute;bottom:-5px;right:20px;width:10px;height:10px;background:var(--ink);transform:rotate(45deg);border-radius:2px;}
+@keyframes tooltipAppear{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+@keyframes tooltipDisappear{from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(-4px);}}
 .bnav-item{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 12px;cursor:pointer;border:none;background:none;font-family:var(--sans);flex-shrink:0;position:relative;transition:transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);z-index:1;border-radius:18px;min-height:48px;}
 .bnav-item::before{content:"";position:absolute;inset:4px;border-radius:14px;background:var(--ink);opacity:0;transform:scale(0.8);transition:all 0.3s cubic-bezier(0.25, 1, 0.5, 1);z-index:-1;}
 [data-theme="dark"] .bnav-item::before{background:var(--white);}
@@ -379,7 +418,7 @@ html{scroll-behavior:smooth;}
 .bnav-item span:last-child{font-size:10px;font-weight:600;color:var(--ink3);white-space:nowrap;transition:all 0.3s;}
 .bnav-item.active span:first-child{color:var(--ink);transform:translateY(-2px) scale(1.15);}
 .bnav-item.active span:last-child{color:var(--ink);font-weight:700;}
-@media(max-width:768px){#dashboard.visible .bottom-nav{display:flex;}.nav{display:none!important;}.content{padding-bottom:100px;}}
+@media(max-width:768px){#dashboard.visible .bottom-nav{display:flex;}.nav-wrapper{display:none!important;}.content{padding-bottom:100px;}}
 /* ── EXPORT ── */
 .export-btn{font-size:11px;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--white);color:var(--ink3);cursor:pointer;font-family:var(--sans);font-weight:600;transition:all .2s ease;}
 .export-btn:hover{border-color:var(--gold-bd);color:var(--gold);background:var(--gold-bg);}
@@ -617,17 +656,22 @@ html{scroll-behavior:smooth;}
     <div class="tk-div"></div>
     <div class="tk-item" style="flex-shrink:0;"><span class="tk-lbl" id="t-gram-lbl">Altın=</span><span class="tk-val" id="t-gram" style="color:#C9A84C;">—</span></div>
   </div>
-  <div class="nav">
-    <button class="nb active" onclick="goTab('portfolio',this)">📊 Portföy</button>
-    <button class="nb" onclick="goTab('bakiye',this)">💼 Bakiyem</button>
-    <button class="nb" onclick="goTab('hedef',this)">🎯 Hedef</button>
-    <button class="nb" onclick="goTab('yolharitasi',this)">🗺️ Yol Haritası</button>
-    <button class="nb" onclick="goTab('aksiyon',this)">✅ Aksiyon</button>
-    <button class="nb" onclick="goTab('calculator',this)">🧮 Hesap Makinesi</button>
-    <button class="nb" onclick="goTab('alarmlar',this)">🔔 Alarmlar</button>
-    <button class="nb" onclick="goTab('bordro',this)">📋 Bordro</button>
-    <button class="nb" onclick="goTab('vergi',this)">💸 Vergi</button>
-    <button class="nb" onclick="goTab('gider',this)">🧾 Giderler</button>
+  <div class="nav-wrapper">
+    <div class="nav-container" id="nav-container">
+      <div class="nav" id="top-nav">
+        <button class="nb active" onclick="goTab('portfolio',this)">📊 Portföy</button>
+        <button class="nb" onclick="goTab('bakiye',this)">💼 Bakiyem</button>
+        <button class="nb" onclick="goTab('hedef',this)">🎯 Hedef</button>
+        <button class="nb" onclick="goTab('yolharitasi',this)">🗺️ Yol Haritası</button>
+        <button class="nb" onclick="goTab('aksiyon',this)">✅ Aksiyon</button>
+        <button class="nb" onclick="goTab('calculator',this)">🧮 Hesap Makinesi</button>
+        <button class="nb" onclick="goTab('alarmlar',this)">🔔 Alarmlar</button>
+        <button class="nb" onclick="goTab('bordro',this)">📋 Bordro</button>
+        <button class="nb" onclick="goTab('vergi',this)">💸 Vergi</button>
+        <button class="nb" onclick="goTab('gider',this)">🧾 Giderler</button>
+      </div>
+      <div class="scroll-hint-arrow" id="nav-scroll-hint"><span></span><span></span><span></span></div>
+    </div>
   </div>
   <div class="content">
     <!-- PORTFÖY -->
@@ -984,7 +1028,7 @@ html{scroll-behavior:smooth;}
   </div>
 
 <div class="bottom-nav" id="bottom-nav">
-  <div class="bottom-nav-inner">
+  <div class="bottom-nav-inner" id="bottom-nav-inner">
     <button class="bnav-item active" onclick="goTabBottom('portfolio',this)"><span>📊</span><span>Portföy</span></button>
     <button class="bnav-item" onclick="goTabBottom('bakiye',this)"><span>💼</span><span>Bakiyem</span></button>
     <button class="bnav-item" onclick="goTabBottom('hedef',this)"><span>🎯</span><span>Hedef</span></button>
@@ -996,6 +1040,8 @@ html{scroll-behavior:smooth;}
     <button class="bnav-item" onclick="goTabBottom('bordro',this)"><span>📋</span><span>Bordro</span></button>
     <button class="bnav-item" onclick="goTabBottom('vergi',this)"><span>💸</span><span>Vergi</span></button>
   </div>
+  <div class="bnav-scroll-hint" id="bnav-scroll-hint"><span></span><span></span><span></span></div>
+  <div class="swipe-hint-tooltip" id="swipe-hint-tooltip">← Kaydır →</div>
 </div>
 
 </div>
@@ -1149,6 +1195,7 @@ function profilSec(i) {
   initDashboard();
   fetchRates();
   setInterval(fetchRates,30000);
+  setTimeout(initScrollHints, 300);
 }
 
 function showHata(form, msg) {
@@ -1333,6 +1380,7 @@ function finalizeOnboarding() {
   initDashboard();
   fetchRates();
   setInterval(fetchRates,30000);
+  setTimeout(initScrollHints, 300);
 }
 
 // ── DASHBOARD INIT ────────────────────────────────────────────────────────
@@ -1832,6 +1880,95 @@ function importData(event){
   event.target.value='';
 }
 
+// ── SCROLL HINT SYSTEM ───────────────────────────────────────────────────
+function initScrollHints() {
+  // ─── Top nav scroll detection ───
+  var topNav = document.getElementById('top-nav');
+  var navContainer = document.getElementById('nav-container');
+  var navHint = document.getElementById('nav-scroll-hint');
+
+  if (topNav && navContainer) {
+    function updateTopNavScroll() {
+      var sl = topNav.scrollLeft;
+      var maxScroll = topNav.scrollWidth - topNav.clientWidth;
+      navContainer.classList.remove('scroll-start', 'scroll-end', 'scroll-middle');
+      if (maxScroll <= 2) {
+        navContainer.classList.add('scroll-end');
+        if (navHint) navHint.classList.add('hidden');
+      } else if (sl <= 2) {
+        navContainer.classList.add('scroll-start');
+      } else if (sl >= maxScroll - 2) {
+        navContainer.classList.add('scroll-end');
+      } else {
+        navContainer.classList.add('scroll-middle');
+      }
+      // Hide hint arrow once user scrolls
+      if (navHint && sl > 10) {
+        navHint.classList.add('hidden');
+      }
+    }
+    topNav.addEventListener('scroll', updateTopNavScroll, { passive: true });
+    setTimeout(updateTopNavScroll, 100);
+    // Auto-hide hint arrow after 6 seconds
+    if (navHint) {
+      setTimeout(function() { navHint.classList.add('hidden'); }, 6000);
+    }
+  }
+
+  // ─── Bottom nav scroll detection ───
+  var bottomInner = document.getElementById('bottom-nav-inner');
+  var bottomNav = document.getElementById('bottom-nav');
+  var bnavHint = document.getElementById('bnav-scroll-hint');
+  var swipeTooltip = document.getElementById('swipe-hint-tooltip');
+
+  if (bottomInner && bottomNav) {
+    function updateBottomNavScroll() {
+      var sl = bottomInner.scrollLeft;
+      var maxScroll = bottomInner.scrollWidth - bottomInner.clientWidth;
+      bottomNav.classList.remove('bnav-scroll-start', 'bnav-scroll-end', 'bnav-scroll-middle');
+      if (maxScroll <= 2) {
+        bottomNav.classList.add('bnav-scroll-end');
+        if (bnavHint) bnavHint.classList.add('hidden');
+      } else if (sl <= 2) {
+        bottomNav.classList.add('bnav-scroll-start');
+      } else if (sl >= maxScroll - 2) {
+        bottomNav.classList.add('bnav-scroll-end');
+      } else {
+        bottomNav.classList.add('bnav-scroll-middle');
+      }
+      // Hide hint chevrons once user scrolls
+      if (bnavHint && sl > 10) {
+        bnavHint.classList.add('hidden');
+      }
+    }
+    bottomInner.addEventListener('scroll', updateBottomNavScroll, { passive: true });
+    setTimeout(updateBottomNavScroll, 200);
+
+    // Auto-hide bottom hint arrow after 6 seconds
+    if (bnavHint) {
+      setTimeout(function() { bnavHint.classList.add('hidden'); }, 6000);
+    }
+
+    // Show tooltip only once per user
+    if (swipeTooltip) {
+      var hintShown = false;
+      try { hintShown = localStorage.getItem('mn-swipe-hint-shown') === '1'; } catch(e) {}
+      if (hintShown) {
+        swipeTooltip.style.display = 'none';
+      } else {
+        // Mark as shown after animation completes
+        setTimeout(function() {
+          try { localStorage.setItem('mn-swipe-hint-shown', '1'); } catch(e) {}
+        }, 5500);
+        // Remove tooltip completely after it fades
+        setTimeout(function() {
+          if (swipeTooltip.parentNode) swipeTooltip.style.display = 'none';
+        }, 6000);
+      }
+    }
+  }
+}
+
 // ── INIT ──────────────────────────────────────────────────────────────────
 initTheme();
 setTimeout(function(){
@@ -1839,6 +1976,8 @@ setTimeout(function(){
   setTimeout(function(){ document.getElementById('splash').style.display='none'; }, 500);
   TUM_PROFILLER = JSON.parse((function(){ try{ return localStorage.getItem('mn-profiller')||'[]' }catch(e){ return '[]' } })());
   showAuthScreen();
+  // Initialize scroll hints after dashboard is ready
+  setTimeout(initScrollHints, 500);
 }, 1800);
 </script>
 </body>
