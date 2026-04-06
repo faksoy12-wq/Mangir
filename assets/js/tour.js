@@ -83,14 +83,14 @@ function showTourStep() {
     tip.style.bottom = (window.innerHeight - rect.top + 16) + 'px';
     tip.style.left = '50%';
     tip.style.transform = 'translateX(-50%)';
-    tip.style.maxWidth = 'calc(100vw - 40px)';
   } else if (pos === 'bottom') {
     tip.style.top = (rect.bottom + scrollY + 16) + 'px';
-    tip.style.left = Math.max(16, Math.min(rect.left, window.innerWidth - 300)) + 'px';
+    tip.style.left = '50%';
+    tip.style.transform = 'translateX(-50%)';
   } else {
     tip.style.top = (rect.top + scrollY - 16) + 'px';
-    tip.style.transform = 'translateY(-100%)';
-    tip.style.left = Math.max(16, Math.min(rect.left, window.innerWidth - 300)) + 'px';
+    tip.style.left = '50%';
+    tip.style.transform = 'translateX(-50%) translateY(-100%)';
   }
   document.body.appendChild(tip);
 }
