@@ -714,19 +714,10 @@ window.MANGIR_VERSION = '2.0';
 <script src="assets/js/app.js"></script>
 <script>
 if(typeof lucide!=='undefined')lucide.createIcons();
-// Welcome slider is now handled by app.js init sequence — do NOT call here
 
-// Re-init icons ONLY when switching to a new tab (debounced to avoid layout thrash)
-var _iconTimer = null;
-function _debouncedIcons(){ clearTimeout(_iconTimer); _iconTimer = setTimeout(function(){ if(typeof lucide!=='undefined') lucide.createIcons(); }, 80); }
-
-var _origGoTab=window.goTab;
-if(_origGoTab)window.goTab=function(t,b,s){_origGoTab(t,b,s);_debouncedIcons();};
-var _origGoTabB=window.goTabBottom;
-if(_origGoTabB)window.goTabBottom=function(t,b,s){_origGoTabB(t,b,s);_debouncedIcons();};
-// Re-init after profile load
+// Re-init icons after profile load (new dynamic content)
 var _origProfilSec=window.profilSec;
-if(_origProfilSec)window.profilSec=function(i){_origProfilSec(i);setTimeout(_debouncedIcons,300);};
+if(_origProfilSec)window.profilSec=function(i){_origProfilSec(i);setTimeout(function(){if(typeof lucide!=='undefined')lucide.createIcons();},300);};
 </script>
 </body>
 </html>

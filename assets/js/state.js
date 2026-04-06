@@ -142,7 +142,6 @@ function profilSec(i) {
   rateInterval=setInterval(fetchRates,30000);
   setTimeout(initScrollHints, 300);
   setTimeout(initPullToRefresh, 500);
-  setTimeout(function(){ if(typeof startTour==='function') startTour(); }, 2500);
   showToast('Hoşgeldin, '+esc(P.ad)+'!','success',2500);
 }
 
