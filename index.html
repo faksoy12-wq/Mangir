@@ -65,8 +65,54 @@ window.MANGIR_VERSION = '2.0';
         <input class="auth-input" type="text" id="kayit-ad" placeholder="Adın" autocomplete="given-name">
         <div id="kayit-hata" style="font-size:12px;color:var(--red);margin-bottom:8px;display:none;"></div>
         <button class="auth-btn" onclick="kayitOl()">Profil Oluştur & Başla →</button>
+        <button class="explore-btn btn-press" id="explore-app-btn" onclick="openShowcase()"><i data-lucide="compass" class="lu" style="width:16px;height:16px;"></i> Mangır'ı Keşfet</button>
       </div>
       <button class="ob-btn-back" onclick="iptalYeniProfil()" id="btn-iptal-profil" style="display:none;margin-top:8px;">← Geri Dön</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP SHOWCASE MODAL -->
+<div id="app-showcase" class="showcase-overlay">
+  <div class="showcase-container">
+    <button class="showcase-close btn-press" onclick="closeShowcase()"><i data-lucide="x" class="lu"></i></button>
+    <div class="showcase-scroll" id="showcase-scroll">
+      <div class="showcase-hero">
+        <div class="l-coin l-coin-lg" style="width:80px;height:80px;margin-bottom:16px;"></div>
+        <h1 class="showcase-app-name">Mangır</h1>
+        <p class="showcase-tagline">Finansal özgürlüğe giden yolda akıllı yol arkadaşın</p>
+        <p class="showcase-desc">Mangır, gelir-gider takibi, yatırım planlaması, portföy yönetimi ve vergi optimizasyonunu tek çatı altında birleştiren kişisel finans asistanıdır. Tüm veriler yalnızca senin cihazında kalır.</p>
+      </div>
+      <div class="showcase-section">
+        <div class="showcase-section-title"><i data-lucide="layout-dashboard" class="lu showcase-section-icon"></i> Neler Yapabilirsin?</div>
+        <div class="showcase-card"><div class="showcase-card-icon" style="background:linear-gradient(135deg,#fef3c7,#fde68a);"><i data-lucide="bar-chart-3" class="lu" style="color:#b45309;"></i></div><div class="showcase-card-body"><div class="showcase-card-title">Portföy Takibi</div><div class="showcase-card-desc">Aylık gelir, yatırım tutarı ve risk profilini tek ekranda gör. Kişisel yatırım dağılımını risk profiline göre otomatik oluştur.</div></div></div>
+        <div class="showcase-card"><div class="showcase-card-icon" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);"><i data-lucide="landmark" class="lu" style="color:#059669;"></i></div><div class="showcase-card-body"><div class="showcase-card-title">Bakiyem — Canlı Portföy</div><div class="showcase-card-desc">Altın, döviz ve fon pozisyonlarını ekle, anlık piyasa verileriyle portföy değerini takip et. Kâr/zarar durumunu gerçek zamanlı izle.</div></div></div>
+        <div class="showcase-card"><div class="showcase-card-icon" style="background:linear-gradient(135deg,#dbeafe,#bfdbfe);"><i data-lucide="target" class="lu" style="color:#2563eb;"></i></div><div class="showcase-card-body"><div class="showcase-card-title">Finansal Hedefler</div><div class="showcase-card-desc">Ev, araba, emeklilik gibi hedefler belirle. SVG halkaları ile ilerlemeyi görsel takip et. Otomatik birikim planı oluştur.</div></div></div>
+        <div class="showcase-card"><div class="showcase-card-icon" style="background:linear-gradient(135deg,#fce7f3,#fbcfe8);"><i data-lucide="calculator" class="lu" style="color:#db2777;"></i></div><div class="showcase-card-body"><div class="showcase-card-title">Bileşik Getiri Hesaplama</div><div class="showcase-card-desc">Farklı yatırım senaryolarını simüle et. Aylık artışlı yatırım planıyla emeklilik projeksiyonunu hesapla.</div></div></div>
+        <div class="showcase-card"><div class="showcase-card-icon" style="background:linear-gradient(135deg,#fee2e2,#fecaca);"><i data-lucide="receipt" class="lu" style="color:#dc2626;"></i></div><div class="showcase-card-body"><div class="showcase-card-title">Gider Takibi &amp; Bütçe</div><div class="showcase-card-desc">Harcamalarını 9 kategoride takip et. Aylık bütçe limitleri belirle, trendleri grafiklerle analiz et.</div></div></div>
+        <div class="showcase-card"><div class="showcase-card-icon" style="background:linear-gradient(135deg,#ede9fe,#ddd6fe);"><i data-lucide="bell-ring" class="lu" style="color:#7c3aed;"></i></div><div class="showcase-card-body"><div class="showcase-card-title">Fiyat Alarmları</div><div class="showcase-card-desc">Altın ve döviz için hedef fiyat alarmları kur. Fiyat hedefine ulaştığında anında bildirim al.</div></div></div>
+        <div class="showcase-card"><div class="showcase-card-icon" style="background:linear-gradient(135deg,#f0fdf4,#bbf7d0);"><i data-lucide="banknote" class="lu" style="color:#16a34a;"></i></div><div class="showcase-card-body"><div class="showcase-card-title">Vergi &amp; Sigorta Optimizasyonu</div><div class="showcase-card-desc">BES avantajlarını hesapla, hayat sigortası prim takibi yap. Yıllık vergi avantajını otomatik hesapla.</div></div></div>
+        <div class="showcase-card"><div class="showcase-card-icon" style="background:linear-gradient(135deg,#fef9c3,#fde047);"><i data-lucide="line-chart" class="lu" style="color:#a16207;"></i></div><div class="showcase-card-body"><div class="showcase-card-title">Canlı Piyasa Verileri</div><div class="showcase-card-desc">Gram altın, USD/TL ve EUR/TL kurlarını anlık takip et. Otomatik güncellenen ticker ile piyasayı gözünün önünde tut.</div></div></div>
+      </div>
+      <div class="showcase-section">
+        <div class="showcase-section-title"><i data-lucide="map" class="lu showcase-section-icon"></i> Vizyon</div>
+        <div class="showcase-vision">
+          <p>Mangır'ın amacı, finansal okuryazarlığı herkes için erişilebilir kılmak ve <strong>"çalışmak zorunluluk değil tercih olsun"</strong> vizyonuyla sana yol göstermektir.</p>
+          <p>Kişisel risk profiline göre oluşturulan yatırım planı, bileşik getiri hesaplamaları ve emeklilik projeksiyonları ile finansal özgürlüğe giden yolda nerede olduğunu her zaman bilirsin.</p>
+        </div>
+      </div>
+      <div class="showcase-section">
+        <div class="showcase-section-title"><i data-lucide="shield-check" class="lu showcase-section-icon"></i> Gizlilik &amp; Güvenlik</div>
+        <div class="showcase-privacy">
+          <div class="showcase-privacy-item"><i data-lucide="database" class="lu" style="width:18px;height:18px;color:var(--green);flex-shrink:0;"></i><span>Tüm veriler yalnızca cihazında saklanır — sunucuya hiçbir şey gönderilmez.</span></div>
+          <div class="showcase-privacy-item"><i data-lucide="eye-off" class="lu" style="width:18px;height:18px;color:var(--green);flex-shrink:0;"></i><span>Gizlilik modu ile rakamlarını tek tuşla maskele.</span></div>
+          <div class="showcase-privacy-item"><i data-lucide="download" class="lu" style="width:18px;height:18px;color:var(--green);flex-shrink:0;"></i><span>Verilerini JSON olarak yedekle ve istediğin zaman geri yükle.</span></div>
+        </div>
+      </div>
+      <div class="showcase-cta">
+        <button class="auth-btn btn-press" onclick="closeShowcase()" style="max-width:320px;">Hadi Başlayalım →</button>
+        <p style="font-size:12px;color:var(--ink3);margin-top:10px;">Profil oluşturarak kişisel planını hazırla</p>
+      </div>
     </div>
   </div>
 </div>

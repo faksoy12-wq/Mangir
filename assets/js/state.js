@@ -30,6 +30,9 @@ function showAuthScreen() {
   document.getElementById('onboarding').classList.remove('visible');
   document.getElementById('auth-screen').classList.add('visible');
   TUM_PROFILLER = JSON.parse((function(){ try{ return localStorage.getItem('mn-profiller')||'[]' }catch(e){ return '[]' } })());
+  // Show/hide explore button based on whether profiles exist
+  var exploreBtn = document.getElementById('explore-app-btn');
+  if (exploreBtn) exploreBtn.style.display = TUM_PROFILLER.length === 0 ? 'flex' : 'none';
   if (TUM_PROFILLER.length > 0) showProfileSelect();
   else { document.getElementById('profile-select-mode').style.display='none'; document.getElementById('auth-form-mode').style.display='block'; switchAuthTab('kayit'); }
 }

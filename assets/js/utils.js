@@ -1,3 +1,18 @@
+// ── APP SHOWCASE ────────────────────────────────────────────────────────────
+function openShowcase() {
+  var el = document.getElementById('app-showcase');
+  if (el) {
+    el.classList.add('visible');
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+    var scroll = document.getElementById('showcase-scroll');
+    if (scroll) scroll.scrollTop = 0;
+  }
+}
+function closeShowcase() {
+  var el = document.getElementById('app-showcase');
+  if (el) el.classList.remove('visible');
+}
+
 function haptic(){try{if(navigator.vibrate)navigator.vibrate(50);}catch(e){}}
 
 // ── GİZLİLİK (Privacy Mask) ───────────────────────────────────────────────
