@@ -13,6 +13,8 @@ var tourStep = 0;
 
 function startTour() {
   try { if (localStorage.getItem('mn-tour-done') === '1') return; } catch(e) {}
+  var ws = document.getElementById('welcome-slider');
+  if (ws && ws.classList.contains('visible')) return; // Will be triggered when welcome slider closes
   tourStep = 0;
   showTourStep();
 }
@@ -23,8 +25,14 @@ function showTourStep() {
   var step = TOUR_STEPS[tourStep];
   var targetEl = null;
   step.target.split(',').some(function(sel) {
-    targetEl = document.querySelector(sel.trim());
-    return targetEl;
+    var els = document.querySelectorAll(sel.trim());
+    for(var i=0; i<els.length; i++) {
+        if(els[i].offsetParent !== null) { // if element is visible
+            targetEl = els[i];
+            return true;
+        }
+    }
+    return false;
   });
   if (!targetEl) { tourStep++; showTourStep(); return; }
 

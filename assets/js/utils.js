@@ -62,7 +62,7 @@ function toggleTheme(){
   var isDark=html.getAttribute('data-theme')==='dark';
   html.setAttribute('data-theme',isDark?'light':'dark');
   var btn=document.getElementById('theme-btn');
-  if(btn)btn.innerHTML=isDark?'<i data-lucide="moon" class="lu"></i>':'<i data-lucide="sun" class="lu"></i>';
+  if(btn)btn.innerHTML=isDark?'<i data-lucide="sun" class="lu"></i>':'<i data-lucide="moon" class="lu"></i>';
   if(typeof lucide!=='undefined') lucide.createIcons();
   try{localStorage.setItem('mn-theme',isDark?'light':'dark');}catch(e){}
   // Chart.js renk güncelle
@@ -75,7 +75,7 @@ function initTheme(){
   if(!saved){saved=window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';}
   document.documentElement.setAttribute('data-theme',saved);
   var btn=document.getElementById('theme-btn');
-  if(btn){ btn.innerHTML=saved==='dark'?'<i data-lucide="sun" class="lu"></i>':'<i data-lucide="moon" class="lu"></i>'; if(typeof lucide!=='undefined')lucide.createIcons(); }
+  if(btn){ btn.innerHTML=saved==='dark'?'<i data-lucide="moon" class="lu"></i>':'<i data-lucide="sun" class="lu"></i>'; if(typeof lucide!=='undefined')lucide.createIcons(); }
 }
 
 // ── EXPORT / IMPORT ──────────────────────────────────────────────────────
