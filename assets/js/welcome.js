@@ -71,5 +71,5 @@ function wsPrev() {
 function closeWelcome() {
   try { localStorage.setItem('mn-welcome-seen', '1'); } catch(e) {}
   var el = document.getElementById('welcome-slider');
-  if (el) { el.style.opacity = '0'; setTimeout(function() { el.classList.remove('visible'); el.style.opacity = ''; if(typeof startTour==='function')startTour(); }, 400); }
+  if (el) { el.style.opacity = '0'; setTimeout(function() { el.classList.remove('visible'); el.style.opacity = ''; }, 400); }
 }
