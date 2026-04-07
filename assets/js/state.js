@@ -124,21 +124,39 @@ function kayitOl() {
   obData = {ad:ad,yas:27,meslek:'',gelir:75000,yatirim:30000,risk:'dengeli',emekYas:55,artis:0,sigorta:'yok',sigortaPrim:0,sigortaPB:'tl'};
   // Clear all previous selections in onboarding UI
   document.querySelectorAll('.ob-card.selected,.ob-card-row.selected').forEach(function(c){c.classList.remove('selected');});
-  // Reset sliders/inputs to defaults
+  
+  // Reset sliders/inputs/labels to defaults
   var yasEl=document.getElementById('ob-yas');if(yasEl)yasEl.value=27;
-  var yasV=document.getElementById('ob-yas-val');if(yasV)yasV.textContent='27';
+  var yasT=document.getElementById('ob-yas-txt');if(yasT)yasT.value='';
+  var yasV=document.getElementById('yas-val');if(yasV)yasV.textContent='27 yaş';
+  
   var gelirEl=document.getElementById('ob-gelir');if(gelirEl)gelirEl.value=75000;
-  var gelirV=document.getElementById('ob-gelir-val');if(gelirV)gelirV.textContent='75.000';
+  var gelirT=document.getElementById('ob-gelir-txt');if(gelirT)gelirT.value='';
+  var gelirV=document.getElementById('gelir-val');if(gelirV)gelirV.textContent='75.000 ₺';
+  
   var yatEl=document.getElementById('ob-yatirim');if(yatEl)yatEl.value=30000;
-  var yatV=document.getElementById('ob-yatirim-val');if(yatV)yatV.textContent='30.000';
+  var yatT=document.getElementById('ob-yatirim-txt');if(yatT)yatT.value='';
+  var yatV=document.getElementById('yatirim-val');if(yatV)yatV.textContent='30.000 ₺';
+  var yatP=document.getElementById('yatirim-pct-sub');if(yatP)yatP.textContent='Gelirinizin %40\'ı';
+  var yatH=document.getElementById('yatirim-hint');if(yatH){yatH.style.background='var(--gold-bg)';yatH.style.color='var(--gold)';yatH.textContent='Uzmanlar minimum %20 yatırım öneriyor.';}
+  
   var emekEl=document.getElementById('ob-emek');if(emekEl)emekEl.value=55;
-  var emekV=document.getElementById('ob-emek-val');if(emekV)emekV.textContent='55';
+  var emekT=document.getElementById('ob-emek-txt');if(emekT)emekT.value='';
+  var emekV=document.getElementById('emek-val');if(emekV)emekV.textContent='55 yaş';
+  var emekK=document.getElementById('emek-kalan-sub');if(emekK)emekK.textContent='28 yıl sonra';
+  
   var artEl=document.getElementById('ob-artis');if(artEl)artEl.value=0;
-  var artV=document.getElementById('ob-artis-val');if(artV)artV.textContent='0';
+  var artT=document.getElementById('ob-artis-txt');if(artT)artT.value='';
+  var artV=document.getElementById('artis-val');if(artV)artV.textContent='%0';
+  var artS=document.getElementById('artis-sub');if(artS)artS.textContent='Sabit yatırımla devam';
+  
   // Reset sigorta UI
   var sigYok=document.getElementById('sig-yok-card');if(sigYok)sigYok.classList.remove('selected');
   var sigVar=document.getElementById('sig-var-card');if(sigVar)sigVar.classList.remove('selected');
   var sigDetay=document.getElementById('sig-detay');if(sigDetay)sigDetay.style.display='none';
+  var sigPb=document.getElementById('sig-pb');if(sigPb)sigPb.value='tl';
+  var sigPr=document.getElementById('sig-prim');if(sigPr)sigPr.value='';
+  
   // Clear name input
   document.getElementById('kayit-ad').value='';
   // Start onboarding
