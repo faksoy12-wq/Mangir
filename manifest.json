@@ -1,6 +1,6 @@
 {
-  "name": "Furkan - Finansal Dashboard",
-  "short_name": "Finans",
+  "name": "Mangır - Finansal Dashboard",
+  "short_name": "Mangır",
   "description": "Kişisel yatırım ve finansal özgürlük takip uygulaması",
   "start_url": "/",
   "display": "standalone",

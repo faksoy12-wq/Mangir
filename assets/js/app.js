@@ -174,7 +174,7 @@ async function fetchRates(){
   var updEl=document.getElementById('upd-time');
   if(updEl){updEl.textContent='Güncelleniyor...';updEl.classList.add('tk-loading');}
   try{
-    var u='https://banker-furkan.vercel.app/api/rates';
+    var u='/api/rates';
     var r=await fetch(u),d=await r.json();
     S.prev=Object.assign({},S.rates);S.rates.usd=d.usd||42.8;S.rates.eur=d.eur||50.2;S.rates.altin=d.altin||7100;S.rates.ons=d.ons||3000;
     var n=new Date();
